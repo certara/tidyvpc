@@ -4,7 +4,8 @@
 \name{obs_data}
 \alias{obs_data}
 \title{Example observed data from vpc package.}
-\format{A data frame with 600 rows and 7 variables:
+\format{
+A data frame with 600 rows and 7 variables:
 \describe{
   \item{ID}{Subect identifier}
   \item{TIME}{Time}
@@ -15,7 +16,8 @@
   \item{NTIME}{Nominal Time}
   \item{GENDER}{Character variable indicating subject's gender ("M", "F")}
   \item{STUDY}{Character variable indicating study type ("Study A", "Study B")}
-}}
+}
+}
 \source{
 \code{\link[vpc]{simple_data}}
 }

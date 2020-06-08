@@ -4,7 +4,8 @@
 \name{sim_data}
 \alias{sim_data}
 \title{Example simulated data from vpc package.}
-\format{A data frame with 60000 rows and 10 variables:
+\format{
+A data frame with 60000 rows and 10 variables:
 \describe{
   \item{ID}{Subect identifier}
   \item{REP}{Replicate num for simulation}
@@ -16,7 +17,8 @@
   \item{DOSE}{Dosage amount}
   \item{MDV}{Dummy indiciating missing dependent variable value}
   \item{NTIME}{Nominal Time}
-}}
+}
+}
 \source{
 \code{\link[vpc]{simple_data}}
 }
