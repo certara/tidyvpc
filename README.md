@@ -1,8 +1,5 @@
 tidyvpc
 ========
-<!-- badges: start -->
-  [![Travis build status](https://travis-ci.org/jameswcraig/tidyvpc.svg?branch=master)](https://travis-ci.org/jameswcraig/tidyvpc)
-  <!-- badges: end -->
 
 <img src="https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true"  width="200">
   
