@@ -1,7 +1,7 @@
 Package: tidyvpc
 Type: Package
 Title: VPC Percentiles and Prediction Intervals
-Version: 1.0.0
+Version: 1.0.1
 Date: 2020-02-17
 Authors@R: c(
       person("Olivier", "Barriere", email = "olivier.barriere@gmail.com",
@@ -25,7 +25,7 @@ Description: Perform a Visual Predictive Check (VPC), while accounting for
 URL: https://github.com/certara-jcraig/tidyvpc
 BugReports: https://github.com/certara-jcraig/tidyvpc/issues
 Depends:
-    R (>= 3.3.0),
+    R (>= 3.5.0),
     data.table (>= 1.9.8), 
     magrittr,
     quantreg (>= 5.51)
@@ -47,4 +47,4 @@ License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
