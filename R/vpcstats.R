@@ -288,6 +288,8 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
   
   strat.split <- split(o$obs, strat)
   
+  strat.split <- strat.split[lapply(strat.split,NROW)>0]
+  
   update(o, strat=strat, strat.split = strat.split, strat.formula=formula)
 }
 
@@ -905,13 +907,14 @@ print.tidyvpcobj <- function(x, ...) {
     } else {
         strat <- o$strat
         strat.split <- split(obs, strat)
+        strat.split <- strat.split[lapply(strat.split,NROW)>0]
         x.strat <- c("x", names(strat))
         sim[, lloq := rep(obs$lloq, len=.N), by = names(strat)]
         sim[, blq := (y < lloq)]
         stratx.binless <- obs[, list(x, o$strat)]
         stratxrepl <- data.table(stratx.binless, sim[, .(repl)])
-        #sim.strat <- sim[, c(names(strat)) := rep(strat, len = .N), by = .(repl)]
-        strat.split.sim <- split(sim, strat)    
+        strat.split.sim <- split(sim, strat) 
+        strat.split.sim <- strat.split.sim[lapply(strat.split.sim,NROW)>0] 
         sic.strat.cprop <- function(llam){
           a <- AIC(
             rqss(
@@ -1363,11 +1366,16 @@ check_order <- function(obs, sim, tol=1e-5) {
 
 
 binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), loess.ypc = FALSE, ...) { 
+
   l.ypc <- strat.split <- y <- NULL
   
   qpred <- sort(qpred)
   obs <- o$obs
   log <- o$predcor.log
+  
+  if(!is.null(o$strat.split)){
+    strat.split <- o$strat.split
+  }
   
   environment(.autoloess) <- environment()
   
@@ -1376,7 +1384,8 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
       pred <- o$pred
       obs <- cbind(obs, pred)
       strat <- o$strat
-      strat.split <- split(obs, strat)
+      strat.split <- split(obs, strat) #JC
+      strat.split <- strat.split[lapply(strat.split,NROW)>0] #added
       loess.mod.strat <- vector("list", length(strat.split))
       names(loess.mod.strat) <- names(strat.split)
       if(isTRUE(o$predcor.log)) {
@@ -1410,6 +1419,7 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
   if(!loess.ypc && !is.null(o$strat)) {
     strat <- o$strat
     strat.split <- split(obs, strat)
+    strat.split <- strat.split[lapply(strat.split,NROW)>0]
   }
   
   # Internal Function
@@ -1511,7 +1521,6 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
 binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...){
   y <- l.ypc <- repl <- NULL  
   . <- list
-  
   qpred <- o$qpred
   qnames <- paste0("q", as.character(qpred))
   qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
@@ -1567,7 +1576,6 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   } else if(!is.null(llam.quant) && !is.null(o$strat)) {
     stratlev <- lapply(o$strat, unique) 
     stratlev <- length(stratlev[[1]])
-    #environment(.getllam) <- environment()
     llam.qpred <- getllam(qnames, llam.quant, stratlev)
   } else { 
     llam.qpred <- llam.quant
@@ -1584,9 +1592,11 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   if(!is.null(o$strat)) {
     strat <- o$strat
     strat.split <- split(obs, strat)
+    strat.split <- strat.split[lapply(strat.split,NROW)>0]
     x.strat <- c("x", names(strat))
     sim.strat <- sim[, c(names(strat)) := rep(strat, len = .N), by = .(repl)]
     strat.split.sim <- split(sim, strat)
+    strat.split.sim <- strat.split.sim[lapply(strat.split.sim,NROW)>0] 
   }
   
   if(isTRUE(o$loess.ypc) && !is.null(o$strat)) {
@@ -1663,7 +1673,6 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     obs[, rqsslo := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[1]])), tau = qpred[1], na.action = na.exclude))]
     obs[, rqssmed := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[2]])), tau = qpred[2], na.action = na.exclude))]
     obs[, rqsshi := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[3]])), tau = qpred[3], na.action = na.exclude))]
-    #obs.fits <- data.table(cbind(x,fitted(lo),fitted(med),fitted(hi)))
     setnames(obs, c("rqsslo", "rqssmed", "rqsshi"), qnames)
     obs.fits <- melt(obs, id.vars = "x", measure.vars = qnames)
     obs.fits <- setnames(obs.fits, c("variable", "value"), c("qname", "fit"))
