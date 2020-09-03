@@ -726,7 +726,7 @@ vpcstats.tidyvpcobj <- function(o, qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.9
     
     .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
     
-    myquant1 <- function(y, probs, qname=paste0("q", probs), type=quantile.type, blq=FALSE, alq=FALSE) {
+    myquant1 <- function(y, probs, qname=as.factor(paste0("q", probs)), type=quantile.type, blq=FALSE, alq=FALSE) {
       if (is.null(blq)) blq <- FALSE
       if (is.null(alq)) alq <- FALSE
       blq <- rep(blq, len=length(y))
@@ -738,7 +738,7 @@ vpcstats.tidyvpcobj <- function(o, qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.9
       data.frame(qname, y)
     }
     
-    myquant2 <- function(y, probs, qname=paste0("q", probs), type=quantile.type) {
+    myquant2 <- function(y, probs, qname=as.factor(paste0("q", probs)), type=quantile.type) {
       y <- quantile(y, probs=probs, type=type, names=FALSE, na.rm=TRUE)
       setNames(as.list(y), qname)
     }
