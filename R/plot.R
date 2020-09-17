@@ -101,7 +101,7 @@ plot.tidyvpcobj <- function(x, ..., show.points=TRUE, show.boundaries=TRUE, show
     ggplot2::labs(x=xlab, y=ylab)
   
   if (show.points) {
-    points.dat <- copy(vpc$obs)
+    points.dat <- vpc$obs[!(blq|alq)]
     if (isTRUE(vpc$predcor)) {
       if(isTRUE(vpc$loess.ypc)) {
         points.dat[, y := l.ypc]
