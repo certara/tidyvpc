@@ -10,7 +10,7 @@ tidyvpc
 # If there are errors (converted from warning) during installation related to packages built under different version of R,
 # they can be ignored by setting the environment variable R_REMOTES_NO_ERRORS_FROM_WARNINGS="true" before calling install_github()
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
-devtools::install_github("jameswcraig/tidyvpc")
+remotes::install_github("certara/tidyvpc")
 ```
 
 ### Usage
