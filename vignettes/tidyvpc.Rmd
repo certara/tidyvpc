@@ -4,7 +4,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to tidyvpc}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r, warning = FALSE, echo = FALSE, message = FALSE}
@@ -65,10 +65,25 @@ To explore the functionality of tidyvpc, we'll use an altered version of obs_dat
 
 * MDV (Missing DV)
 
+### Data Structure
+
+`tidyvpc` requires specific structure of observed and simulated data in order to sucessfully generate VPC.
+
+* DV cannot be 0 or missing in observed/simulated data i.e. subset `MDV == 0`
+* Ordering of observed and simulated data must be consistent
+* Replicates in simulated data must be stacked on top of each other
+
+See `tidyvpc::obs_data` and `tidyvpc::sim_data` for example data structures.
+
 ```{r message=FALSE}
-obs_data <- as.data.table(tidyvpc::obs_data)
-sim_data <- as.data.table(tidyvpc::sim_data)
+obs_data <- data.table::as.data.table(tidyvpc::obs_data)
 head(obs_data)
+
+```
+
+```{r message=FALSE}
+sim_data <- data.table::as.data.table(tidyvpc::sim_data)
+head(sim_data)
 
 ```
 

@@ -52,6 +52,13 @@ Use this function in subsitute of traditional binning methods to derive VPC usin
 \examples{
 \donttest{
 
+obs_data <- data.table::as.data.table(tidyvpc::obs_data)
+sim_data <- data.table::as.data.table(tidyvpc::sim_data)
+
+obs_data <- obs_data[MDV == 0]
+sim_data <- sim_data[MDV == 0]
+
+
  vpc <- observed(obs_data, y = DV, x = TIME) \%>\%
       simulated(sim_data, y = DV) \%>\%
       binless() \%>\%
@@ -72,7 +79,7 @@ Use this function in subsitute of traditional binning methods to derive VPC usin
  
  lambda_strat <- data.table(
  GENDER_M = c(3,5,2),
- GENDER_F = c(1,3,4),
+ GENDER_F = c(1,3,4)
  )
  
  vpc <- observed(obs_data, y = DV, x = TIME) \%>\%

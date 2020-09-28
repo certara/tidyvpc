@@ -1,8 +1,8 @@
 Package: tidyvpc
 Type: Package
 Title: VPC Percentiles and Prediction Intervals
-Version: 1.0.2
-Date: 2020-02-17
+Version: 1.1.0
+Date: 2020-09-28
 Authors@R: c(
       person("Olivier", "Barriere", email = "olivier.barriere@gmail.com",
       role = c("aut")),

@@ -33,13 +33,17 @@ Specify prediction variable for pcVPC
 }
 \examples{
 
-obs_data <- as.data.table(tidyvpc::obs_data)
-sim_data <- as.data.table(tidyvpc::sim_data)
+obs_data <- data.table::as.data.table(tidyvpc::obs_data)
+sim_data <- data.table::as.data.table(tidyvpc::sim_data)
+
+obs_data <- obs_data[MDV == 0]
+sim_data <- sim_data[MDV == 0]
 
  # Add PRED variable to observed data from first replicate of 
  # simulated data
  
 obs_data$PRED <- sim_data[REP == 1, PRED]
+
   vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
        simulated(sim_data, y=DV) \%>\%
        binning(bin = NTIME) \%>\%

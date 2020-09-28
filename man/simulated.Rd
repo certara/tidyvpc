@@ -26,7 +26,9 @@ A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with colum
 Specify simulated dataset and variables for VPC
 }
 \details{
-The simulated function is the second function in the vpc piping chain and is used for specifying simulated data and variables for VPC
+The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not 
+contain missing DV and may require subsetting \code{MDV == 0} before generating VPC. The ordering of observed and simulated 
+data must also be consistent, with replicates in simulated data stacked on top of each other.
 }
 \examples{
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%

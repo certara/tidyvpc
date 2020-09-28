@@ -10,6 +10,7 @@
 #' @import data.table
 #' @import magrittr
 #' @import quantreg
+#' @import classInt
 #' @importFrom stats median model.frame quantile setNames update AIC fitted loess na.exclude optimize resid time
 #' @importFrom utils install.packages installed.packages
 #' @name generics
@@ -17,7 +18,8 @@ NULL
 
 #' Specify observed dataset and variables for VPC
 #' 
-#' The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC
+#' The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC. Note: Observed
+#' data must not contain missing DV and may require subsetting \code{MDV == 0} before generating VPC.
 #' 
 #' @title observed
 #' @param o data.frame or data.table of observation data
@@ -65,7 +67,9 @@ observed.data.frame <- function(o, x, yobs, pred=NULL, blq=NULL, lloq=-Inf, alq=
 
 #' Specify simulated dataset and variables for VPC
 #' 
-#' The simulated function is the second function in the vpc piping chain and is used for specifying simulated data and variables for VPC
+#' The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not 
+#' contain missing DV and may require subsetting \code{MDV == 0} before generating VPC. The ordering of observed and simulated 
+#' data must also be consistent, with replicates in simulated data stacked on top of each other.
 #' 
 #' @title observed
 #' @param o tidyvpcobj
@@ -522,6 +526,13 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #' @examples 
 #' \donttest{
 #' 
+#' obs_data <- data.table::as.data.table(tidyvpc::obs_data)
+#' sim_data <- data.table::as.data.table(tidyvpc::sim_data)
+#' 
+#' obs_data <- obs_data[MDV == 0]
+#' sim_data <- sim_data[MDV == 0]
+#' 
+#' 
 #'  vpc <- observed(obs_data, y = DV, x = TIME) %>%
 #'       simulated(sim_data, y = DV) %>%
 #'       binless() %>%
@@ -542,7 +553,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #'  
 #'  lambda_strat <- data.table(
 #'  GENDER_M = c(3,5,2),
-#'  GENDER_F = c(1,3,4),
+#'  GENDER_F = c(1,3,4)
 #'  )
 #'  
 #'  vpc <- observed(obs_data, y = DV, x = TIME) %>%
@@ -595,13 +606,17 @@ binless.tidyvpcobj <- function(o, qpred = c(0.05, 0.50, 0.95), optimize = TRUE, 
 #'   column from the original data.
 #' @examples 
 #' 
-#' obs_data <- as.data.table(tidyvpc::obs_data)
-#' sim_data <- as.data.table(tidyvpc::sim_data)
+#' obs_data <- data.table::as.data.table(tidyvpc::obs_data)
+#' sim_data <- data.table::as.data.table(tidyvpc::sim_data)
+#' 
+#' obs_data <- obs_data[MDV == 0]
+#' sim_data <- sim_data[MDV == 0]
 #' 
 #'  # Add PRED variable to observed data from first replicate of 
 #'  # simulated data
 #'  
 #' obs_data$PRED <- sim_data[REP == 1, PRED]
+#' 
 #'   vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'        simulated(sim_data, y=DV) %>%
 #'        binning(bin = NTIME) %>%

@@ -11,6 +11,15 @@ Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 remotes::install_github("certara/tidyvpc")
 ```
 
+### Data Preprocessing
+`tidyvpc` requires specific structure of observed and simulated data in order to sucessfully generate VPC.
+
+* DV cannot be 0 or missing in observed/simulated data i.e. subset `MDV == 0`
+* Ordering of observed and simulated data must be consistent
+* Replicates in simulated data must be stacked on top of each other
+
+See `tidyvpc::obs_data` and `tidyvpc::sim_data` for example data structures.
+
 ### Usage
 
 ``` r
