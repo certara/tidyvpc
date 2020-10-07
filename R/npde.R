@@ -62,7 +62,7 @@ npde.tidyvpcobj <- function(o, id, data=o$data, smooth=FALSE, ...) {
 
     pd.obs <- apply(ysim < yobs, 1, mean)
 
-    # Handel extremes
+    # Handle extremes
     if (isTRUE(smooth)) {
       u <- runif(nobs, 0, 1/niter)
       pd.obs[pd.obs == 1] <- rep(1 - (1/niter), len=sum(pd.obs == 1))
@@ -94,7 +94,7 @@ npde.tidyvpcobj <- function(o, id, data=o$data, smooth=FALSE, ...) {
 
     pde.obs <- apply(eswres < ewres, 1, mean)
 
-    # Handel extremes
+    # Handle extremes
     if (isTRUE(smooth)) {
       # Can use the same uniform as for pd, no need to call runif again
       pde.obs[pde.obs == 1] <- rep(1 - (1/niter), len=sum(pde.obs == 1))
