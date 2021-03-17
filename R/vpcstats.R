@@ -951,11 +951,11 @@ print.tidyvpcobj <- function(x, ...) {
         
         obs.cprop <- rbindlist(strat.split)
         obs.cprop <- setnames(obs.cprop[, lapply(.SD, median, na.rm = TRUE), by = x.strat, .SDcols = "c.rqssmed"], "c.rqssmed", "y")
-        
+       
         for (i in seq_along(strat.split.sim)) {
           setorder(strat.split.sim[[i]], cols = repl, x)
           strat.split.sim[[i]] <- strat.split.sim[[i]][, cprop := cumsum(blq) / 1:length(blq), by = .(repl)]
-          strat.split.sim[[i]][, c.rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.strat.med.cprop[[i]][[1]])),tau= .5, na.action = na.exclude, data = strat.split.sim[[i]])), by = .(repl)]
+          strat.split.sim[[i]][, c.rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.strat.med.cprop[[i]][[1]])),tau= .5, na.action = na.exclude, .SD)), by = .(repl)]
         }
         
         sim.cprop <- rbindlist(strat.split.sim)
