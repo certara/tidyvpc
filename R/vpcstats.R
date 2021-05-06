@@ -697,7 +697,8 @@ nopredcorrect.tidyvpcobj <- function(o, ...) {
 #' 
 #' @title vpcstats
 #' @param o tidyvpc object
-#' @param qpred Numeric vector of length 3 specifying quantile prediction interval 
+#' @param vpc.type Character specifying type of VPC e.g. continuous, categorical, count
+#' @param qpred Numeric vector of length 3 specifying quantile prediction interval. Only applicable for continuous VPC 
 #' @param ... Other arguments to include
 #' @param conf.level Numeric specifying confidence level
 #' @param quantile.type Numeric indicating quantile type. See \code{\link[stats]{quantile}} 
@@ -717,10 +718,68 @@ vpcstats <- function(o, ...) UseMethod("vpcstats")
 
 #' @rdname vpcstats
 #' @export
-vpcstats.tidyvpcobj <- function(o, qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7) {
+vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7) {
   
+  type <- match.arg(vpc.type)
+  
+  if(type == "categorical"){  
+    #categorical vpcstats() ----
+    repl <- ypc <- y <- blq <- lloq <- alq <- uloq <- NULL
+  . <- list
+  
+  obs      <- o$obs
+  sim      <- o$sim
+  predcor  <- o$predcor
+  stratbin <- o$.stratbin
+  xbin     <- o$xbin
+  
+  if(.isCensored(obs)){
+    stop("Censoring not supported for categorical vpc")
+  }
+  
+  if (is.null(stratbin)) {
+    stop("Need to specify binning before calling vpcstats.")
+  }
+  if (any(is.na(stratbin$bin))) {
+    warning("There are bins missing. Has binning been specified for all strata?", call.=F)
+  }
+  
+  .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
+  
+    ylvls <-  sort(unique(obs$y))
+    
+    obs <- obs[, fastDummies::dummy_columns(obs, select_columns = "y")]
+    pobs <- obs[, lapply(.SD, mean, na.rm=TRUE), by=stratbin, .SDcols=paste0("y_", ylvls)] 
+    setnames(pobs, paste0("y_", ylvls), paste0("prob", ylvls))
+    pobs <- melt(pobs, id.vars = names(stratbin),
+                 measure.vars = paste0("prob", ylvls),
+                 variable.name = "pname", value.name = "y")
+ 
+    sim <- sim[, fastDummies::dummy_columns(sim, select_columns = "y")]
+    psim <- sim[, lapply(.SD, mean, na.rm=TRUE), by=.stratbinrepl, .SDcols=paste0("y_", ylvls)] 
+    setnames(psim, paste0("y_", ylvls), paste0("prob", ylvls))
+    psim <- melt(psim, id.vars = names(.stratbinrepl),
+                 measure.vars = paste0("prob", ylvls),
+                 variable.name = "pname", value.name = "y")
+   
+    .stratbinquant <- psim[, !c("repl", "y")]
+    qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
+    
+    ppsim <- psim[, .(lo=quantile(y,probs=qconf[[1]], type=quantile.type),
+                      md=median(y),
+                      hi=quantile(y,probs=qconf[[3]], type=quantile.type)), by = .stratbinquant]
+     
+
+     stats <- pobs[ppsim, on=names(.stratbinquant)]
+     stats <- xbin[stats, on=names(stratbin)]
+     setkeyv(stats, c(names(o$strat), "xbin"))
+  
+  update(o, stats=stats, conf.level=conf.level, vpc.type = "categorical")
+  
+# continuous vpcstats ----
+} else {
   if(!is.null(o$rqss.obs.fits)) {
-    .binlessvpcstats(o)
+    .binlessvpcstats(o, vpc.type = type)
   } else {
     repl <- ypc <- y <- blq <- lloq <- alq <- uloq <- NULL
     . <- list
@@ -801,8 +860,10 @@ vpcstats.tidyvpcobj <- function(o, qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.9
     } else {
       pctalq <- NULL
     }
-
-    update(o, stats=stats, pctblq=pctblq, pctalq=pctalq, conf.level=conf.level)
+    
+    update(o, stats=stats, pctblq=pctblq, pctalq=pctalq, conf.level=conf.level, vpc.type = "continuous")
+    
+   }
   }
 }
 
@@ -835,7 +896,7 @@ print.tidyvpcobj <- function(x, ...) {
   invisible(x)
 }
 
-.binlessvpcstats <-  function(o, qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7){
+.binlessvpcstats <-  function(o, qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7, vpc.type){
   y <- x <- blq <- fit <- . <- repl <- cprop <- rqssmed <- llam.med <- c.rqssmed <-  NULL
   
   obs.fits <- o$rqss.obs.fits
@@ -971,7 +1032,7 @@ print.tidyvpcobj <- function(x, ...) {
     pctblq <- NULL
   }
   
-  update(o, stats = stats, pctblq = pctblq)
+  update(o, stats = stats, pctblq = pctblq, vpc.type = vpc.type)
 }
 
 #' Run Shiny app for tidyvpc
@@ -1889,4 +1950,18 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   names(fit) <- names(x)
   return(fit)
 }
+
+.isCensored <- function(obs) {
+  if(!is.null(obs$blq) && any(obs$blq)){
+    ret <- TRUE
+  } else if (!is.null(obs$alq) && any(obs$alq)){
+    ret <- TRUE
+  } else {
+    ret <- FALSE
+  }
+  
+  ret
+  
+}
+
 
