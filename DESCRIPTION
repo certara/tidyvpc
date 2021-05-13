@@ -1,7 +1,7 @@
 Package: tidyvpc
 Type: Package
 Title: VPC Percentiles and Prediction Intervals
-Version: 1.1.0
+Version: 1.2.0
 Date: 2020-09-28
 Authors@R: c(
       person("Olivier", "Barriere", email = "olivier.barriere@gmail.com",
@@ -26,10 +26,10 @@ URL: https://github.com/certara/tidyvpc
 BugReports: https://github.com/certara/tidyvpc/issues
 Depends:
     R (>= 3.5.0),
+Imports:
     data.table (>= 1.9.8), 
     magrittr,
-    quantreg (>= 5.51)
-Imports:
+    quantreg (>= 5.51),
     rlang (>= 0.3.0), 
     methods,
     classInt,
