@@ -501,7 +501,8 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
   } else {
     stop("Invalid xbin")
   }
-  update(o, xbin=xbin)
+  vpc.method <- list(method = "binning")
+  update(o, xbin=xbin, vpc.method = vpc.method)
 }
 
 #' Perform binless Visual Predictive Check (VPC)
@@ -585,9 +586,14 @@ binless.tidyvpcobj <- function(o, qpred = c(0.05, 0.50, 0.95), optimize = TRUE, 
     stop("Set loess.ypc = TRUE and optimize = FALSE if setting span smoothing parameter for LOESS prediction corrected")
   }
   
-  o %>%
-    binlessaugment(qpred = qpred, interval =  optimization.interval, loess.ypc = loess.ypc) %>%
-    binlessfit(conf.level = conf.level, llam.quant = lambda, span = span)
+  method <- list(method = "binless",
+                 optimization.interval = optimization.interval,
+                 loess.ypc = loess.ypc,
+                 conf.level = conf.level,
+                 lambda = lambda,
+                 span = span)
+  
+  update(o, vpc.method = method)
   
 }
 
@@ -721,6 +727,16 @@ vpcstats <- function(o, ...) UseMethod("vpcstats")
 vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7) {
   
   type <- match.arg(vpc.type)
+  method <- o$vpc.method
+  
+  stopifnot(method$method %in% c("binless", "binning"))
+  stopifnot(length(qpred) == 3)
+  
+  
+  if(method$method == "binless"){
+    o <- binlessaugment(o, qpred = qpred, interval =  method$optimization.interval, loess.ypc = method$loess.ypc)
+    o <- binlessfit(o, conf.level = conf.level, llam.quant = method$lambda, span = method$span)
+  }
   
   if(type == "categorical"){  
     #categorical vpcstats() ----
