@@ -181,7 +181,7 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
 
     if(facet){
       if (!is.null(vpc$strat)) {
-        g <- g + ggplot2::facet_grid(as.formula(paste(paste0(names(vpc$strat), collapse = " + "), "~", "pname", sep = " ")), scales=facet.scales, as.table = FALSE)
+        g <- g + ggplot2::facet_grid(as.formula(paste(paste0(names(vpc$strat), collapse = " + "), "~", "pname", sep = " ")), scales=facet.scales, as.table = TRUE)
       } else {
         g <- g + ggplot2::facet_grid(~ pname, scales=facet.scales, as.table = FALSE)
       }
