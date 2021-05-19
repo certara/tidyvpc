@@ -7,6 +7,7 @@
 \method{plot}{tidyvpcobj}(
   x,
   ...,
+  facet = FALSE,
   show.points = TRUE,
   show.boundaries = TRUE,
   show.stats = !is.null(x$stats),
@@ -24,6 +25,8 @@
 \item{x}{A tidyvpcobj object.}
 
 \item{...}{Further arguments can be specified but are ignored.}
+
+\item{facet}{Should the resulting plot automatically facet by category? Only applicable for categorical vpc.}
 
 \item{show.points}{Should the observed data points be plotted?}
 

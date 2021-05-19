@@ -30,7 +30,7 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
   vpc <- x
   
   vpc.type <- vpc$vpc.type
-  
+
   if(is.null(vpc.type)) vpc.type <- "continuous"
   
   qlvls <- levels(vpc$stats$qname)
@@ -160,15 +160,36 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
   }
   
   } else {
+    if(vpc$vpc.method$method == "binless"){
+      g <- ggplot(vpc$stats, aes(x = x)) +
+        geom_ribbon(aes(ymin = lo, ymax = hi, fill = pname, col = pname, group = pname), alpha = 0.1, col = NA) +
+        geom_line(aes(y = md, col = pname, group = pname)) +
+        geom_line(aes(y = y, linetype = pname), size = 1) +
+        geom_point(aes(x = x, y = y) ) +
+        ylab(sprintf("Observed/Simulated probabilities and associated %s%% CI", 100*vpc$conf.level)) +
+        xlab("TIME") +
+        scale_colour_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level) , breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
+        scale_fill_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level), breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
+        scale_linetype_manual(name = "Observed \nMedian (lines)", breaks = levels(vpc$stats$pname), values = .get_lines(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
+        guides(fill = guide_legend(order = 2), colour = guide_legend(order = 2), linetype = guide_legend(order = 1)) +
+        eval(parse(text = paste0(custom.theme, "()"))) +
+        ggplot2::theme(
+          legend.text = element_text(size = 8),
+          legend.position=legend.position,
+          legend.spacing=unit(.1, "cm"),
+          legend.direction = "horizontal",
+          legend.key.size = unit(.55, "cm")) 
+      
+    } else {
     g <- ggplot(vpc$stats, aes(x = xbin)) +
       geom_ribbon(aes(ymin = lo, ymax = hi, fill = pname, col = pname, group = pname), alpha = 0.1, col = NA) +
       geom_line(aes(y = md, col = pname, group = pname)) +
       geom_line(aes(y = y, linetype = pname), size = 1) +
       geom_point(aes(x = xbin, y = y) ) +
-      ylab("Observed/simulate probabilities and associated 95% CI") +
+      ylab(sprintf("Observed/Simulated probabilities and associated %s%% CI", 100*vpc$conf.level)) +
       xlab("TIME") +
-      scale_colour_manual(name = "Simulated \nMedian (lines) 95% CI (areas)", breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
-      scale_fill_manual(name = "Simulated \nMedian (lines) 95% CI (areas)", breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
+      scale_colour_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level), breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
+      scale_fill_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level), breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
       scale_linetype_manual(name = "Observed \nMedian (lines)", breaks = levels(vpc$stats$pname), values = .get_lines(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
       guides(fill = guide_legend(order = 2), colour = guide_legend(order = 2), linetype = guide_legend(order = 1)) +
       eval(parse(text = paste0(custom.theme, "()"))) +
@@ -178,12 +199,13 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
         legend.spacing=unit(.1, "cm"),
         legend.direction = "horizontal",
         legend.key.size = unit(.55, "cm")) 
+    }
 
     if(facet){
       if (!is.null(vpc$strat)) {
-        g <- g + ggplot2::facet_grid(as.formula(paste(paste0(names(vpc$strat), collapse = " + "), "~", "pname", sep = " ")), scales=facet.scales, as.table = TRUE)
+        g <- g + ggplot2::facet_grid(as.formula(paste(paste0(names(vpc$strat), collapse = " + "), "~", "pname", sep = " ")), scales=facet.scales, as.table = TRUE, labeller = label_both)
       } else {
-        g <- g + ggplot2::facet_grid(~ pname, scales=facet.scales, as.table = FALSE)
+        g <- g + ggplot2::facet_grid(~ pname, scales=facet.scales, as.table = FALSE, labeller = label_both)
       }
     } else {
       if (!is.null(vpc$strat)) {
