@@ -9,10 +9,8 @@ binless(o, ...)
 
 \method{binless}{tidyvpcobj}(
   o,
-  qpred = c(0.05, 0.5, 0.95),
   optimize = TRUE,
   optimization.interval = c(0, 7),
-  conf.level = 0.95,
   loess.ypc = FALSE,
   lambda = NULL,
   span = NULL,
@@ -24,13 +22,9 @@ binless(o, ...)
 
 \item{...}{other arguments}
 
-\item{qpred}{numeric vector of length 3 specifying quantiles (lower, median, upper) i.e. \code{c(0.1, 0.5, 0.9)}}
-
-\item{optimize}{logical indicating whether lambda and span should be optimized using AIC}
+\item{optimize}{logical indicating whether lambda and span should be optimized using AIC. Applicable}
 
 \item{optimization.interval}{numeric vector of length 2 specifying interval for lambda optimization}
-
-\item{conf.level}{numeric confidence level for binless fit}
 
 \item{loess.ypc}{logical indicating loess precition corrected. Must first use \code{predcorrect()} if \code{loess.ypc = TRUE}}
 
@@ -87,6 +81,13 @@ sim_data <- sim_data[MDV == 0]
       stratify(~ GENDER) \%>\%
       binless(qpred = c(0.1, 0.5, 0.9), optimize = FALSE, lambda = lambda_strat) \%>\%
       vpcstats()
+      
+ # Binless examples with categorical DV
+ vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) \%>\%
+       simulated(sim_cat_data, ysim = DV) \%>\%
+       stratify(~ Country_ID_code) \%>\%
+       binless() \%>\%
+       vpcstats(vpc.type = "cat", quantile.type = 6)
 }
 }
 \seealso{

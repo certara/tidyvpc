@@ -80,6 +80,15 @@ vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     binning(stratum = list(GENDER = "M"), bin = "jenks", nbins = 5, by.strata = TRUE) \%>\%
     binning(stratum = list(GENDER = "F"), bin = "pam", nbins = 4, by.strata = TRUE) \%>\%
     vpcstats()
+    
+ # Binning Categorical DV using rounded time variable
+  obs_cat_data <- as.data.table(tidyvpc::obs_cat_data)
+  sim_cat_data <- as.data.table(tidyvpc::sim_cat_data)
+  
+  vpc <- observed(obs_cat_data, x = agemonths, y = zlencat )
+      simulated(vpc, sim_cat_data, y = DV)
+      binning(vpc, bin = round(agemonths, 0))
+      vpcstats(vpc, vpc.type = "categorical")
 
 }
 \seealso{
