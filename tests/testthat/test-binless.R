@@ -1,4 +1,4 @@
-test_that("binless vpcstats are correct", {
+test_that("cont vpc binless vpcstats are correct", {
   obs_data <- as.data.table(tidyvpc::obs_data)
   sim_data <- as.data.table(tidyvpc::sim_data)
   
@@ -6,7 +6,6 @@ test_that("binless vpcstats are correct", {
   obs_data <- obs_data[MDV == 0]
   sim_data <- sim_data[MDV == 0]
   
-  #Assign observed and simulated data to tidyvpc object
   vpc <- observed(obs_data, x = TIME, y = DV )
   vpc <- simulated(vpc, sim_data, y = DV)
   vpc <- binless(vpc)
@@ -22,7 +21,7 @@ test_that("binless vpcstats are correct", {
 })
 
 
-test_that("binless stratification vpcstats are correct", {
+test_that("cont vpc binless stratification vpcstats are correct", {
   obs_data <- as.data.table(tidyvpc::obs_data)
   sim_data <- as.data.table(tidyvpc::sim_data)
   
@@ -30,7 +29,6 @@ test_that("binless stratification vpcstats are correct", {
   obs_data <- obs_data[MDV == 0]
   sim_data <- sim_data[MDV == 0]
   
-  #Assign observed and simulated data to tidyvpc object
   vpc <- observed(obs_data, x = TIME, y = DV )
   vpc <- simulated(vpc, sim_data, y = DV)
   vpc <- stratify(vpc, ~ GENDER + STUDY)
@@ -44,4 +42,48 @@ test_that("binless stratification vpcstats are correct", {
   #Check for equality, dispatches to data.table::all.equal method
   testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
   
+})
+
+test_that("cat vpc binless vpcstats are correct", {
+  obs_cat_data <- data.table::as.data.table(tidyvpc::obs_cat_data)
+  sim_cat_data <- data.table::as.data.table(tidyvpc::sim_cat_data)
+
+
+  vpc <- observed(obs_cat_data, x = agemonths, y = zlencat )
+  vpc <- simulated(vpc, sim_cat_data, y = DV)
+  vpc <- binless(vpc)
+  vpc <- suppressWarnings(vpcstats(vpc, vpc.type = "categorical"))
+
+  location=system.file("extdata/Binless","cat_stats.csv",package="tidyvpc")
+
+  stats <- fread(location, colClasses = c(pname = "factor"))
+  setkeyv(stats, c("x"))
+  
+
+  #Check for equality, dispatches to data.table::all.equal method
+  testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
+
+})
+
+
+test_that("cat vpc binless stratification vpcstats are correct", {
+  obs_cat_data <- data.table::as.data.table(tidyvpc::obs_cat_data)
+  sim_cat_data <- data.table::as.data.table(tidyvpc::sim_cat_data)
+  
+  
+  vpc <- observed(obs_cat_data, x = agemonths, y = zlencat )
+  vpc <- simulated(vpc, sim_cat_data, y = DV)
+  vpc <- stratify(vpc, ~ Country_ID_code)
+  vpc <- binless(vpc)
+  vpc <- suppressWarnings(vpcstats(vpc, vpc.type = "categorical"))
+  
+  location=system.file("extdata/Binless","cat_strat_stats.csv",package="tidyvpc")
+  
+  stats <- fread(location, colClasses = c(pname = "factor"))
+  setkeyv(stats, c(names(vpc$strat), "x"))
+  
+
+  #Check for equality, dispatches to data.table::all.equal method
+  testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
+
 })
