@@ -14,6 +14,8 @@ binless(o, ...)
   loess.ypc = FALSE,
   lambda = NULL,
   span = NULL,
+  sp = NULL,
+  cat.smooth.method = c("glm", "gam"),
   ...
 )
 }
@@ -22,7 +24,7 @@ binless(o, ...)
 
 \item{...}{other arguments}
 
-\item{optimize}{logical indicating whether lambda and span should be optimized using AIC. Applicable}
+\item{optimize}{logical indicating whether lambda and span should be optimized using AIC.}
 
 \item{optimization.interval}{numeric vector of length 2 specifying interval for lambda optimization}
 
@@ -30,7 +32,9 @@ binless(o, ...)
 
 \item{lambda}{numeric vector of length 3 specifying lambda values for each quantile}
 
-\item{span}{numeric number between 0,1 specying smoothing paramter for loess prediction corrected}
+\item{span}{numeric number between 0,1 specying smoothing parameter for loess prediction corrected}
+
+\item{sp}{Smoothing parameters used in `mgcv::gam()`. Only applicable for categorical vpc}
 }
 \value{
 Updates \code{tidyvpcobj} with additive quantile regression fits for observed and simulated data for quantiles specified in \code{qpred} argument.

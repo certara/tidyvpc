@@ -11,6 +11,7 @@
 #' @import magrittr
 #' @import quantreg
 #' @import classInt
+#' @importFrom mgcv gam
 #' @importFrom stats median model.frame quantile setNames update AIC fitted loess na.exclude optimize resid time
 #' @importFrom utils install.packages installed.packages
 #' @name generics
@@ -520,11 +521,12 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #' 
 #' @title binless
 #' @param o tidyvpc object
-#' @param optimize logical indicating whether lambda and span should be optimized using AIC. Applicable
+#' @param optimize logical indicating whether lambda and span should be optimized using AIC. 
 #' @param optimization.interval numeric vector of length 2 specifying interval for lambda optimization
 #' @param loess.ypc logical indicating loess precition corrected. Must first use \code{predcorrect()} if \code{loess.ypc = TRUE}
 #' @param lambda numeric vector of length 3 specifying lambda values for each quantile
-#' @param span numeric number between 0,1 specying smoothing paramter for loess prediction corrected
+#' @param span numeric number between 0,1 specying smoothing parameter for loess prediction corrected
+#' @param sp Smoothing parameters used in `mgcv::gam()`. Only applicable for categorical vpc
 #' @param ... other arguments
 #' @return Updates \code{tidyvpcobj} with additive quantile regression fits for observed and simulated data for quantiles specified in \code{qpred} argument.
 #'   If \code{optimize = TRUE} argument is specified, the resulting \code{tidyvpcobj} will contain optimized lambda values according to AIC.  For prediction
@@ -583,16 +585,18 @@ binless <- function(o, ...) UseMethod("binless")
 
 #' @rdname binless
 #' @export
-binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7), loess.ypc = FALSE,  lambda = NULL, span = NULL, ...) {
+binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7), loess.ypc = FALSE,  lambda = NULL, span = NULL, sp = NULL, cat.smooth.method = c("glm", "gam"), ...) {
   
   if(class(o) != "tidyvpcobj") {
     stop("No tidyvpcobj found, observed(...) %>% simulated(...) must be called prior to binless()")
   }
   
-  if(!optimize && is.null(lambda)) {
-    stop("Set optimize = TRUE if no lambda specified")
+  if(!optimize){
+    if(is.null(lambda) && is.null(sp)) {
+    stop("Set optimize = TRUE if no lambda or sp arguments specified")
+    }
   }
-  
+ 
   if(loess.ypc && is.null(o$predcor)) {
     stop("Use predcorrect() before binless() in order to use LOESS prediction corrected")
   }
@@ -601,11 +605,16 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
     stop("Set loess.ypc = TRUE and optimize = FALSE if setting span smoothing parameter for LOESS prediction corrected")
   }
   
+  cat.smooth.method <- match.arg(cat.smooth.method)
+  
   method <- list(method = "binless",
+                 optimize = optimize,
                  optimization.interval = optimization.interval,
                  loess.ypc = loess.ypc,
                  lambda = lambda,
-                 span = span)
+                 span = span,
+                 sp = sp,
+                 cat.smooth.method = cat.smooth.method)
   
   update(o, vpc.method = method)
   
@@ -777,45 +786,55 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
     if(method$method == "binless"){
       xobs     <- obs$x
       xsim <- sim$x
+      cat.smooth.method <- method$cat.smooth.method
+      sp <- method$sp
       
       .stratrepl <- data.table(strat, sim[, .(repl)])
 
-      #Fit Obs
+      #Fast dummies
       obs <- obs[, fastDummies::dummy_columns(obs, select_columns = "y")]
-      pobs <- obs[, lapply(.SD, .fitcat, x = x)
-                  , by=strat, .SDcols=paste0("y_", ylvls)] 
-      
-      setnames(pobs, paste0("y_", ylvls), paste0("prob", ylvls))
-      pobs <- cbind(x = xobs, pobs)
-      
-      pobs <- melt(pobs, id.vars = c(names(strat), "x"),
-                   measure.vars = paste0("prob", ylvls),
-                   variable.name = "pname", value.name = "y")
-      
-      # Fit Sim
       sim <- sim[, fastDummies::dummy_columns(sim, select_columns = "y")]
-      psim <- sim[, lapply(.SD, .fitcat, x = x)
+      
+      # Fit obs/sim
+      if(cat.smooth.method == "gam"){
+      pobs <- obs[, lapply(.SD, .fitcatgam, x = x, sp = sp)
+                    , by=strat, .SDcols=paste0("y_", ylvls)] 
+      psim <- sim[, lapply(.SD, .fitcatgam, x = x, sp = sp)
                   , by=.stratrepl, .SDcols=paste0("y_", ylvls)] 
-      
-      setnames(psim, paste0("y_", ylvls), paste0("prob", ylvls))
-      psim <- cbind(x = xsim, psim)
-      
-      
-      psim <- melt(psim, id.vars = c(names(.stratrepl), "x"),
-                   measure.vars = paste0("prob", ylvls),
-                   variable.name = "pname", value.name = "y")
-      
-      .stratbinquant <- psim[, !c("repl", "y")]
-      qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
-      
-      ppsim <- psim[, .(lo=quantile(y,probs=qconf[[1]], type=quantile.type),
-                        md=median(y),
-                        hi=quantile(y,probs=qconf[[3]], type=quantile.type)), by = .stratbinquant]
-      
-      
-      stats <- unique(pobs[ppsim, on=names(.stratbinquant)])
-      setkeyv(stats, c(names(strat), "x"))
-      
+      } else {
+        pobs <- obs[, lapply(.SD, .fitcat, x = x)
+                    , by=strat, .SDcols=paste0("y_", ylvls)] 
+        psim <- sim[, lapply(.SD, .fitcat, x = x)
+                    , by=.stratrepl, .SDcols=paste0("y_", ylvls)] 
+      }
+        
+      # Process obs
+        setnames(pobs, paste0("y_", ylvls), paste0("prob", ylvls))
+        pobs <- cbind(x = xobs, pobs)
+        
+        pobs <- melt(pobs, id.vars = c(names(strat), "x"),
+                     measure.vars = paste0("prob", ylvls),
+                     variable.name = "pname", value.name = "y")
+        
+        # Process Sim
+        setnames(psim, paste0("y_", ylvls), paste0("prob", ylvls))
+        psim <- cbind(x = xsim, psim)
+
+        psim <- melt(psim, id.vars = c(names(.stratrepl), "x"),
+                     measure.vars = paste0("prob", ylvls),
+                     variable.name = "pname", value.name = "y")
+        
+        # Confidence intervals
+        .stratbinquant <- psim[, !c("repl", "y")]
+        qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
+        
+        ppsim <- psim[, .(lo=quantile(y,probs=qconf[[1]], type=quantile.type),
+                          md=median(y),
+                          hi=quantile(y,probs=qconf[[3]], type=quantile.type)), by = .stratbinquant]
+        
+        
+        stats <- unique(pobs[ppsim, on=names(.stratbinquant)])
+        setkeyv(stats, c(names(strat), "x"))
     } else {
     #categorical binning vpcstats() ----
       if (is.null(stratbin)) {
@@ -1809,6 +1828,10 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
 
 .fitcat <- function(y, x){
   fitted(glm(y ~ x, family = "binomial"))
+}
+
+.fitcatgam <- function(y, x, sp){
+  fitted(gam(y ~ s(x), family = "binomial", sp = c(sp)))
 }
 
 #Below function used for fitting rqss
