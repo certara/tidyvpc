@@ -30,6 +30,8 @@ Stratification for Visual Predictive Check (VPC)
 specify stratification variables for VPC using this function
 }
 \examples{
+require(magrittr)
+
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) \%>\%
     stratify(~ GENDER) \%>\%

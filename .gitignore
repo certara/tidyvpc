@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 inst/doc
+inst/tidyvpc_discont_inv
 data-raw
 .*.swp
 *.bak
@@ -11,3 +12,4 @@ data-raw
 #doc
 Meta
 doc
+docs

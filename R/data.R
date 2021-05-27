@@ -2,7 +2,7 @@
 #'
 #' An observed dataset from a hypothetical PK model. Altered to include NTIME, GROUP, GENDER.
 #'
-#' @format A data frame with 600 rows and 7 variables:
+#' @format A data.table with 600 rows and 7 variables:
 #' \describe{
 #'   \item{ID}{Subect identifier}
 #'   \item{TIME}{Time}
@@ -21,7 +21,7 @@
 #'
 #' A simulated dataset from a hypothetical PK model with 100 replicates.
 #'
-#' @format A data frame with 60000 rows and 10 variables:
+#' @format A data.table with 60000 rows and 10 variables:
 #' \describe{
 #'   \item{ID}{Subect identifier}
 #'   \item{REP}{Replicate num for simulation}
@@ -36,3 +36,31 @@
 #' }
 #' @source \code{\link[vpc]{simple_data}} 
 "sim_data"
+
+#' Example observed data from with categorical DV.
+#'
+#' An observed dataset with 3 levels of categorical DV.
+#'
+#' @format A data frame with 4014 rows and 4 variables:
+#' \describe{
+#'   \item{PID_code}{Subect identifier}
+#'   \item{agemonths}{Time}
+#'   \item{zlencat}{Categorical DV with the 3 levels}
+#'   \item{Country_ID_code}{Country code for stratification}
+#' }
+#' @source Certara University
+"obs_cat_data"
+
+#' Example simulated data with categorical DV.
+#'
+#' A simulated dataset with the 3 levels of categorical DV across 100 replicates.
+#'
+#' @format A data frame with 401400 rows and 4 variables:
+#' \describe{
+#'   \item{PID_code}{Subect identifier}
+#'   \item{IVAR}{Time}
+#'   \item{DV}{Categorical DV with 3 levels}
+#'   \item{Replicate}{Replicate num for simulation}
+#' }
+#' @source Certara University
+"sim_cat_data"

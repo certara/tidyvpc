@@ -32,9 +32,7 @@ Prediction corrected Visual Predictive Check (pcVPC)
 Specify prediction variable for pcVPC
 }
 \examples{
-
-obs_data <- data.table::as.data.table(tidyvpc::obs_data)
-sim_data <- data.table::as.data.table(tidyvpc::sim_data)
+require(magrittr)
 
 obs_data <- obs_data[MDV == 0]
 sim_data <- sim_data[MDV == 0]

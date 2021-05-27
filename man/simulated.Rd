@@ -31,6 +31,8 @@ contain missing DV and may require subsetting \code{MDV == 0} before generating 
 data must also be consistent, with replicates in simulated data stacked on top of each other.
 }
 \examples{
+require(magrittr)
+
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) 
     

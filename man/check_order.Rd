@@ -27,12 +27,10 @@ those in positions 1 and 2 repectively.
 \examples{
 
 \donttest{
-library(vpc)
 
-exampleobs <- as.data.table(vpc::simple_data$obs)[MDV == 0]
-examplesim <- as.data.table(vpc::simple_data$sim)[MDV == 0]
-
-check_order(exampleobs[, .(ID, TIME)], examplesim[, .(ID, TIME)])
+ require(data.table)
+ 
+check_order(obs_data[, .(ID, TIME)], sim_data[, .(ID, TIME)])
 }
 }
 \seealso{

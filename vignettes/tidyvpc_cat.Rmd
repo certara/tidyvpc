@@ -1,0 +1,136 @@
+---
+title: "Categorical VPC"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Categorical VPC}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r, warning = FALSE, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7.5, fig.height = 5, fig.align = "center")
+options(datatable.print.nrows = 8)
+library(tidyvpc)
+library(ggplot2)
+library(magrittr)
+library(data.table)
+set.seed(1014)
+```
+
+
+## Introduction
+
+The tidyvpc package allows users to generate VPC for categorical data using both binning and binless methods.
+
+
+## Data Setup
+
+The tidyvpc package has specific ordering requirements for the observed and simulated input datasets.
+
+**Observed data must be ordered by: Subject-ID, IVAR (Time)**
+
+**Simulated data must be ordered by: Replicate, Subject-ID, IVAR (Time)**
+
+The example datasets we'll use in this vignette are correctly ordered, but we will repeat this step for clarity.
+
+```{r tidyvpc_setup}
+
+obs_cat_data <- tidyvpc::obs_cat_data
+sim_cat_data <- tidyvpc::sim_cat_data
+
+obs_cat_data <- obs_cat_data[order(PID_code, agemonths)]
+sim_cat_data <- sim_cat_data[order(Replicate, PID_code, IVAR)]
+
+```
+
+
+## Binning
+
+All traditional bining methods are available to the user, see `?binning`. Note, additional methods available in the `classInt` package can be provided in the `bin` argument.
+
+
+In the example below, we'll bin directly on our (rounded) x variable agemonths.
+
+```{r binning_1}
+
+vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+  simulated(sim_cat_data, ysim = DV) %>%
+  binning(bin = round(agemonths, 0)) %>%
+  vpcstats(vpc.type = "categorical", quantile.type = 6)
+
+plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
+```
+
+Let's explore stratification and provide a different binning method in the below VPC.  We can also change our confidence level and quantile type for the prediction intervals (shaded area) by specifying `conf.level = .9` and `quantile.type = 6`.
+
+*Note: Phoenix uses `quantile.type = 6` while tidyvpc uses `quantile.type = 7` by default.*
+
+```{r binning_2}
+
+vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+  simulated(sim_cat_data, ysim = DV) %>%
+  stratify(~ Country_ID_code) %>%
+  binning(bin = "pam", nbins = 6) %>%
+  vpcstats(vpc.type = "categorical", conf.level = .9, quantile.type = 6)
+
+plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
+```
+
+
+
+## Binless
+
+A binless approach was developed to fit categorical data using `gam(family = "binomial")`. Users can optimize smoothing parameter for the binless fit using `binless(optimize = TRUE)`, in which case, the optimized smoothing parameters for each category of DV in the observed data will be automatically defined by minimization of AIC.
+
+```{r}
+
+vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+  simulated(sim_cat_data, ysim = DV) %>%
+  binless() %>%
+  vpcstats(vpc.type = "categorical", quantile.type = 6)
+
+plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
+
+
+```
+
+We can increase the interval used to optimize value of smoothing parameters using the `optimization.interval` argument of the `binless()` function.  
+
+```{r}
+
+vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+  simulated(sim_cat_data, ysim = DV) %>%
+  stratify(~ Country_ID_code) %>%
+  binless(optimize = TRUE, optimization.interval = c(0,300)) %>%
+  vpcstats(vpc.type = "categorical")
+
+plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
+
+
+```
+
+
+Alternatively, users may supply there own smoothing parameters using the `sp` argument i.e. `binless(optimize = FALSE, sp = c(2, 14, 6))`
+
+This method use gam with sp values specified for each level of categorical DV. 
+
+*Note, `sp` argument must be a vector equal to the length of the unique levels of y value. *
+
+```{r}
+length(unique(obs_cat_data$zlencat))
+```
+
+```{r}
+vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+  simulated(sim_cat_data, ysim = DV) %>%
+  binless(optimize = FALSE, sp = c(300, 2, 12)) %>%
+  vpcstats(vpc.type = "categorical", quantile.type = 6)
+
+plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
+
+```
+
+
+
+

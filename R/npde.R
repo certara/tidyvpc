@@ -6,6 +6,7 @@
 #' \code{data}.
 #' @param data A \code{data.frame}.
 #' @param smooth Should a uniform random perturbation be used to smooth the pd/pde values?
+#' @param ... Additional arguments
 #'
 #' @references
 #'
@@ -19,8 +20,11 @@
 #'
 #' @examples
 #' \donttest{
-#' obs <- setDT(tidyvpc::obs_data)[MDV==0]
-#' sim <- setDT(tidyvpc::sim_data)[MDV==0]
+#' require(magrittr)
+#' require(ggplot2)
+#' 
+#' obs <- obs_data[MDV==0]
+#' sim <- sim_data[MDV==0]
 #'
 #' npde <- observed(obs, x=NULL, y=DV) %>%
 #'     simulated(sim, y=DV) %>%
@@ -31,7 +35,8 @@
 #'     binning("eqcut", nbins=10) %>%
 #'     vpcstats()
 #'
-#' plot(vpc) + labs(x="Simulation-based Population Prediction", y="Normalized Prediction Distribution Error")
+#' plot(vpc) + 
+#' labs(x="Simulation-based Population Prediction", y="Normalized Prediction Distribution Error")
 #' }
 #'
 #' @export
@@ -41,6 +46,8 @@ npde <- function(o, ...) UseMethod("npde")
 #' @export
 npde.tidyvpcobj <- function(o, id, data=o$data, smooth=FALSE, ...) {
 
+  obs <- rn <- y <- iter <- NULL
+  
   if (missing(id)) {
     id <- o$id
   } else {

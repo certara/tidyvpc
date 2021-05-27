@@ -12,6 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 options(datatable.print.nrows = 8)
 library(tidyvpc)
 library(ggplot2)
+library(magrittr)
 set.seed(1014)
 ```
 
@@ -89,7 +90,7 @@ head(sim_data)
 
 ### Preprocessing data
 
-First we'll need to subset our data by filtering `MDV == 0` which removes rows where both `DV == 0` & `TIME == 0`. 
+First we'll need to subset our data by filtering `MDV == 0` which removes rows where both `DV == 0` & `TIME == 0`.
 
 ```{r}
 obs_data <- obs_data[MDV == 0]

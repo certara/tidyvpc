@@ -36,8 +36,7 @@ Censoring observed data for Visual Predictive Check (VPC)
 Specify censoring variables or censoring value for VPC using this function
 }
 \examples{
-obs_data <- as.data.table(tidyvpc::obs_data)
-sim_data <- as.data.table(tidyvpc::sim_data)
+require(magrittr)
 
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) \%>\%

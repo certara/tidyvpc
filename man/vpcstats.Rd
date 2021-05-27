@@ -9,6 +9,7 @@ vpcstats(o, ...)
 
 \method{vpcstats}{tidyvpcobj}(
   o,
+  vpc.type = c("continuous", "categorical"),
   qpred = c(0.05, 0.5, 0.95),
   ...,
   conf.level = 0.95,
@@ -20,7 +21,9 @@ vpcstats(o, ...)
 
 \item{...}{Other arguments to include}
 
-\item{qpred}{Numeric vector of length 3 specifying quantile prediction interval}
+\item{vpc.type}{Character specifying type of VPC e.g. \code{"continuous"}(Default), \code{"categorical"}}
+
+\item{qpred}{Numeric vector of length 3 specifying quantile prediction interval. Only applicable for \code{vpc.type = "continuous"}}
 
 \item{conf.level}{Numeric specifying confidence level}
 
@@ -31,7 +34,8 @@ Updates \code{tidyvpcobj} with \code{stats} \code{data.table} object which conta
 \itemize{
   \item \code{bin}: the resulting bin value as specified in `binning()` function
   \item \code{xbin}: the midpoint x-value of the observed data points in the bin as specified in `xbin` argument of `binning()` function
-  \item \code{qname}: the quantiles specified in `qpred`
+  \item \code{qname}: the quantiles specified in `qpred`.  Only returned if `vpc.type = "continuous"`
+  \item \code{pname}: the categories probability names. Only returned if `vpc.type = "categorical"`
   \item \code{y}: the observed y value for the specified quantile
   \item \code{lo}: the lower bound of specified confidence interval for y value in simulated data
   \item \code{md}: the median y value in simulated data
