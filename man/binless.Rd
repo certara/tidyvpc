@@ -15,7 +15,6 @@ binless(o, ...)
   lambda = NULL,
   span = NULL,
   sp = NULL,
-  cat.smooth.method = c("glm", "gam"),
   ...
 )
 }
@@ -50,8 +49,8 @@ Use this function in subsitute of traditional binning methods to derive VPC usin
 \examples{
 \donttest{
 
-obs_data <- data.table::as.data.table(tidyvpc::obs_data)
-sim_data <- data.table::as.data.table(tidyvpc::sim_data)
+require(magrittr)
+require(data.table)
 
 obs_data <- obs_data[MDV == 0]
 sim_data <- sim_data[MDV == 0]
@@ -83,8 +82,8 @@ sim_data <- sim_data[MDV == 0]
  vpc <- observed(obs_data, y = DV, x = TIME) \%>\%
       simulated(sim_data, y = DV) \%>\%
       stratify(~ GENDER) \%>\%
-      binless(qpred = c(0.1, 0.5, 0.9), optimize = FALSE, lambda = lambda_strat) \%>\%
-      vpcstats()
+      binless(optimize = FALSE, lambda = lambda_strat) \%>\%
+      vpcstats(qpred = c(0.1, 0.5, 0.9))
       
  # Binless examples with categorical DV
  vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) \%>\%

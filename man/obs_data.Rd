@@ -5,7 +5,7 @@
 \alias{obs_data}
 \title{Example observed data from vpc package.}
 \format{
-A data frame with 600 rows and 7 variables:
+A data.table with 600 rows and 7 variables:
 \describe{
   \item{ID}{Subect identifier}
   \item{TIME}{Time}

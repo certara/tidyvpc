@@ -50,8 +50,6 @@ The observed function is the first function in the vpc piping chain and is used 
 data must not contain missing DV and may require subsetting \code{MDV == 0} before generating VPC.
 }
 \examples{
-obs_data <- as.data.table(tidyvpc::obs_data)
-sim_data <- as.data.table(tidyvpc::sim_data)
 
 obs_data <- obs_data[MDV == 0]
 sim_data <- sim_data[MDV == 0]

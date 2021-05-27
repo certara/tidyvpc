@@ -12,6 +12,8 @@ npde(o, ...)
 \arguments{
 \item{o}{A tidyvpc object.}
 
+\item{...}{Additional arguments}
+
 \item{id}{A vector of IDs. Used to associate observations \code{y} that
 originate from the same individual. Evaluated in the \code{data.frame}
 \code{data}.}
@@ -25,8 +27,11 @@ Normalized Prediction Distribution Errors
 }
 \examples{
 \donttest{
-obs <- setDT(tidyvpc::obs_data)[MDV==0]
-sim <- setDT(tidyvpc::sim_data)[MDV==0]
+require(magrittr)
+require(ggplot2)
+
+obs <- obs_data[MDV==0]
+sim <- sim_data[MDV==0]
 
 npde <- observed(obs, x=NULL, y=DV) \%>\%
     simulated(sim, y=DV) \%>\%
@@ -37,7 +42,8 @@ vpc <- observed(npde$npdeobs, x=epred, y=npde) \%>\%
     binning("eqcut", nbins=10) \%>\%
     vpcstats()
 
-plot(vpc) + labs(x="Simulation-based Population Prediction", y="Normalized Prediction Distribution Error")
+plot(vpc) + 
+labs(x="Simulation-based Population Prediction", y="Normalized Prediction Distribution Error")
 }
 
 }

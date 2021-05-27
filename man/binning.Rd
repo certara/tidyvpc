@@ -55,6 +55,8 @@ This function executes binning methods available in classInt i.e. "jenks", "kmea
 You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see \code{\link[classInt]{classIntervals}}
 }
 \examples{
+require(magrittr)
+
  # Binning on x-variable NTIME
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) \%>\%
@@ -82,13 +84,11 @@ vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     vpcstats()
     
  # Binning Categorical DV using rounded time variable
-  obs_cat_data <- as.data.table(tidyvpc::obs_cat_data)
-  sim_cat_data <- as.data.table(tidyvpc::sim_cat_data)
   
-  vpc <- observed(obs_cat_data, x = agemonths, y = zlencat )
-      simulated(vpc, sim_cat_data, y = DV)
-      binning(vpc, bin = round(agemonths, 0))
-      vpcstats(vpc, vpc.type = "categorical")
+  vpc <- observed(obs_cat_data, x = agemonths, y = zlencat ) \%>\%
+      simulated(sim_cat_data, y = DV) \%>\%
+      binning(bin = round(agemonths, 0)) \%>\%
+      vpcstats(vpc.type = "categorical")
 
 }
 \seealso{
