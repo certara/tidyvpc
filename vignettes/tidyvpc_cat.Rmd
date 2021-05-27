@@ -47,10 +47,10 @@ sim_cat_data <- sim_cat_data[order(Replicate, PID_code, IVAR)]
 
 ## Binning
 
-All traditional bining methods are available to the user, see `?binning`. Note, additional methods available in the `classInt` package can be provided in the `bin` argument.
+All traditional binning methods are available to the user, see `?binning`. Note, additional methods available in the `classInt` package can be provided in the `bin` argument.
 
 
-In the example below, we'll bin directly on our (rounded) x variable agemonths.
+In the example below, we'll bin directly on our (rounded) x variable, agemonths.
 
 ```{r binning_1}
 
@@ -111,7 +111,7 @@ plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
 ```
 
 
-Alternatively, users may supply there own smoothing parameters using the `sp` argument i.e. `binless(optimize = FALSE, sp = c(2, 14, 6))`
+Alternatively, users may supply their own smoothing parameters using the `sp` argument i.e. `binless(optimize = FALSE, sp = c(2, 14, 6))`
 
 This method use gam with sp values specified for each level of categorical DV. 
 

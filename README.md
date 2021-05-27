@@ -38,8 +38,8 @@ library(ggplot2)
 library(tidyvpc)
 
 # Filter MDV = 0
-obs_data <- as.data.table(tidyvpc::obs_data)[MDV == 0]
-sim_data <- as.data.table(tidyvpc::sim_data)[MDV == 0]
+obs_data <- tidyvpc::obs_data[MDV == 0]
+sim_data <- tidyvpc::sim_data[MDV == 0]
 
 #Add LLOQ for each Study 
 obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
