@@ -2,7 +2,7 @@
 #'
 #' An observed dataset from a hypothetical PK model. Altered to include NTIME, GROUP, GENDER.
 #'
-#' @format A data frame with 600 rows and 7 variables:
+#' @format A data.table with 600 rows and 7 variables:
 #' \describe{
 #'   \item{ID}{Subect identifier}
 #'   \item{TIME}{Time}
@@ -21,7 +21,7 @@
 #'
 #' A simulated dataset from a hypothetical PK model with 100 replicates.
 #'
-#' @format A data frame with 60000 rows and 10 variables:
+#' @format A data.table with 60000 rows and 10 variables:
 #' \describe{
 #'   \item{ID}{Subect identifier}
 #'   \item{REP}{Replicate num for simulation}
