@@ -1,6 +1,6 @@
 test_that("cont vpc binless vpcstats are correct", {
-  obs_data <- as.data.table(tidyvpc::obs_data)
-  sim_data <- as.data.table(tidyvpc::sim_data)
+  obs_data <- tidyvpc::obs_data
+  sim_data <- tidyvpc::sim_data
   
   ## Subest MDV = 0
   obs_data <- obs_data[MDV == 0]
@@ -22,8 +22,8 @@ test_that("cont vpc binless vpcstats are correct", {
 
 
 test_that("cont vpc binless stratification vpcstats are correct", {
-  obs_data <- as.data.table(tidyvpc::obs_data)
-  sim_data <- as.data.table(tidyvpc::sim_data)
+  obs_data <- tidyvpc::obs_data
+  sim_data <- tidyvpc::sim_data
   
   ## Subest MDV = 0
   obs_data <- obs_data[MDV == 0]
@@ -45,8 +45,8 @@ test_that("cont vpc binless stratification vpcstats are correct", {
 })
 
 test_that("cat vpc binless vpcstats are correct", {
-  obs_cat_data <- data.table::as.data.table(tidyvpc::obs_cat_data)
-  sim_cat_data <- data.table::as.data.table(tidyvpc::sim_cat_data)
+  obs_cat_data <- tidyvpc::obs_cat_data
+  sim_cat_data <- tidyvpc::sim_cat_data
 
 
   vpc <- observed(obs_cat_data, x = agemonths, y = zlencat )
@@ -67,8 +67,8 @@ test_that("cat vpc binless vpcstats are correct", {
 
 
 test_that("cat vpc binless stratification vpcstats are correct", {
-  obs_cat_data <- data.table::as.data.table(tidyvpc::obs_cat_data)
-  sim_cat_data <- data.table::as.data.table(tidyvpc::sim_cat_data)
+  obs_cat_data <- tidyvpc::obs_cat_data
+  sim_cat_data <- tidyvpc::sim_cat_data
   
   
   vpc <- observed(obs_cat_data, x = agemonths, y = zlencat )
