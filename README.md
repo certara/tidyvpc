@@ -1,8 +1,18 @@
-tidyvpc
-========
 
-<img src="https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true"  width="200">
-  
+# tidyvpc <a href='https://github.com/jameswcraig/tidyvpc/'><img src='https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true' align="right" height="200" /></a>
+
+[![](https://img.shields.io/badge/devel%20version-1.2.0-green.svg)](https://github.com/tidyvpc)
+[![](https://www.r-pkg.org/badges/version/tidyvpc?color=green)](https://cran.r-project.org/package=tidyvpc)
+[![CRAN
+checks](https://cranchecks.info/badges/summary/tidyvpc)](https://cran.r-project.org/web/checks/check_results_tidyvpc.html)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue)](https://cran.r-project.org/package=tidyvpc)
+[![](http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey)](https://cran.r-project.org/package=tidyvpc)
+
+## What's New in 1.2?
+
+* Support for categorical VPC using both binning and binless methods
+* Support for NPDE
+
 ### Installation and Running information
 ```
 # If there are errors (converted from warning) during installation related to packages built under different version of R,
@@ -43,7 +53,6 @@ vpc <- observed(obs_data, x=TIME, y=DV) %>%
     vpcstats()
 
 ```
-![Example](./inst/img/snapshot1.png)
 
 Plot Code:
 
@@ -81,6 +90,10 @@ ggplot(vpc$stats, aes(x=xbin)) +
         legend.key.width=grid::unit(1, "cm")) +
     labs(x="Time (h)", y="Concentration (ng/mL)")
 ```
+
+<img src='https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/snapshot1.png?raw=true' align="center" width="900" height="600" />
+
+
 Or use the built in `plot()` function from the tidyvpc package.
 
 ```{r}
@@ -98,8 +111,7 @@ vpc <- observed(obs_data, x=TIME, y=DV) %>%
 
 plot(vpc)
 ```
-
-![Example](./inst/img/snapshot2.png)
+<img src='https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/snapshot2.png?raw=true' align="center" width="900" height="600" />
 
 ### Shiny Application
 
