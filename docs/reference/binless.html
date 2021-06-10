@@ -79,24 +79,18 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="../articles/tidyvpc.html">Get started</a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Vignettes
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/tidyvpc_cont.html">Continuous VPC</a>
+    </li>
     <li>
       <a href="../articles/tidyvpc_cat.html">Categorical VPC</a>
     </li>
@@ -159,38 +153,44 @@
     </tr>
     <tr>
       <th>optimize</th>
-      <td><p>logical indicating whether lambda and span should be optimized using AIC.</p></td>
+      <td><p>logical indicating whether smoothing parameters should be optimized using AIC.</p></td>
     </tr>
     <tr>
       <th>optimization.interval</th>
-      <td><p>numeric vector of length 2 specifying interval for lambda optimization</p></td>
+      <td><p>numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if <code>optimize = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>loess.ypc</th>
-      <td><p>logical indicating loess precition corrected. Must first use <code><a href='predcorrect.html'>predcorrect()</a></code> if <code>loess.ypc = TRUE</code></p></td>
+      <td><p>logical indicating loess precition corrected. Must first use <code><a href='predcorrect.html'>predcorrect()</a></code> if <code>loess.ypc = TRUE</code>. Only applicable to continuous VPC.</p></td>
     </tr>
     <tr>
       <th>lambda</th>
-      <td><p>numeric vector of length 3 specifying lambda values for each quantile</p></td>
+      <td><p>numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a <code>data.frame</code> with a column for each strata and row specifying lambda value for quantile.
+See below examples. Only applicable to continuous VPC with <code>optimize = FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>span</th>
-      <td><p>numeric number between 0,1 specying smoothing parameter for loess prediction corrected</p></td>
+      <td><p>numeric between 0,1 specifying smoothing parameter for loess prediction corrected. Only applicable for continuous VPC with <code>loess.ypc = TRUE</code> and <code>optimize = FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>sp</th>
-      <td><p>Smoothing parameters used in `mgcv::gam()`. Only applicable for categorical vpc</p></td>
+      <td><p>list of smoothing parameters applied to <code><a href='https://rdrr.io/pkg/mgcv/man/gam.html'>mgcv::gam()</a></code>. Elements of list must be in the same order as unique values of DV. If one or more stratification variables present, the order of sp
+should be specified as unique combination of strata + DV, in ascending order. See below examples. Only applicable for categorical VPC with <code>optimize = FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Updates <code>tidyvpcobj</code> with additive quantile regression fits for observed and simulated data for quantiles specified in <code>qpred</code> argument.
+    <p>For continuous VPC, updates <code>tidyvpcobj</code> with additive quantile regression fits for observed and simulated data for quantiles specified in <code>qpred</code> argument.
   If <code>optimize = TRUE</code> argument is specified, the resulting <code>tidyvpcobj</code> will contain optimized lambda values according to AIC.  For prediction
-  corrected VPC (pcVPC), specifying <code>loess.ypc = TRUE</code> will return optimized span value for LOESS smoothing.</p>
+  corrected VPC (pcVPC), specifying <code>loess.ypc = TRUE</code> will return optimized span value for LOESS smoothing. For categorical VPC, 
+  updates <code>tidyvpcobj</code> with fits obtained by <code>gam(family="binomial")</code> for observed and simulated data for each category of DV (in each stratum if <code>stratify</code> defined).
+  If <code>optimize = TRUE</code> argument is specified, the resulting <code>tidyvpcobj</code> wil contain optimized <code>sp</code> values according to AIC.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Use this function in subsitute of traditional binning methods to derive VPC using additive quantile regression and loess for pcVPC.</p>
+    <p>Use this function in substitute of traditional binning methods to derive VPC. For continuous
+VPC, this is obtained using additive quantile regression (<code><a href='https://rdrr.io/pkg/quantreg/man/rqss.html'>quantreg::rqss()</a></code>) and loess for pcVPC. While for categorical,
+VPC, this is obtained using a generalized additive model(<code>gam(family = "binomial")</code>).</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='simulated.html'>simulated</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='predcorrect.html'>predcorrect</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>
@@ -234,13 +234,32 @@
       <span class='fu'>binless</span><span class='op'>(</span>optimize <span class='op'>=</span> <span class='cn'>FALSE</span>, lambda <span class='op'>=</span> <span class='va'>lambda_strat</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
       <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>qpred <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>0.9</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='input'>      
- <span class='co'># Binless examples with categorical DV</span>
+ <span class='co'># Binless example for categorical DV with optimized smoothing</span>
  <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_cat_data</span>, x <span class='op'>=</span> <span class='va'>agemonths</span>, yobs <span class='op'>=</span> <span class='va'>zlencat</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
        <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_cat_data</span>, ysim <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
        <span class='fu'><a href='stratify.html'>stratify</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>Country_ID_code</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
        <span class='fu'>binless</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
        <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>vpc.type <span class='op'>=</span> <span class='st'>"cat"</span>, quantile.type <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>
+       
+ <span class='co'># Binless example for categorical DV with user specified sp values</span>
+ <span class='va'>user_sp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+ Country1_prob0 <span class='op'>=</span> <span class='fl'>100</span>,
+ Country1_prob1 <span class='op'>=</span> <span class='fl'>3</span>,
+ Country1_prob2 <span class='op'>=</span> <span class='fl'>4</span>,
+ Country2_prob0 <span class='op'>=</span> <span class='fl'>90</span>,
+ Country2_prob1 <span class='op'>=</span> <span class='fl'>3</span>,
+ Country2_prob2 <span class='op'>=</span> <span class='fl'>4</span>,
+ Country3_prob0 <span class='op'>=</span> <span class='fl'>55</span>,
+ Country3_prob1 <span class='op'>=</span> <span class='fl'>3</span>,
+ Country3_prob2 <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
+ 
+ <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_cat_data</span>, x <span class='op'>=</span> <span class='va'>agemonths</span>, yobs <span class='op'>=</span> <span class='va'>zlencat</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+        <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_cat_data</span>, ysim <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+        <span class='fu'><a href='stratify.html'>stratify</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>Country_ID_code</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+        <span class='fu'>binless</span><span class='op'>(</span>optimize <span class='op'>=</span> <span class='cn'>FALSE</span>, sp <span class='op'>=</span> <span class='va'>user_sp</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+        <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>vpc.type <span class='op'>=</span> <span class='st'>"categorical"</span>, conf.level <span class='op'>=</span> <span class='fl'>0.9</span>, quantile.type <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>
 <span class='co'># }</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

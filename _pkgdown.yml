@@ -1,3 +1,17 @@
 template:
   params:
     bootswatch: united
+navbar:
+  structure:
+    left:  [home, reference, articles]
+    right: [github]
+    navbar:
+  components:
+    home: ~
+    articles:
+     text: Vignettes
+     menu:
+     - text: Continuous VPC
+       href: articles/tidyvpc_cont.html
+     - text: Categorical VPC
+       href: articles/tidyvpc_cat.html

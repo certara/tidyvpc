@@ -1,8 +1,8 @@
 ---
-title: "Categorical VPC"
+title: "Introduction to categorical VPC"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Categorical VPC}
+  %\VignetteIndexEntry{Introduction to categorical VPC}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -15,6 +15,7 @@ library(tidyvpc)
 library(ggplot2)
 library(magrittr)
 library(data.table)
+library(dplyr)
 set.seed(1014)
 ```
 
@@ -49,6 +50,7 @@ sim_cat_data <- sim_cat_data[order(Replicate, PID_code, IVAR)]
 
 All traditional binning methods are available to the user, see `?binning`. Note, additional methods available in the `classInt` package can be provided in the `bin` argument.
 
+The syntax for a continuous VPC and categorical VPC are nearly identical, except in `vpcstats()` function, specify `vpc.type = "categorical"` 
 
 In the example below, we'll bin directly on our (rounded) x variable, agemonths.
 
@@ -57,7 +59,7 @@ In the example below, we'll bin directly on our (rounded) x variable, agemonths.
 vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
   simulated(sim_cat_data, ysim = DV) %>%
   binning(bin = round(agemonths, 0)) %>%
-  vpcstats(vpc.type = "categorical", quantile.type = 6)
+  vpcstats(vpc.type = "categorical")
 
 plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
 ```
@@ -81,13 +83,15 @@ plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
 
 ## Binless
 
-A binless approach was developed to fit categorical data using `gam(family = "binomial")`. Users can optimize smoothing parameter for the binless fit using `binless(optimize = TRUE)`, in which case, the optimized smoothing parameters for each category of DV in the observed data will be automatically defined by minimization of AIC.
+A binless approach was developed to fit categorical data using `gam(family = "binomial")`. Users can optimize smoothing parameter for the binless fit using `binless(optimize = TRUE)` (default), in which case, the optimized smoothing parameters for each category of DV in the observed data will be automatically defined by minimization of AIC.
 
+
+### Optimize `sp` using AIC
 ```{r}
 
 vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
   simulated(sim_cat_data, ysim = DV) %>%
-  binless() %>%
+  binless(optimize = TRUE) %>%
   vpcstats(vpc.type = "categorical", quantile.type = 6)
 
 plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
@@ -111,20 +115,29 @@ plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
 ```
 
 
-Alternatively, users may supply their own smoothing parameters using the `sp` argument i.e. `binless(optimize = FALSE, sp = c(2, 14, 6))`
+### User-defined `sp`
+
+Alternatively, users may supply their own smoothing parameters using the `sp` argument.
 
 This method use gam with sp values specified for each level of categorical DV. 
 
-*Note, `sp` argument must be a vector equal to the length of the unique levels of y value. *
+*Note, `sp` argument must be a list of the same length/order corresponding to the unique values of our categorical DV. See additional details in next section if stratification specified *
 
 ```{r}
-length(unique(obs_cat_data$zlencat))
+sort(unique(obs_cat_data$zlencat))
+```
+```{r}
+
+sp_user <- list(p0 = 300,
+                p1 = 50,
+                p2 = 100)
+
 ```
 
 ```{r}
 vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
   simulated(sim_cat_data, ysim = DV) %>%
-  binless(optimize = FALSE, sp = c(300, 2, 12)) %>%
+  binless(optimize = FALSE, sp = sp_user) %>%
   vpcstats(vpc.type = "categorical", quantile.type = 6)
 
 plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
@@ -132,5 +145,116 @@ plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
 ```
 
 
+#### Specifying `sp` for each strata
 
+##### One stratification variable 
+
+If supplying user supplied sp parameters with one or more stratification variables, the order of sp
+should be specified as unique combination of strata + DV, in ascending order.
+
+```{r}
+sort(unique(obs_cat_data$Country_ID_code))
+sort(unique(obs_cat_data$zlencat))
+```
+
+```{r}
+user_sp <- list(
+           Country1_prob0 = 100,
+           Country1_prob1 = 3,
+           Country1_prob2 = 4,
+           Country2_prob0 = 90,
+           Country2_prob1 = 3,
+           Country2_prob2 = 4,
+           Country3_prob0 = 55,
+           Country3_prob1 = 3,
+           Country3_prob2 = 200)
+```
+
+Generate VPC
+
+```{r}
+vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+  simulated(sim_cat_data, ysim = DV) %>%
+  stratify(~ Country_ID_code) %>%
+  binless(optimize = FALSE, sp = user_sp) %>%
+  vpcstats(vpc.type = "categorical"
+           , conf.level = 0.9
+           , quantile.type = 6
+  )
+plot(vpc, facet = TRUE)
+
+```
+
+
+##### Multiple stratification variables
+
+
+If supplying `sp` argument with one or more stratification variables, the order of elements in the list provided
+should be the following: strat1, strat2, ..., DV.
+
+
+Add dummy strat variable to `obs_cat_data`:
+
+```{r}
+obs_cat_data <- obs_cat_data %>%
+  mutate(gender = ifelse(PID_code %% 2 == 1, "male", "female"))
+```
+
+
+```{r}
+vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+  simulated(sim_cat_data, ysim = DV) %>%
+  stratify(~ gender + Country_ID_code)
+
+```
+
+
+View ordering of stratification variables and DV:
+```{r}
+sort(unique(obs_cat_data$gender))
+sort(unique(obs_cat_data$Country_ID_code))
+sort(unique(obs_cat_data$zlencat))
+
+```
+
+We first specified `gender`, then `Country_ID_code` in above formula, so our list of smoothing parameters provided to `sp` argument should be ordered as:
+
+```{r}
+user_sp <- list(
+  female.1.prob0 = 1,
+  female.1.prob1 = 3,
+  female.1.prob2 = 9,
+  female.2.prob0 = 5,
+  female.2.prob1 = 10,
+  female.2.prob2 = 12,
+  female.3.prob0 = 33,
+  female.3.prob1 = 44,
+  female.3.prob2 = 88,
+  male.1.prob0 = 4,
+  male.1.prob1 = 12,
+  male.1.prob2 = 15,
+  male.2.prob0 = 800,
+  male.2.prob1 = 19,
+  male.2.prob2 = 28,
+  male.3.prob0 = 22,
+  male.3.prob1 = 88,
+  male.3.prob2 = 11
+)
+```
+
+
+Generate VPC
+
+```{r}
+vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+  simulated(sim_cat_data, ysim = DV) %>%
+  stratify(~ gender + Country_ID_code) %>%
+  binless(optimize = FALSE, , sp = user_sp) %>%
+  vpcstats(vpc.type = "categorical"
+           , conf.level = 0.9
+           , quantile.type = 6
+  )
+plot(vpc, facet=TRUE)
+
+```
 

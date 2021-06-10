@@ -10,8 +10,8 @@ checks](https://cranchecks.info/badges/summary/tidyvpc)](https://cran.r-project.
 
 ## What's New in 1.2?
 
-* Support for categorical VPC using both binning and binless methods
-* Support for NPDE
+* Support for [categorical VPC](https://certara.github.io/tidyvpc/articles/tidyvpc_cat.html) using both binning and binless methods
+* Support for [NPDE](https://certara.github.io/tidyvpc/reference/npde.html)
 
 ### Installation and Running information
 ```
@@ -24,9 +24,9 @@ remotes::install_github("certara/tidyvpc")
 ### Data Preprocessing
 `tidyvpc` requires specific structure of observed and simulated data in order to sucessfully generate VPC.
 
-* DV cannot be 0 or missing in observed/simulated data i.e. subset `MDV == 0`
-* Ordering of observed and simulated data must be consistent
-* Replicates in simulated data must be stacked on top of each other
+* DV cannot be missing in observed/simulated data i.e. subset `MDV == 0`
+* Observed data must be ordered by: Subject-ID, IVAR (Time)
+* Simulated data must be ordered by: Replicate, Subject-ID, IVAR (Time)
 
 See `tidyvpc::obs_data` and `tidyvpc::sim_data` for example data structures.
 
@@ -96,7 +96,7 @@ ggplot(vpc$stats, aes(x=xbin)) +
 
 Or use the built in `plot()` function from the tidyvpc package.
 
-```{r}
+``` r
 # Binless method using 10%, 50%, 90% quantiles and LOESS Prediction Corrected
 
 # Add PRED variable to observed data from first replicate of sim_data
@@ -119,7 +119,7 @@ The `tidyvpc` package contains a wrapper function to install necessary dependenc
 Use the `runShinyVPC()` function from `tidyvpc` to parameterize VPC from a GUI and generate correpsponding `tidyvpc` 
 and `ggplot2` code to reproduce VPC in your local R session. 
 
-```{r}
+``` r
 runShinyVPC()
 ```
 *Note: Internet access is required to use `runShinyVPC()`*
