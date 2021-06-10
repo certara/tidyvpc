@@ -519,20 +519,26 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 
 #' Perform binless Visual Predictive Check (VPC)
 #' 
-#' Use this function in subsitute of traditional binning methods to derive VPC using additive quantile regression and loess for pcVPC.
+#' Use this function in substitute of traditional binning methods to derive VPC. For continuous
+#' VPC, this is obtained using additive quantile regression (\code{quantreg::rqss()}) and loess for pcVPC. While for categorical,
+#' VPC, this is obtained using a generalized additive model(\code{gam(family = "binomial")}).
 #' 
 #' @title binless
 #' @param o tidyvpc object
-#' @param optimize logical indicating whether lambda and span should be optimized using AIC. 
-#' @param optimization.interval numeric vector of length 2 specifying interval for lambda optimization
-#' @param loess.ypc logical indicating loess precition corrected. Must first use \code{predcorrect()} if \code{loess.ypc = TRUE}
-#' @param lambda numeric vector of length 3 specifying lambda values for each quantile
-#' @param span numeric number between 0,1 specying smoothing parameter for loess prediction corrected
-#' @param sp Smoothing parameters used in `mgcv::gam()`. Only applicable for categorical vpc
+#' @param optimize logical indicating whether smoothing parameters should be optimized using AIC. 
+#' @param optimization.interval numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if \code{optimize = TRUE}.
+#' @param loess.ypc logical indicating loess precition corrected. Must first use \code{predcorrect()} if \code{loess.ypc = TRUE}. Only applicable to continuous VPC.
+#' @param lambda numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a \code{data.frame} with a column for each strata and row specifying lambda value for quantile.
+#' See below examples. Only applicable to continuous VPC with \code{optimize = FALSE}.
+#' @param span numeric between 0,1 specifying smoothing parameter for loess prediction corrected. Only applicable for continuous VPC with \code{loess.ypc = TRUE} and \code{optimize = FALSE}.
+#' @param sp list of smoothing parameters applied to \code{mgcv::gam()}. Elements of list must be in the same order as unique values of DV. If one or more stratification variables present, the order of sp
+#' should be specified as unique combination of strata + DV, in ascending order. See below examples. Only applicable for categorical VPC with \code{optimize = FALSE}.
 #' @param ... other arguments
-#' @return Updates \code{tidyvpcobj} with additive quantile regression fits for observed and simulated data for quantiles specified in \code{qpred} argument.
+#' @return For continuous VPC, updates \code{tidyvpcobj} with additive quantile regression fits for observed and simulated data for quantiles specified in \code{qpred} argument.
 #'   If \code{optimize = TRUE} argument is specified, the resulting \code{tidyvpcobj} will contain optimized lambda values according to AIC.  For prediction
-#'   corrected VPC (pcVPC), specifying \code{loess.ypc = TRUE} will return optimized span value for LOESS smoothing. 
+#'   corrected VPC (pcVPC), specifying \code{loess.ypc = TRUE} will return optimized span value for LOESS smoothing. For categorical VPC, 
+#'   updates \code{tidyvpcobj} with fits obtained by \code{gam(family="binomial")} for observed and simulated data for each category of DV (in each stratum if \code{stratify} defined).
+#'   If \code{optimize = TRUE} argument is specified, the resulting \code{tidyvpcobj} wil contain optimized \code{sp} values according to AIC.
 
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{stratify}} \code{\link{binning}} \code{\link{vpcstats}}
 #' @examples 
@@ -574,14 +580,32 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #'       binless(optimize = FALSE, lambda = lambda_strat) %>%
 #'       vpcstats(qpred = c(0.1, 0.5, 0.9))
 #'       
-#'  # Binless examples with categorical DV
+#'  # Binless example for categorical DV with optimized smoothing
 #'  vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
 #'        simulated(sim_cat_data, ysim = DV) %>%
 #'        stratify(~ Country_ID_code) %>%
 #'        binless() %>%
 #'        vpcstats(vpc.type = "cat", quantile.type = 6)
-
+#'        
+#'  # Binless example for categorical DV with user specified sp values
+#'  user_sp <- list(
+#'  Country1_prob0 = 100,
+#'  Country1_prob1 = 3,
+#'  Country1_prob2 = 4,
+#'  Country2_prob0 = 90,
+#'  Country2_prob1 = 3,
+#'  Country2_prob2 = 4,
+#'  Country3_prob0 = 55,
+#'  Country3_prob1 = 3,
+#'  Country3_prob2 = 200)
+#'  
+#'  vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
+#'         simulated(sim_cat_data, ysim = DV) %>%
+#'         stratify(~ Country_ID_code) %>%
+#'         binless(optimize = FALSE, sp = user_sp) %>%
+#'         vpcstats(vpc.type = "categorical", conf.level = 0.9, quantile.type = 6)
 #' }
+#' 
 #' @export 
 binless <- function(o, ...) UseMethod("binless")
 
@@ -597,11 +621,21 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
     if(is.null(lambda) && is.null(sp)) {
     stop("Set optimize = TRUE if no lambda or sp arguments specified")
     }
-    if(!is.null(sp) && length(sp) != length(unique(o$obs$y))){
-      stop("Argument `sp` must be a vector of length equal to the number of unique values of DV. \n
-           Note, `sp` argument is only applicable for categorical vpc.")
-    }
+    # if(!is.null(sp) && length(sp) != length(unique(o$obs$y))){
+    #   stop("Argument `sp` must be a vector of length equal to the number of unique values of DV. \n
+    #        Note, `sp` argument is only applicable for categorical vpc.")
+    # }
   }
+  
+  if(!is.null(sp)){
+    if(optimize){
+    optimize <- FALSE
+    }
+    sp <- lapply(sp, function(x)
+      x <- c(sp = x))
+  }
+  
+  
  
   if(loess.ypc && is.null(o$predcor)) {
     stop("Use predcorrect() before binless() in order to use LOESS prediction corrected")
@@ -801,53 +835,41 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
                    measure.vars = paste0("prob", ylvls),
                    variable.name = "pname", value.name = "y")
       
-      pobs.split <- split(pobs, by = c(names(strat),"pname"))
+      pobs.split <- split(pobs, by = c(names(strat),"pname"), sorted = TRUE)
+
+      pobs.split <- pobs.split[lapply(pobs.split, nrow)>1]
       
-      sp_opt <- list()
-      
-      
+    
 # Get optimized sp values, only if optimize = TRUE, else, skip this step and directly fit gam with user sp values
     if(method$optimize){
-      if(is.null(strat)){
-        for(i in seq_along(pobs.split)){
+      sp_opt <- list()
+      
+      for(i in seq_along(pobs.split)){
         sp_opt[[i]] <- pobs.split[[i]][, .(sp = optimize(.gam_optimize, 
                                                          y = y, 
                                                          x = x, 
                                                          data = pobs.split[[i]], 
                                                          interval = method$optimization.interval)$minimum)]
         }
-      } else {
-        
-      for(i in seq_along(pobs.split)){
-        sp_opt[[i]] <- pobs.split[[i]][, .(sp = optimize(.gam_optimize, 
-                                                 y = y, 
-                                                 x = x, 
-                                              data = pobs.split[[i]], 
-                                          interval = method$optimization.interval)$minimum), by = names(strat)]
-        }
-      }
+     
       names(sp_opt) <- names(pobs.split)
+      method$sp <- sp_opt
+      
       for(i in seq_along(pobs.split)){
         pobs.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]]$sp)]
       }
-      
+
     } else {
-      for(i in seq_along(sp)){
-        sp_opt[[i]] <- rep(sp[[i]], length(ylvls))
+      sp_opt <- method$sp
+      if(length(sp_opt) != length(pobs.split)){
+        stop(paste0("`incorrect number of elements specified to `sp` argument in `binless()` function, specify a list of length ", length(pobs.split), " in the following order: \n",
+                    paste0(names(pobs.split), collapse = "\n"), "\n",
+                    "Note: Do not specify a value for strata where not data is available."))
       }
-      if(is.null(strat)){
-        sp_opt <- lapply(sp_opt, function(l) l[[1]])
-      }
-      sp_opt <- unlist(sp_opt)
-      
-      names(sp_opt) <- names(pobs.split)
       for(i in seq_along(pobs.split)){
         pobs.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]])]
       }
     }
-
-      method$sp <- sp_opt
-      
       pobs <- rbindlist(pobs.split)
   
       # sim ----
@@ -859,20 +881,33 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       
       setnames(sim, paste0("y_", ylvls), paste0("prob", ylvls))
       
-      psim <- sim[, lapply(.SD, .fitcatgam, sp = NULL, x = x), by=.stratrepl, 
-                  .SDcols= paste0("prob", ylvls)]
+      psim <- melt(sim, id.vars = c(names(.stratrepl), "x"),
+                   measure.vars = paste0("prob", ylvls),
+                   variable.name = "pname", value.name = "y")
       
-      psim <- cbind(x = xsim, psim)
+      #Coerce y to double, or else data.table will attempt to coerce to integer and precision is lost
+      psim$y <- as.double(psim$y)
       
-      psim <- melt(psim, id.vars = c(names(.stratrepl), "x"),
-                    measure.vars = paste0("prob", ylvls),
-                    variable.name = "pname", value.name = "y")
+      psim.split <- split(psim, by = c(names(strat),"pname"), sorted = TRUE)
       
-        
-        # Confidence intervals
-        .stratbinquant <- psim[, !c("repl", "y")]
+      psim.split <- psim.split[lapply(psim.split, nrow)>1]
+      
+      
+      if(method$optimize){
+      for(i in seq_along(psim.split)){
+        psim.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]]$sp), by = list(repl)]
+      }
+      } else {
+        for(i in seq_along(psim.split)){
+          psim.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]]), by = repl]
+        }
+      }
+      
+      psim <- rbindlist(psim.split)
 
-        ppsim <- psim[, .(lo=quantile(y,probs=qconf[[1]], type=quantile.type),
+      .stratbinquant <- psim[, !c("repl", "y")]
+
+      ppsim <- psim[, .(lo=quantile(y,probs=qconf[[1]], type=quantile.type),
                           md=median(y),
                           hi=quantile(y,probs=qconf[[3]], type=quantile.type)), by = .stratbinquant]
         
@@ -2111,5 +2146,6 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   ret
   
 }
+
 
 
