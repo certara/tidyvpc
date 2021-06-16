@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Remove prediction correction for Visual Predictive Check (VPC) — nopredcorrect • tidyvpc</title>
+<title>Plot a tidyvpcobj — plot.tidyvpcobj • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Remove prediction correction for Visual Predictive Check (VPC) — nopredcorrect" />
-<meta property="og:description" content="Optional function to use indicating no pred correction for VPC." />
+<meta property="og:title" content="Plot a tidyvpcobj — plot.tidyvpcobj" />
+<meta property="og:description" content="Use ggplot2 graphics to plot and customize the appearance of VPC." />
 
 
 
@@ -117,33 +117,100 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Remove prediction correction for Visual Predictive Check (VPC)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
-    <div class="hidden name"><code>nopredcorrect.Rd</code></div>
+    <h1>Plot a <code>tidyvpcobj</code></h1>
+    <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
+    <div class="hidden name"><code>plot.tidyvpcobj.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Optional function to use indicating no pred correction for VPC.</p>
+    <p>Use ggplot2 graphics to plot and customize the appearance of VPC.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>nopredcorrect</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for tidyvpcobj</span>
-<span class='fu'>nopredcorrect</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for tidyvpcobj</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>...</span>,
+  facet <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  show.points <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  show.boundaries <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  show.stats <span class='op'>=</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>$</span><span class='va'>stats</span><span class='op'>)</span>,
+  show.binning <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Logic.html'>isFALSE</a></span><span class='op'>(</span><span class='va'>show.stats</span><span class='op'>)</span>,
+  xlab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ylab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"red"</span>, <span class='st'>"blue"</span>, <span class='st'>"red"</span><span class='op'>)</span>,
+  linetype <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"dotted"</span>, <span class='st'>"solid"</span>, <span class='st'>"dashed"</span><span class='op'>)</span>,
+  legend.position <span class='op'>=</span> <span class='st'>"top"</span>,
+  facet.scales <span class='op'>=</span> <span class='st'>"free"</span>,
+  custom.theme <span class='op'>=</span> <span class='st'>"ggplot2::theme_bw"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>o</th>
+      <th>x</th>
       <td><p>A <code>tidyvpcobj</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other arguments to include.</p></td>
+      <td><p>Further arguments can be specified but are ignored.</p></td>
+    </tr>
+    <tr>
+      <th>facet</th>
+      <td><p>Should the resulting plot automatically facet by category? Only applicable for categorical VPC.</p></td>
+    </tr>
+    <tr>
+      <th>show.points</th>
+      <td><p>Should the observed data points be plotted?</p></td>
+    </tr>
+    <tr>
+      <th>show.boundaries</th>
+      <td><p>Should the bin boundary be displayed?</p></td>
+    </tr>
+    <tr>
+      <th>show.stats</th>
+      <td><p>Should the VPC stats be displayed?</p></td>
+    </tr>
+    <tr>
+      <th>show.binning</th>
+      <td><p>Should the binning be displayed by coloring the observed data points by bin?</p></td>
+    </tr>
+    <tr>
+      <th>xlab</th>
+      <td><p>A character label for the x-axis.</p></td>
+    </tr>
+    <tr>
+      <th>ylab</th>
+      <td><p>A character label for the y-axis.</p></td>
+    </tr>
+    <tr>
+      <th>color</th>
+      <td><p>A character vector of colors for the percentiles, from low to high.</p></td>
+    </tr>
+    <tr>
+      <th>linetype</th>
+      <td><p>A character vector of line type for the percentiles, from low to high.</p></td>
+    </tr>
+    <tr>
+      <th>legend.position</th>
+      <td><p>A character string specifying the position of the legend.</p></td>
+    </tr>
+    <tr>
+      <th>facet.scales</th>
+      <td><p>A character string specifying the `scales` argument to use for facetting.</p></td>
+    </tr>
+    <tr>
+      <th>custom.theme</th>
+      <td><p>A character string specifying theme from ggplot2 package.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A `ggplot` object.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code>ggplot</code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

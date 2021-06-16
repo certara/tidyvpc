@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>censoring — censoring • tidyvpc</title>
+<title>Censoring observed data for Visual Predictive Check (VPC) — censoring • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="censoring — censoring" />
-<meta property="og:description" content="Censoring observed data for Visual Predictive Check (VPC)" />
+<meta property="og:title" content="Censoring observed data for Visual Predictive Check (VPC) — censoring" />
+<meta property="og:description" content="Specify censoring variable or censoring value for VPC." />
 
 
 
@@ -117,13 +117,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>censoring</h1>
+    <h1>Censoring observed data for Visual Predictive Check (VPC)</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>censoring.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Censoring observed data for Visual Predictive Check (VPC)</p>
+    <p>Specify censoring variable or censoring value for VPC.</p>
     </div>
 
     <pre class="usage"><span class='fu'>censoring</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -136,42 +136,39 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>tidyvpc object</p></td>
+      <td><p>A <code>tidyvpcobj</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other arguments to include</p></td>
+      <td><p>Other arguments to include.</p></td>
     </tr>
     <tr>
       <th>blq</th>
-      <td><p>blq variable if present in observed data</p></td>
+      <td><p>blq variable if present in observed data.</p></td>
     </tr>
     <tr>
       <th>lloq</th>
-      <td><p>lloq variable if present in observed data. Use numeric to specify lloq value</p></td>
+      <td><p>Numeric value or numeric variable in data indicating the upper limit of quantification.</p></td>
     </tr>
     <tr>
       <th>alq</th>
-      <td><p>logical variable indicating above limit of quantification</p></td>
+      <td><p>Logical variable indicating above limit of quantification.</p></td>
     </tr>
     <tr>
       <th>uloq</th>
-      <td><p>number or numeric variable in data indicating the upper limit of quantification</p></td>
+      <td><p>Numeric value or numeric variable in data indicating the upper limit of quantification.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>observed data supplied in <code><a href='observed.html'>observed()</a></code> function</p></td>
+      <td><p>Observed data supplied in <code><a href='observed.html'>observed()</a></code> function.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Updates <code>obs</code> <code>data.frame</code> in <code>tidypcobj</code> with censored values for observed data which includes <code>lloq</code> and <code>uloq</code> specified 
- values for lower/upper limit of quantification. Logicals for <code>blq</code> and <code>alq</code> are returned which indicate whether the DV value lies below/above limit 
+ values for lower/upper limit of quantification. Logicals for <code>blq</code> and <code>alq</code> are returned that indicate whether the DV value lies below/above limit 
  of quantification.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Specify censoring variables or censoring value for VPC using this function</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='simulated.html'>simulated</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='predcorrect.html'>predcorrect</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='binless.html'>binless</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>

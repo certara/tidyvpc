@@ -64,7 +64,7 @@ vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
 plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
 ```
 
-Let's explore stratification and provide a different binning method in the below VPC.  We can also change our confidence level and quantile type for the prediction intervals (shaded area) by specifying `conf.level = .9` and `quantile.type = 6`.
+Let's explore stratification and provide a different binning method in the following VPC.  We can also change our confidence level and quantile type for the prediction intervals (shaded area) by specifying `conf.level = .9` and `quantile.type = 6`.
 
 *Note: Phoenix uses `quantile.type = 6` while tidyvpc uses `quantile.type = 7` by default.*
 
@@ -119,9 +119,9 @@ plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
 
 Alternatively, users may supply their own smoothing parameters using the `sp` argument.
 
-This method use gam with sp values specified for each level of categorical DV. 
+This method uses `gam` with sp values specified for each level of categorical DV. 
 
-*Note, `sp` argument must be a list of the same length/order corresponding to the unique values of our categorical DV. See additional details in next section if stratification specified *
+*Note: The `sp` argument must be a list of the same length/order corresponding to the unique values of our categorical DV. See additional details in the next section, if stratification is specified. *
 
 ```{r}
 sort(unique(obs_cat_data$zlencat))
@@ -149,7 +149,7 @@ plot(vpc, facet = TRUE, legend.position = "bottom", facet.scales = "fixed")
 
 ##### One stratification variable 
 
-If supplying user supplied sp parameters with one or more stratification variables, the order of sp
+If providing user-supplied sp parameters with one or more stratification variables, the order of sp
 should be specified as unique combination of strata + DV, in ascending order.
 
 ```{r}

@@ -29,7 +29,7 @@ bin_by_classInt(style, nbins = NULL)
 
 \item{nbins}{The number of bins to split the data into.}
 
-\item{style}{a binning style (see ?classInt::classIntervals for details).}
+\item{style}{a binning style (see \link[classInt]{classIntervals} for details).}
 }
 \value{
 Each of these functions returns a function of a single numeric

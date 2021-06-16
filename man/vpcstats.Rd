@@ -3,7 +3,7 @@
 \name{vpcstats}
 \alias{vpcstats}
 \alias{vpcstats.tidyvpcobj}
-\title{vpcstats}
+\title{Compute VPC statistics}
 \usage{
 vpcstats(o, ...)
 
@@ -17,36 +17,33 @@ vpcstats(o, ...)
 )
 }
 \arguments{
-\item{o}{tidyvpc object}
+\item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{Other arguments to include}
+\item{...}{Other arguments to include.}
 
-\item{vpc.type}{Character specifying type of VPC e.g. \code{"continuous"}(Default), \code{"categorical"}}
+\item{vpc.type}{Character specifying type of VPC (e.g., \code{"continuous"} (Default) or \code{"categorical"}).}
 
-\item{qpred}{Numeric vector of length 3 specifying quantile prediction interval. Only applicable for \code{vpc.type = "continuous"}}
+\item{qpred}{Numeric vector of length 3 specifying quantile prediction interval. Only applicable for \code{vpc.type = "continuous"}.}
 
-\item{conf.level}{Numeric specifying confidence level}
+\item{conf.level}{Numeric specifying confidence level.}
 
-\item{quantile.type}{Numeric indicating quantile type. See \code{\link[stats]{quantile}}}
+\item{quantile.type}{Numeric indicating quantile type. See \code{\link[stats]{quantile}}.}
 }
 \value{
-Updates \code{tidyvpcobj} with \code{stats} \code{data.table} object which contains the following columns:
+Updates \code{tidyvpcobj} with \code{stats} \code{data.table} object, which contains the following columns:
 \itemize{
-  \item \code{bin}: the resulting bin value as specified in `binning()` function
-  \item \code{xbin}: the midpoint x-value of the observed data points in the bin as specified in `xbin` argument of `binning()` function
-  \item \code{qname}: the quantiles specified in `qpred`.  Only returned if `vpc.type = "continuous"`
-  \item \code{pname}: the categories probability names. Only returned if `vpc.type = "categorical"`
-  \item \code{y}: the observed y value for the specified quantile
-  \item \code{lo}: the lower bound of specified confidence interval for y value in simulated data
-  \item \code{md}: the median y value in simulated data
-  \item \code{hi}: the upper bound of specified confidence interval for y value in simulated data
+  \item \code{bin}: Resulting bin value as specified in \code{binning()} function
+  \item \code{xbin}: Midpoint x-value of the observed data points in the bin as specified in \code{xbin} argument of \code{binning()} function
+  \item \code{qname}: Quantiles specified in \code{qpred}.  Only returned if \code{vpc.type = "continuous"}
+  \item \code{pname}: Categorical probability names. Only returned if \code{vpc.type = "categorical"}
+  \item \code{y}: Observed y value for the specified quantile
+  \item \code{lo}: Lower bound of specified confidence interval for y value in simulated data
+  \item \code{md}: Median y value in simulated data
+  \item \code{hi}: Upper bound of specified confidence interval for y value in simulated data
 }
 }
 \description{
-Compute VPC statistics
-}
-\details{
-Compute predictional interval statistics for VPC
+Compute prediction interval statistics for VPC.
 }
 \seealso{
 \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{stratify}} \code{\link{binning}} \code{\link{binless}} \code{\link{predcorrect}}

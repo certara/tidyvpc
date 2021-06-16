@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot.tidyvpcobj}
 \alias{plot.tidyvpcobj}
-\title{plot}
+\title{Plot a \code{tidyvpcobj}}
 \usage{
 \method{plot}{tidyvpcobj}(
   x,
@@ -22,11 +22,11 @@
 )
 }
 \arguments{
-\item{x}{A tidyvpcobj object.}
+\item{x}{A \code{tidyvpcobj}.}
 
 \item{...}{Further arguments can be specified but are ignored.}
 
-\item{facet}{Should the resulting plot automatically facet by category? Only applicable for categorical vpc.}
+\item{facet}{Should the resulting plot automatically facet by category? Only applicable for categorical VPC.}
 
 \item{show.points}{Should the observed data points be plotted?}
 
@@ -42,22 +42,19 @@
 
 \item{color}{A character vector of colors for the percentiles, from low to high.}
 
-\item{linetype}{A character vector of linetyps for the percentiles, from low to high.}
+\item{linetype}{A character vector of line type for the percentiles, from low to high.}
 
 \item{legend.position}{A character string specifying the position of the legend.}
 
 \item{facet.scales}{A character string specifying the `scales` argument to use for facetting.}
 
-\item{custom.theme}{A Character string specifying theme from ggplot2 package}
+\item{custom.theme}{A character string specifying theme from ggplot2 package.}
 }
 \value{
 A `ggplot` object.
 }
 \description{
-Plot a \code{tidyvpcobj}.
-}
-\details{
-Use ggplot2 graphics to plot and customize the appearance of VPC
+Use ggplot2 graphics to plot and customize the appearance of VPC.
 }
 \seealso{
 \code{ggplot}

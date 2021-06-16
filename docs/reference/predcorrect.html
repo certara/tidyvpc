@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>predcorrect — predcorrect • tidyvpc</title>
+<title>Prediction corrected Visual Predictive Check (pcVPC) — predcorrect • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="predcorrect — predcorrect" />
-<meta property="og:description" content="Prediction corrected Visual Predictive Check (pcVPC)" />
+<meta property="og:title" content="Prediction corrected Visual Predictive Check (pcVPC) — predcorrect" />
+<meta property="og:description" content="Specify prediction variable for pcVPC." />
 
 
 
@@ -117,13 +117,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>predcorrect</h1>
+    <h1>Prediction corrected Visual Predictive Check (pcVPC)</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>predcorrect.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Prediction corrected Visual Predictive Check (pcVPC)</p>
+    <p>Specify prediction variable for pcVPC.</p>
     </div>
 
     <pre class="usage"><span class='fu'>predcorrect</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -136,34 +136,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>tidyvpc object</p></td>
+      <td><p>A <code>tidyvpcobj</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other arguments to include</p></td>
+      <td><p>Other arguments to include.</p></td>
     </tr>
     <tr>
       <th>pred</th>
-      <td><p>prediction variable in observed data</p></td>
+      <td><p>Prediction variable in observed data.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>observed data supplied in <code><a href='observed.html'>observed()</a></code> function</p></td>
+      <td><p>Observed data supplied in <code><a href='observed.html'>observed()</a></code> function.</p></td>
     </tr>
     <tr>
       <th>log</th>
-      <td><p>logical indicating whether DV was modeled in logarithimic scale</p></td>
+      <td><p>Logical indicating whether DV was modeled in logarithmic scale.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Updates <code>tidyvpcobj</code> with required information to performing prediction correction which include <code>predcor</code> logical indicating whether
-  prediction corrected VPC is to be performed, <code>predcor.log</code> logical indicating whether the DV is on a log-scale, and the <code>pred</code> prediction
+    <p>Updates <code>tidyvpcobj</code> with required information to performing prediction correction, which includes the <code>predcor</code> logical indicating whether
+  prediction corrected VPC is to be performed, the <code>predcor.log</code> logical indicating whether the DV is on a log-scale, and the <code>pred</code> prediction
   column from the original data.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Specify prediction variable for pcVPC</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='simulated.html'>simulated</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='binless.html'>binless</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>

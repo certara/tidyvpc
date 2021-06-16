@@ -3,11 +3,11 @@
 \docType{data}
 \name{sim_data}
 \alias{sim_data}
-\title{Example simulated data from vpc package.}
+\title{Example simulated data with continuous DV}
 \format{
 A data.table with 60000 rows and 10 variables:
 \describe{
-  \item{ID}{Subect identifier}
+  \item{ID}{Subject identifier}
   \item{REP}{Replicate num for simulation}
   \item{TIME}{Time}
   \item{DV}{Concentration of drug}
@@ -15,7 +15,7 @@ A data.table with 60000 rows and 10 variables:
   \item{PRED}{Population prediction variable}
   \item{AMT}{Amount of dosage initially administered at DV = 0, TIME = 0}
   \item{DOSE}{Dosage amount}
-  \item{MDV}{Dummy indiciating missing dependent variable value}
+  \item{MDV}{Dummy indicating missing dependent variable value}
   \item{NTIME}{Nominal Time}
 }
 }

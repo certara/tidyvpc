@@ -2,12 +2,12 @@
 % Please edit documentation in R/vpcstats.R
 \name{print.tidyvpcobj}
 \alias{print.tidyvpcobj}
-\title{Print a \code{tidyvpcobj}.}
+\title{Print a \code{tidyvpcobj}}
 \usage{
 \method{print}{tidyvpcobj}(x, ...)
 }
 \arguments{
-\item{x}{An object.}
+\item{x}{An \code{tidyvpcobj}.}
 
 \item{...}{Further arguments can be specified but are ignored.}
 }
@@ -15,5 +15,5 @@
 Returns \code{x} invisibly.
 }
 \description{
-Print a \code{tidyvpcobj}.
+Print generic used to return information about VPC.
 }

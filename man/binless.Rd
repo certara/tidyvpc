@@ -3,7 +3,7 @@
 \name{binless}
 \alias{binless}
 \alias{binless.tidyvpcobj}
-\title{binless}
+\title{Perform binless Visual Predictive Check (VPC)}
 \usage{
 binless(o, ...)
 
@@ -19,38 +19,35 @@ binless(o, ...)
 )
 }
 \arguments{
-\item{o}{tidyvpc object}
+\item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{other arguments}
+\item{...}{Other arguments to include will be ignored.}
 
-\item{optimize}{logical indicating whether smoothing parameters should be optimized using AIC.}
+\item{optimize}{Logical indicating whether smoothing parameters should be optimized using AIC.}
 
-\item{optimization.interval}{numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if \code{optimize = TRUE}.}
+\item{optimization.interval}{Numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if \code{optimize = TRUE}.}
 
-\item{loess.ypc}{logical indicating loess precition corrected. Must first use \code{predcorrect()} if \code{loess.ypc = TRUE}. Only applicable to continuous VPC.}
+\item{loess.ypc}{Logical indicating loess prediction corrected VPC. Must first use \code{\link{predcorrect}}, if specifying \code{loess.ypc = TRUE}. Only applicable to continuous VPC.}
 
-\item{lambda}{numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a \code{data.frame} with a column for each strata and row specifying lambda value for quantile.
+\item{lambda}{Numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a \code{data.frame} with given strata represented the column name, and value specified as a numeric vector of length 3.
 See below examples. Only applicable to continuous VPC with \code{optimize = FALSE}.}
 
-\item{span}{numeric between 0,1 specifying smoothing parameter for loess prediction corrected. Only applicable for continuous VPC with \code{loess.ypc = TRUE} and \code{optimize = FALSE}.}
+\item{span}{Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with \code{loess.ypc = TRUE} and \code{optimize = FALSE}.}
 
-\item{sp}{list of smoothing parameters applied to \code{mgcv::gam()}. Elements of list must be in the same order as unique values of DV. If one or more stratification variables present, the order of sp
-should be specified as unique combination of strata + DV, in ascending order. See below examples. Only applicable for categorical VPC with \code{optimize = FALSE}.}
+\item{sp}{List of smoothing parameters applied to \code{mgcv::gam()}. Elements of list must be in the same order as unique values of DV. If one or more stratification variables present, the order of sp
+should be specified as unique combination of strata + DV, in ascending order. See below examples. Only applicable for categorical VPC, if \code{optimize = FALSE}.}
 }
 \value{
-For continuous VPC, updates \code{tidyvpcobj} with additive quantile regression fits for observed and simulated data for quantiles specified in \code{qpred} argument.
-  If \code{optimize = TRUE} argument is specified, the resulting \code{tidyvpcobj} will contain optimized lambda values according to AIC.  For prediction
+For continuous VPC, updates \code{tidyvpcobj} with additive quantile regression fits for observed and simulated data for quantiles specified in the \code{qpred} argument of \code{vpcstats()}.
+  If the \code{optimize = TRUE} argument is specified, the resulting \code{tidyvpcobj} will contain optimized lambda values according to AIC.  For prediction
   corrected VPC (pcVPC), specifying \code{loess.ypc = TRUE} will return optimized span value for LOESS smoothing. For categorical VPC, 
   updates \code{tidyvpcobj} with fits obtained by \code{gam(family="binomial")} for observed and simulated data for each category of DV (in each stratum if \code{stratify} defined).
   If \code{optimize = TRUE} argument is specified, the resulting \code{tidyvpcobj} wil contain optimized \code{sp} values according to AIC.
 }
 \description{
-Perform binless Visual Predictive Check (VPC)
-}
-\details{
-Use this function in substitute of traditional binning methods to derive VPC. For continuous
-VPC, this is obtained using additive quantile regression (\code{quantreg::rqss()}) and loess for pcVPC. While for categorical,
-VPC, this is obtained using a generalized additive model(\code{gam(family = "binomial")}).
+Use this function in place of traditional binning methods to derive VPC. For continuous
+VPC, this is obtained using additive quantile regression (\code{quantreg::rqss()}) and LOESS for pcVPC. While for categorical
+VPC, this is obtained using a generalized additive model (\code{gam(family = "binomial")}).
 }
 \examples{
 \donttest{

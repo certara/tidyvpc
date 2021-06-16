@@ -3,11 +3,11 @@
 \docType{data}
 \name{obs_cat_data}
 \alias{obs_cat_data}
-\title{Example observed data from with categorical DV.}
+\title{Example observed data with categorical DV}
 \format{
 A data frame with 4014 rows and 4 variables:
 \describe{
-  \item{PID_code}{Subect identifier}
+  \item{PID_code}{Subject identifier}
   \item{agemonths}{Time}
   \item{zlencat}{Categorical DV with the 3 levels}
   \item{Country_ID_code}{Country code for stratification}

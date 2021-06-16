@@ -3,7 +3,7 @@
 \name{observed}
 \alias{observed}
 \alias{observed.data.frame}
-\title{observed}
+\title{Specify observed dataset and variables for VPC}
 \usage{
 observed(o, ...)
 
@@ -20,34 +20,31 @@ observed(o, ...)
 )
 }
 \arguments{
-\item{o}{data.frame or data.table of observation data}
+\item{o}{A \code{data.frame} of observation data.}
 
 \item{...}{other arguments}
 
-\item{x}{numeric x-variable, typically named TIME}
+\item{x}{Numeric x-variable, typically named TIME.}
 
-\item{yobs}{numeric y-variable, typically named DV}
+\item{yobs}{Numeric y-variable, typically named DV.}
 
-\item{pred}{population prediction variable, typically named PRED}
+\item{pred}{Population prediction variable, typically named PRED.}
 
-\item{blq}{logical variable indicating below limit of quantification}
+\item{blq}{Logical variable indicating below limit of quantification.}
 
-\item{lloq}{number or numeric variable in data indicating the lower limit of quantification}
+\item{lloq}{Number or numeric variable in data indicating the lower limit of quantification.}
 
-\item{alq}{logical variable indicating above limit of quantification}
+\item{alq}{Logical variable indicating above limit of quantification .}
 
-\item{uloq}{number or numeric variable in data indicating the upper limit of quantification}
+\item{uloq}{Number or numeric variable in data indicating the upper limit of quantification.}
 }
 \value{
-A \code{tidyvpcobj} containing both original data and observed data formatted with \code{x} & \code{y} variables as specified in function.
+A \code{tidyvpcobj} containing both original data and observed data formatted with \code{x} and \code{y} variables as specified in function.
   Resulting data is of class \code{data.frame} and \code{data.table}.
 }
 \description{
-Specify observed dataset and variables for VPC
-}
-\details{
 The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC. Note: Observed
-data must not contain missing DV and may require subsetting \code{MDV == 0} before generating VPC.
+data must not contain missing DV and may require filtering \code{MDV == 0} before generating VPC.
 }
 \examples{
 

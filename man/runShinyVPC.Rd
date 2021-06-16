@@ -2,14 +2,11 @@
 % Please edit documentation in R/vpcstats.R
 \name{runShinyVPC}
 \alias{runShinyVPC}
-\title{runShinyVPC}
+\title{Run Shiny app for tidyvpc}
 \usage{
 runShinyVPC()
 }
 \description{
-Run Shiny app for tidyvpc
-}
-\details{
 Use this function to run Shiny application to parameterize VPC from a GUI and generate corresponding tidyvpc code to derive VPC.
 }
 \seealso{

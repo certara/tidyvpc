@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>binless — binless • tidyvpc</title>
+<title>Perform binless Visual Predictive Check (VPC) — binless • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="binless — binless" />
-<meta property="og:description" content="Perform binless Visual Predictive Check (VPC)" />
+<meta property="og:title" content="Perform binless Visual Predictive Check (VPC) — binless" />
+<meta property="og:description" content="Use this function in place of traditional binning methods to derive VPC. For continuous
+VPC, this is obtained using additive quantile regression (quantreg::rqss()) and LOESS for pcVPC. While for categorical
+VPC, this is obtained using a generalized additive model (gam(family = &quot;binomial&quot;))." />
 
 
 
@@ -117,13 +119,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>binless</h1>
+    <h1>Perform binless Visual Predictive Check (VPC)</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>binless.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform binless Visual Predictive Check (VPC)</p>
+    <p>Use this function in place of traditional binning methods to derive VPC. For continuous
+VPC, this is obtained using additive quantile regression (<code><a href='https://rdrr.io/pkg/quantreg/man/rqss.html'>quantreg::rqss()</a></code>) and LOESS for pcVPC. While for categorical
+VPC, this is obtained using a generalized additive model (<code>gam(family = "binomial")</code>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>binless</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -145,52 +149,47 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>tidyvpc object</p></td>
+      <td><p>A <code>tidyvpcobj</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>other arguments</p></td>
+      <td><p>Other arguments to include will be ignored.</p></td>
     </tr>
     <tr>
       <th>optimize</th>
-      <td><p>logical indicating whether smoothing parameters should be optimized using AIC.</p></td>
+      <td><p>Logical indicating whether smoothing parameters should be optimized using AIC.</p></td>
     </tr>
     <tr>
       <th>optimization.interval</th>
-      <td><p>numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if <code>optimize = TRUE</code>.</p></td>
+      <td><p>Numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if <code>optimize = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>loess.ypc</th>
-      <td><p>logical indicating loess precition corrected. Must first use <code><a href='predcorrect.html'>predcorrect()</a></code> if <code>loess.ypc = TRUE</code>. Only applicable to continuous VPC.</p></td>
+      <td><p>Logical indicating loess prediction corrected VPC. Must first use <code><a href='predcorrect.html'>predcorrect</a></code>, if specifying <code>loess.ypc = TRUE</code>. Only applicable to continuous VPC.</p></td>
     </tr>
     <tr>
       <th>lambda</th>
-      <td><p>numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a <code>data.frame</code> with a column for each strata and row specifying lambda value for quantile.
+      <td><p>Numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a <code>data.frame</code> with given strata represented the column name, and value specified as a numeric vector of length 3.
 See below examples. Only applicable to continuous VPC with <code>optimize = FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>span</th>
-      <td><p>numeric between 0,1 specifying smoothing parameter for loess prediction corrected. Only applicable for continuous VPC with <code>loess.ypc = TRUE</code> and <code>optimize = FALSE</code>.</p></td>
+      <td><p>Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with <code>loess.ypc = TRUE</code> and <code>optimize = FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>sp</th>
-      <td><p>list of smoothing parameters applied to <code><a href='https://rdrr.io/pkg/mgcv/man/gam.html'>mgcv::gam()</a></code>. Elements of list must be in the same order as unique values of DV. If one or more stratification variables present, the order of sp
-should be specified as unique combination of strata + DV, in ascending order. See below examples. Only applicable for categorical VPC with <code>optimize = FALSE</code>.</p></td>
+      <td><p>List of smoothing parameters applied to <code><a href='https://rdrr.io/pkg/mgcv/man/gam.html'>mgcv::gam()</a></code>. Elements of list must be in the same order as unique values of DV. If one or more stratification variables present, the order of sp
+should be specified as unique combination of strata + DV, in ascending order. See below examples. Only applicable for categorical VPC, if <code>optimize = FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>For continuous VPC, updates <code>tidyvpcobj</code> with additive quantile regression fits for observed and simulated data for quantiles specified in <code>qpred</code> argument.
-  If <code>optimize = TRUE</code> argument is specified, the resulting <code>tidyvpcobj</code> will contain optimized lambda values according to AIC.  For prediction
+    <p>For continuous VPC, updates <code>tidyvpcobj</code> with additive quantile regression fits for observed and simulated data for quantiles specified in the <code>qpred</code> argument of <code><a href='vpcstats.html'>vpcstats()</a></code>.
+  If the <code>optimize = TRUE</code> argument is specified, the resulting <code>tidyvpcobj</code> will contain optimized lambda values according to AIC.  For prediction
   corrected VPC (pcVPC), specifying <code>loess.ypc = TRUE</code> will return optimized span value for LOESS smoothing. For categorical VPC, 
   updates <code>tidyvpcobj</code> with fits obtained by <code>gam(family="binomial")</code> for observed and simulated data for each category of DV (in each stratum if <code>stratify</code> defined).
   If <code>optimize = TRUE</code> argument is specified, the resulting <code>tidyvpcobj</code> wil contain optimized <code>sp</code> values according to AIC.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Use this function in substitute of traditional binning methods to derive VPC. For continuous
-VPC, this is obtained using additive quantile regression (<code><a href='https://rdrr.io/pkg/quantreg/man/rqss.html'>quantreg::rqss()</a></code>) and loess for pcVPC. While for categorical,
-VPC, this is obtained using a generalized additive model(<code>gam(family = "binomial")</code>).</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='simulated.html'>simulated</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='predcorrect.html'>predcorrect</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>

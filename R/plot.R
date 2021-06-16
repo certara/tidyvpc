@@ -1,10 +1,9 @@
-#' Plot a \code{tidyvpcobj}.
+#' Plot a \code{tidyvpcobj}
 #' 
-#' Use ggplot2 graphics to plot and customize the appearance of VPC
+#' Use ggplot2 graphics to plot and customize the appearance of VPC.
 #' 
-#' @title plot
-#' @param x A tidyvpcobj object.
-#' @param facet Should the resulting plot automatically facet by category? Only applicable for categorical vpc.
+#' @param x A \code{tidyvpcobj}.
+#' @param facet Should the resulting plot automatically facet by category? Only applicable for categorical VPC.
 #' @param show.points Should the observed data points be plotted?
 #' @param show.boundaries Should the bin boundary be displayed?
 #' @param show.stats Should the VPC stats be displayed?
@@ -12,15 +11,14 @@
 #' @param xlab A character label for the x-axis.
 #' @param ylab A character label for the y-axis.
 #' @param color A character vector of colors for the percentiles, from low to high.
-#' @param linetype A character vector of linetyps for the percentiles, from low to high.
+#' @param linetype A character vector of line type for the percentiles, from low to high.
 #' @param legend.position A character string specifying the position of the legend.
 #' @param facet.scales A character string specifying the `scales` argument to use for facetting.
-#' @param custom.theme A Character string specifying theme from ggplot2 package
+#' @param custom.theme A character string specifying theme from ggplot2 package.
 #' @param ... Further arguments can be specified but are ignored.
 #' @return A `ggplot` object.
 #' @seealso
 #' \code{ggplot}
-#' @rdname plot
 #' @export
 plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.boundaries=TRUE, show.stats=!is.null(x$stats), show.binning=isFALSE(show.stats), xlab=NULL, ylab=NULL, color=c("red", "blue", "red"), linetype=c("dotted", "solid", "dashed"), legend.position="top", facet.scales="free", custom.theme = "ggplot2::theme_bw") {
   

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>observed — simulated • tidyvpc</title>
+<title>Specify simulated dataset and variables for VPC — simulated • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="observed — simulated" />
-<meta property="og:description" content="Specify simulated dataset and variables for VPC" />
+<meta property="og:title" content="Specify simulated dataset and variables for VPC — simulated" />
+<meta property="og:description" content="The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not 
+contain missing DV and may require filtering MDV == 0 before generating VPC. The ordering of observed and simulated 
+data must also be consistent, with replicates in simulated data stacked on top of each other." />
 
 
 
@@ -117,13 +119,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>observed</h1>
+    <h1>Specify simulated dataset and variables for VPC</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>simulated.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Specify simulated dataset and variables for VPC</p>
+    <p>The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not 
+contain missing DV and may require filtering <code>MDV == 0</code> before generating VPC. The ordering of observed and simulated 
+data must also be consistent, with replicates in simulated data stacked on top of each other.</p>
     </div>
 
     <pre class="usage"><span class='fu'>simulated</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -136,31 +140,26 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>tidyvpcobj</p></td>
+      <td><p>A <code>tidyvpcobj</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>other arguments</p></td>
+      <td><p>other arguments.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>data.frame or data.table of simulated data</p></td>
+      <td><p>A <code>data.frame</code> of simulated data.</p></td>
     </tr>
     <tr>
       <th>ysim</th>
-      <td><p>numeric y-variable, typically named DV</p></td>
+      <td><p>Numeric y-variable, typically named DV.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>tidyvpcobj</code> containing simulated dataset <code>sim</code> formatted with columns <code>x</code>, <code>y</code>, and <code>repl</code> which indicates the replicate number.
+    <p>A <code>tidyvpcobj</code> containing simulated dataset <code>sim</code> formatted with columns <code>x</code>, <code>y</code>, and <code>repl</code>, which indicates the replicate number.
  The column <code>x</code> is used from the <code><a href='observed.html'>observed()</a></code> function. Resulting dataset is of class <code>data.frame</code> and <code>data.table</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not 
-contain missing DV and may require subsetting <code>MDV == 0</code> before generating VPC. The ordering of observed and simulated 
-data must also be consistent, with replicates in simulated data stacked on top of each other.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='predcorrect.html'>predcorrect</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='binless.html'>binless</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>

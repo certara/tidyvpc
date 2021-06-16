@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>vpcstats — vpcstats • tidyvpc</title>
+<title>Compute VPC statistics — vpcstats • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="vpcstats — vpcstats" />
-<meta property="og:description" content="Compute VPC statistics" />
+<meta property="og:title" content="Compute VPC statistics — vpcstats" />
+<meta property="og:description" content="Compute prediction interval statistics for VPC." />
 
 
 
@@ -117,13 +117,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>vpcstats</h1>
+    <h1>Compute VPC statistics</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>vpcstats.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute VPC statistics</p>
+    <p>Compute prediction interval statistics for VPC.</p>
     </div>
 
     <pre class="usage"><span class='fu'>vpcstats</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -143,46 +143,43 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>tidyvpc object</p></td>
+      <td><p>A <code>tidyvpcobj</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other arguments to include</p></td>
+      <td><p>Other arguments to include.</p></td>
     </tr>
     <tr>
       <th>vpc.type</th>
-      <td><p>Character specifying type of VPC e.g. <code>"continuous"</code>(Default), <code>"categorical"</code></p></td>
+      <td><p>Character specifying type of VPC (e.g., <code>"continuous"</code> (Default) or <code>"categorical"</code>).</p></td>
     </tr>
     <tr>
       <th>qpred</th>
-      <td><p>Numeric vector of length 3 specifying quantile prediction interval. Only applicable for <code>vpc.type = "continuous"</code></p></td>
+      <td><p>Numeric vector of length 3 specifying quantile prediction interval. Only applicable for <code>vpc.type = "continuous"</code>.</p></td>
     </tr>
     <tr>
       <th>conf.level</th>
-      <td><p>Numeric specifying confidence level</p></td>
+      <td><p>Numeric specifying confidence level.</p></td>
     </tr>
     <tr>
       <th>quantile.type</th>
-      <td><p>Numeric indicating quantile type. See <code><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></code></p></td>
+      <td><p>Numeric indicating quantile type. See <code><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Updates <code>tidyvpcobj</code> with <code>stats</code> <code>data.table</code> object which contains the following columns:</p><ul>
-<li><p><code>bin</code>: the resulting bin value as specified in `binning()` function</p></li>
-<li><p><code>xbin</code>: the midpoint x-value of the observed data points in the bin as specified in `xbin` argument of `binning()` function</p></li>
-<li><p><code>qname</code>: the quantiles specified in `qpred`.  Only returned if `vpc.type = "continuous"`</p></li>
-<li><p><code>pname</code>: the categories probability names. Only returned if `vpc.type = "categorical"`</p></li>
-<li><p><code>y</code>: the observed y value for the specified quantile</p></li>
-<li><p><code>lo</code>: the lower bound of specified confidence interval for y value in simulated data</p></li>
-<li><p><code>md</code>: the median y value in simulated data</p></li>
-<li><p><code>hi</code>: the upper bound of specified confidence interval for y value in simulated data</p></li>
+    <p>Updates <code>tidyvpcobj</code> with <code>stats</code> <code>data.table</code> object, which contains the following columns:</p><ul>
+<li><p><code>bin</code>: Resulting bin value as specified in <code><a href='binning.html'>binning()</a></code> function</p></li>
+<li><p><code>xbin</code>: Midpoint x-value of the observed data points in the bin as specified in <code>xbin</code> argument of <code><a href='binning.html'>binning()</a></code> function</p></li>
+<li><p><code>qname</code>: Quantiles specified in <code>qpred</code>.  Only returned if <code>vpc.type = "continuous"</code></p></li>
+<li><p><code>pname</code>: Categorical probability names. Only returned if <code>vpc.type = "categorical"</code></p></li>
+<li><p><code>y</code>: Observed y value for the specified quantile</p></li>
+<li><p><code>lo</code>: Lower bound of specified confidence interval for y value in simulated data</p></li>
+<li><p><code>md</code>: Median y value in simulated data</p></li>
+<li><p><code>hi</code>: Upper bound of specified confidence interval for y value in simulated data</p></li>
 </ul>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Compute predictional interval statistics for VPC</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='simulated.html'>simulated</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='binless.html'>binless</a></code> <code><a href='predcorrect.html'>predcorrect</a></code></p></div>

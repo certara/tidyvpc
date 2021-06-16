@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>observed — observed • tidyvpc</title>
+<title>Specify observed dataset and variables for VPC — observed • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="observed — observed" />
-<meta property="og:description" content="Specify observed dataset and variables for VPC" />
+<meta property="og:title" content="Specify observed dataset and variables for VPC — observed" />
+<meta property="og:description" content="The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC. Note: Observed
+data must not contain missing DV and may require filtering MDV == 0 before generating VPC." />
 
 
 
@@ -117,13 +118,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>observed</h1>
+    <h1>Specify observed dataset and variables for VPC</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>observed.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Specify observed dataset and variables for VPC</p>
+    <p>The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC. Note: Observed
+data must not contain missing DV and may require filtering <code>MDV == 0</code> before generating VPC.</p>
     </div>
 
     <pre class="usage"><span class='fu'>observed</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -146,7 +148,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>data.frame or data.table of observation data</p></td>
+      <td><p>A <code>data.frame</code> of observation data.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -154,42 +156,38 @@
     </tr>
     <tr>
       <th>x</th>
-      <td><p>numeric x-variable, typically named TIME</p></td>
+      <td><p>Numeric x-variable, typically named TIME.</p></td>
     </tr>
     <tr>
       <th>yobs</th>
-      <td><p>numeric y-variable, typically named DV</p></td>
+      <td><p>Numeric y-variable, typically named DV.</p></td>
     </tr>
     <tr>
       <th>pred</th>
-      <td><p>population prediction variable, typically named PRED</p></td>
+      <td><p>Population prediction variable, typically named PRED.</p></td>
     </tr>
     <tr>
       <th>blq</th>
-      <td><p>logical variable indicating below limit of quantification</p></td>
+      <td><p>Logical variable indicating below limit of quantification.</p></td>
     </tr>
     <tr>
       <th>lloq</th>
-      <td><p>number or numeric variable in data indicating the lower limit of quantification</p></td>
+      <td><p>Number or numeric variable in data indicating the lower limit of quantification.</p></td>
     </tr>
     <tr>
       <th>alq</th>
-      <td><p>logical variable indicating above limit of quantification</p></td>
+      <td><p>Logical variable indicating above limit of quantification .</p></td>
     </tr>
     <tr>
       <th>uloq</th>
-      <td><p>number or numeric variable in data indicating the upper limit of quantification</p></td>
+      <td><p>Number or numeric variable in data indicating the upper limit of quantification.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>tidyvpcobj</code> containing both original data and observed data formatted with <code>x</code> &amp; <code>y</code> variables as specified in function.
+    <p>A <code>tidyvpcobj</code> containing both original data and observed data formatted with <code>x</code> and <code>y</code> variables as specified in function.
   Resulting data is of class <code>data.frame</code> and <code>data.table</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC. Note: Observed
-data must not contain missing DV and may require subsetting <code>MDV == 0</code> before generating VPC.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='simulated.html'>simulated</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='predcorrect.html'>predcorrect</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='binless.html'>binless</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>

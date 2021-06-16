@@ -3,31 +3,28 @@
 \name{simulated}
 \alias{simulated}
 \alias{simulated.tidyvpcobj}
-\title{observed}
+\title{Specify simulated dataset and variables for VPC}
 \usage{
 simulated(o, ...)
 
 \method{simulated}{tidyvpcobj}(o, data, ysim, ...)
 }
 \arguments{
-\item{o}{tidyvpcobj}
+\item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{other arguments}
+\item{...}{other arguments.}
 
-\item{data}{data.frame or data.table of simulated data}
+\item{data}{A \code{data.frame} of simulated data.}
 
-\item{ysim}{numeric y-variable, typically named DV}
+\item{ysim}{Numeric y-variable, typically named DV.}
 }
 \value{
-A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with columns \code{x}, \code{y}, and \code{repl} which indicates the replicate number.
+A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with columns \code{x}, \code{y}, and \code{repl}, which indicates the replicate number.
  The column \code{x} is used from the \code{observed()} function. Resulting dataset is of class \code{data.frame} and \code{data.table}.
 }
 \description{
-Specify simulated dataset and variables for VPC
-}
-\details{
 The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not 
-contain missing DV and may require subsetting \code{MDV == 0} before generating VPC. The ordering of observed and simulated 
+contain missing DV and may require filtering \code{MDV == 0} before generating VPC. The ordering of observed and simulated 
 data must also be consistent, with replicates in simulated data stacked on top of each other.
 }
 \examples{

@@ -1,7 +1,7 @@
 #' Normalized Prediction Distribution Errors
 #'
-#' @param o A tidyvpc object.
-#' @param id A vector of IDs. Used to associate observations \code{y} that
+#' @param o A \code{tidyvpcobj}.
+#' @param id A vector of IDs. Used to associate observations (\code{y}) that
 #' originate from the same individual. Evaluated in the \code{data.frame}
 #' \code{data}.
 #' @param data A \code{data.frame}.

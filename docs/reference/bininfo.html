@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Obtain information about the bins from a VPC object. — bininfo • tidyvpc</title>
+<title>Obtain information about the bins from a tidyvpcobj — bininfo • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Obtain information about the bins from a VPC object. — bininfo" />
-<meta property="og:description" content="Obtain information about the bins from a VPC object." />
+<meta property="og:title" content="Obtain information about the bins from a tidyvpcobj — bininfo" />
+<meta property="og:description" content="Obtain information about the bins from a tidyvpcobj" />
 
 
 
@@ -117,13 +117,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Obtain information about the bins from a VPC object.</h1>
+    <h1>Obtain information about the bins from a <code>tidyvpcobj</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>bininfo.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Obtain information about the bins from a VPC object.</p>
+    <p>Obtain information about the bins from a <code>tidyvpcobj</code></p>
     </div>
 
     <pre class="usage"><span class='fu'>bininfo</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -152,21 +152,21 @@ was specified when the binning was done.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A `data.table` containing the following columns:</p><ul>
-<li><p><code>nobs</code>: the number of observed data points in the bin</p></li>
-<li><p><code>xmedian</code>: the median x-value of the observed data points in the bin</p></li>
-<li><p><code>xmean</code>: the mean x-value of the observed data points in the bin</p></li>
-<li><p><code>xmax</code>: the maximum x-value of the observed data points in the bin</p></li>
-<li><p><code>xmin</code>: the minimum x-value of the observed data points in the bin</p></li>
-<li><p><code>xmid</code>: the value halfway between `xmin` and `xmax`.
+<li><p><code>nobs</code>: Number of observed data points in the bin</p></li>
+<li><p><code>xmedian</code>: Median x-value of the observed data points in the bin</p></li>
+<li><p><code>xmean</code>: Mean x-value of the observed data points in the bin</p></li>
+<li><p><code>xmax</code>: Maximum x-value of the observed data points in the bin</p></li>
+<li><p><code>xmin</code>: Minimum x-value of the observed data points in the bin</p></li>
+<li><p><code>xmid</code>: Value halfway between `xmin` and `xmax`.
   x-value of the observed data points in the bin</p></li>
-<li><p><code>xleft</code>: the value halfway between the minimum x-value of the
+<li><p><code>xleft</code>: Value halfway between the minimum x-value of the
   current bin and the maximum x-value of the previous bin to the left (for
-  the left-most bin it is the minimum x-value).</p></li>
-<li><p><code>xright</code>: the value halfway between the maximum x-value of the
+  the left-most bin, it is the minimum x-value).</p></li>
+<li><p><code>xright</code>: Value halfway between the maximum x-value of the
   current bin and the minimum x-value of the next bin to the right (for the
-  right-most bin it is the maximum x-value).</p></li>
-<li><p><code>xcenter</code>: the value halfway between `xleft` and `xright`.</p></li>
-</ul><p>In addition, if statification was performed, the stratification columns will
+  right-most bin, it is the maximum x-value).</p></li>
+<li><p><code>xcenter</code>: Value halfway between `xleft` and `xright`.</p></li>
+</ul><p>In addition, if stratification was performed, the stratification columns will
 be included as well.</p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 

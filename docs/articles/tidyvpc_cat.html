@@ -121,7 +121,7 @@
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cat_files/figure-html/binning_1-1.png" width="720" style="display: block; margin: auto;"></p>
-<p>Let’s explore stratification and provide a different binning method in the below VPC. We can also change our confidence level and quantile type for the prediction intervals (shaded area) by specifying <code>conf.level = .9</code> and <code>quantile.type = 6</code>.</p>
+<p>Let’s explore stratification and provide a different binning method in the following VPC. We can also change our confidence level and quantile type for the prediction intervals (shaded area) by specifying <code>conf.level = .9</code> and <code>quantile.type = 6</code>.</p>
 <p><em>Note: Phoenix uses <code>quantile.type = 6</code> while tidyvpc uses <code>quantile.type = 7</code> by default.</em></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -167,8 +167,8 @@
 <a href="#user-defined-sp" class="anchor"></a>User-defined <code>sp</code>
 </h3>
 <p>Alternatively, users may supply their own smoothing parameters using the <code>sp</code> argument.</p>
-<p>This method use gam with sp values specified for each level of categorical DV.</p>
-<p><em>Note, <code>sp</code> argument must be a list of the same length/order corresponding to the unique values of our categorical DV. See additional details in next section if stratification specified </em></p>
+<p>This method uses <code>gam</code> with sp values specified for each level of categorical DV.</p>
+<p><em>Note: The <code>sp</code> argument must be a list of the same length/order corresponding to the unique values of our categorical DV. See additional details in the next section, if stratification is specified. </em></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">zlencat</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0 1 2</span></code></pre></div>
@@ -191,7 +191,7 @@
 <div id="one-stratification-variable" class="section level5">
 <h5 class="hasAnchor">
 <a href="#one-stratification-variable" class="anchor"></a>One stratification variable</h5>
-<p>If supplying user supplied sp parameters with one or more stratification variables, the order of sp should be specified as unique combination of strata + DV, in ascending order.</p>
+<p>If providing user-supplied sp parameters with one or more stratification variables, the order of sp should be specified as unique combination of strata + DV, in ascending order.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">Country_ID_code</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 1 2 3</span>

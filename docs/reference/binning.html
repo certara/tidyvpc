@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>binning — binning • tidyvpc</title>
+<title>Binning methods for Visual Predictive Check (VPC) — binning • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="binning — binning" />
-<meta property="og:description" content="Binning methods for Visual Predictive Check (VPC)" />
+<meta property="og:title" content="Binning methods for Visual Predictive Check (VPC) — binning" />
+<meta property="og:description" content="This function executes binning methods available in classInt i.e. &quot;jenks&quot;, &quot;kmeans&quot;, &quot;sd&quot;, &quot;pretty&quot;, &quot;pam&quot;, &quot;kmeans&quot;, &quot;hclust&quot;, &quot;bclust&quot;, &quot;fisher&quot;, and &quot;dpih&quot;.
+You may also bin directly on x-variable or alternatively specify &quot;centers&quot; or &quot;breaks&quot;. For explanation of binning methods see classIntervals" />
 
 
 
@@ -117,13 +118,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>binning</h1>
+    <h1>Binning methods for Visual Predictive Check (VPC)</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>binning.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Binning methods for Visual Predictive Check (VPC)</p>
+    <p>This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", and "dpih".
+You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see <code><a href='https://r-spatial.github.io/classInt/reference/classIntervals.html'>classIntervals</a></code></p>
     </div>
 
     <pre class="usage"><span class='fu'>binning</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -148,7 +150,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>tidyvpc object</p></td>
+      <td><p>A <code>tidyvpcobj</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -160,45 +162,41 @@
     </tr>
     <tr>
       <th>data</th>
-      <td><p>Observed data supplied in <code><a href='observed.html'>observed()</a></code> function</p></td>
+      <td><p>Observed data supplied in <code><a href='observed.html'>observed()</a></code> function.</p></td>
     </tr>
     <tr>
       <th>xbin</th>
-      <td><p>Character string indicating midpoint type for binning</p></td>
+      <td><p>Character string indicating midpoint type for binning.</p></td>
     </tr>
     <tr>
       <th>centers</th>
-      <td><p>Numeric vector of centers for binning. Use <code>bin = "centers"</code> if supplying centers</p></td>
+      <td><p>Numeric vector of centers for binning. Use <code>bin = "centers"</code> if supplying centers.</p></td>
     </tr>
     <tr>
       <th>breaks</th>
-      <td><p>Numeric vector of breaks for binning. Use <code>bin = "breaks"</code> if supplying breaks</p></td>
+      <td><p>Numeric vector of breaks for binning. Use <code>bin = "breaks"</code> if supplying breaks.</p></td>
     </tr>
     <tr>
       <th>nbins</th>
-      <td><p>Numeric number indicating the number of bins to use</p></td>
+      <td><p>Numeric number indicating the number of bins to use.</p></td>
     </tr>
     <tr>
       <th>altx</th>
-      <td><p>Unquoted variable name in observed data for elternative x-variable binning</p></td>
+      <td><p>Unquoted variable name in observed data for elternative x-variable binning.</p></td>
     </tr>
     <tr>
       <th>stratum</th>
-      <td><p>List indicating the name of stratification variable and level if using different binning methods by strata</p></td>
+      <td><p>List indicating the name of stratification variable and level if using different binning methods by strata.</p></td>
     </tr>
     <tr>
       <th>by.strata</th>
-      <td><p>Logical indicating whether binning should be performed by strata</p></td>
+      <td><p>Logical indicating whether binning should be performed by strata.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Updates <code>tidyvpcobj</code> with <code>data.frame</code> containing bin information including left/right boundaries and midpoint as specified in <code>xbin</code> argument</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", and "dpih".
-You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see <code><a href='https://r-spatial.github.io/classInt/reference/classIntervals.html'>classIntervals</a></code></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='simulated.html'>simulated</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='predcorrect.html'>predcorrect</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='binless.html'>binless</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>

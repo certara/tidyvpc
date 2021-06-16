@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>stratify — stratify • tidyvpc</title>
+<title>Stratification for Visual Predictive Check (VPC) — stratify • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="stratify — stratify" />
-<meta property="og:description" content="Stratification for Visual Predictive Check (VPC)" />
+<meta property="og:title" content="Stratification for Visual Predictive Check (VPC) — stratify" />
+<meta property="og:description" content="Use to specify stratification variables for VPC." />
 
 
 
@@ -117,13 +117,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>stratify</h1>
+    <h1>Stratification for Visual Predictive Check (VPC)</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/vpcstats.R'><code>R/vpcstats.R</code></a></small>
     <div class="hidden name"><code>stratify.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Stratification for Visual Predictive Check (VPC)</p>
+    <p>Use to specify stratification variables for VPC.</p>
     </div>
 
     <pre class="usage"><span class='fu'>stratify</span><span class='op'>(</span><span class='va'>o</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -136,7 +136,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>o</th>
-      <td><p>tidyvpc object</p></td>
+      <td><p>A <code>tidyvpcobj</code></p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -144,22 +144,19 @@
     </tr>
     <tr>
       <th>formula</th>
-      <td><p>formula for stratfication</p></td>
+      <td><p>Formula for stratification.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>Observed data supplied in <code><a href='observed.html'>observed()</a></code> function</p></td>
+      <td><p>Observed data supplied in <code><a href='observed.html'>observed()</a></code> function.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns updated <code>tidyvpcobj</code> with stratification formula, stratification column(s), and strat.split datasets which
+    <p>Returns updated <code>tidyvpcobj</code> with stratification formula, stratification column(s), and strat.split datasets, which
   is <code>obs</code> split by unique levels of stratification variable(s). Resulting datasets are of class object <code>data.frame</code>
   and <code>data.table</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>specify stratification variables for VPC using this function</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='simulated.html'>simulated</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='predcorrect.html'>predcorrect</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='binless.html'>binless</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>

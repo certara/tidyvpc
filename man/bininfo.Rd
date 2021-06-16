@@ -3,7 +3,7 @@
 \name{bininfo}
 \alias{bininfo}
 \alias{bininfo.tidyvpcobj}
-\title{Obtain information about the bins from a VPC object.}
+\title{Obtain information about the bins from a \code{tidyvpcobj}}
 \usage{
 bininfo(o, ...)
 
@@ -20,26 +20,26 @@ was specified when the binning was done.}
 \value{
 A `data.table` containing the following columns:
 \itemize{
-  \item \code{nobs}: the number of observed data points in the bin
-  \item \code{xmedian}: the median x-value of the observed data points in the bin
-  \item \code{xmean}: the mean x-value of the observed data points in the bin
-  \item \code{xmax}: the maximum x-value of the observed data points in the bin
-  \item \code{xmin}: the minimum x-value of the observed data points in the bin
-  \item \code{xmid}: the value halfway between `xmin` and `xmax`.
+  \item \code{nobs}: Number of observed data points in the bin
+  \item \code{xmedian}: Median x-value of the observed data points in the bin
+  \item \code{xmean}: Mean x-value of the observed data points in the bin
+  \item \code{xmax}: Maximum x-value of the observed data points in the bin
+  \item \code{xmin}: Minimum x-value of the observed data points in the bin
+  \item \code{xmid}: Value halfway between `xmin` and `xmax`.
   x-value of the observed data points in the bin
-  \item \code{xleft}: the value halfway between the minimum x-value of the
+  \item \code{xleft}: Value halfway between the minimum x-value of the
   current bin and the maximum x-value of the previous bin to the left (for
-  the left-most bin it is the minimum x-value).
-  \item \code{xright}: the value halfway between the maximum x-value of the
+  the left-most bin, it is the minimum x-value).
+  \item \code{xright}: Value halfway between the maximum x-value of the
   current bin and the minimum x-value of the next bin to the right (for the
-  right-most bin it is the maximum x-value).
-  \item \code{xcenter}: the value halfway between `xleft` and `xright`.
+  right-most bin, it is the maximum x-value).
+  \item \code{xcenter}: Value halfway between `xleft` and `xright`.
 }
-In addition, if statification was performed, the stratification columns will
+In addition, if stratification was performed, the stratification columns will
 be included as well.
 }
 \description{
-Obtain information about the bins from a VPC object.
+Obtain information about the bins from a \code{tidyvpcobj}
 }
 \section{Methods (by class)}{
 \itemize{

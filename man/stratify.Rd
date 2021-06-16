@@ -3,31 +3,28 @@
 \name{stratify}
 \alias{stratify}
 \alias{stratify.tidyvpcobj}
-\title{stratify}
+\title{Stratification for Visual Predictive Check (VPC)}
 \usage{
 stratify(o, ...)
 
 \method{stratify}{tidyvpcobj}(o, formula, data = o$data, ...)
 }
 \arguments{
-\item{o}{tidyvpc object}
+\item{o}{A \code{tidyvpcobj}}
 
 \item{...}{Other arguments to include}
 
-\item{formula}{formula for stratfication}
+\item{formula}{Formula for stratification.}
 
-\item{data}{Observed data supplied in \code{observed()} function}
+\item{data}{Observed data supplied in \code{observed()} function.}
 }
 \value{
-Returns updated \code{tidyvpcobj} with stratification formula, stratification column(s), and strat.split datasets which
+Returns updated \code{tidyvpcobj} with stratification formula, stratification column(s), and strat.split datasets, which
   is \code{obs} split by unique levels of stratification variable(s). Resulting datasets are of class object \code{data.frame}
   and \code{data.table}.
 }
 \description{
-Stratification for Visual Predictive Check (VPC)
-}
-\details{
-specify stratification variables for VPC using this function
+Use to specify stratification variables for VPC.
 }
 \examples{
 require(magrittr)

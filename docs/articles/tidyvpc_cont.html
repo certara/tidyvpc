@@ -89,32 +89,32 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><strong>When deriving a Visual Predictive check (VPC) you must:</strong></p>
+<p><strong>When deriving a Visual Predictive Check (VPC) you must:</strong></p>
 <ul>
-<li><p>Have both observed and simulated datasets that include x &amp; y variables, typically TIME &amp; DV.</p></li>
-<li><p>Compute Prediction Intervals on Simulated versus Observed Data</p></li>
+<li><p>Have both observed and simulated datasets that include x and y variables, typically TIME and DV</p></li>
+<li><p>Compute prediction intervals on simulated versus observed data</p></li>
 </ul>
 <p><strong>When deriving a VPC you may want to:</strong></p>
 <ul>
-<li><p>Stratify over variables in your model.</p></li>
-<li><p>Censor data below LLOQ.</p></li>
-<li><p>Perform prediction correction (pcVPC).</p></li>
+<li><p>Stratify over variables in your model</p></li>
+<li><p>Censor data below LLOQ</p></li>
+<li><p>Perform prediction correction (pcVPC)</p></li>
 </ul>
 <p><strong>The tidyvpc package makes these steps fast and easy:</strong></p>
 <ul>
 <li><p>By providing readable syntax using the <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> operator from magrittr.</p></li>
-<li><p>It uses efficient backend computation, taking advantage of <code>data.table</code> parallelization.</p></li>
+<li><p>By using efficient backend computation, taking advantage of <code>data.table</code> parallelization.</p></li>
 <li><p>By providing traditional binning methods and new <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6202468/">binless methods</a></p></li>
 <li><p>By using ggplot2 graphics engine to visualize the results of the VPC.</p></li>
 </ul>
 <hr>
-<p>This document introduces you to tidyvpc’s set of tools, and shows you how to apply them to tidyvpcobj to derive VPC.</p>
-<p>All of the tidyvpc functions take a tidyvpcobj as the first argument, with the exception of the first function <code><a href="../reference/observed.html">observed()</a></code> in the piping chain, which takes a <code>data.frame</code> or <code>data.table</code> of the observed dataset. Rather than forcing the user to either save intermediate objects or nest functions, tidyvpc provides the <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> operator from magrittr. The result from one step is then “piped” into the next step, with the final function in the piping chain always <code><a href="../reference/vpcstats.html">vpcstats()</a></code>. You can use the pipe to rewrite multiple operations that you can read left-to-right, top-to-bottom (reading the pipe operator as “then”).</p>
+<p>This document introduces you to the <code>tidyvpc</code> set of tools, and shows you how to apply them to <code>tidyvpcobj</code> to derive VPC.</p>
+<p>All of the <code>tidyvpc</code> functions require the <code>tidyvpcobj</code> as the first argument, with the exception of the first function <code><a href="../reference/observed.html">observed()</a></code> in the piping chain, which takes a <code>data.frame</code> or <code>data.table</code> of the observed dataset. Rather than forcing the user to either save intermediate objects or nest functions, <code>tidyvpc</code> provides the <code><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></code> operator from magrittr. The result from one step is then “piped” into the next step, with the final function in the piping chain always <code><a href="../reference/vpcstats.html">vpcstats()</a></code>. You can use the pipe to rewrite multiple operations that you can read left-to-right, top-to-bottom (reading the pipe operator as “then”).</p>
 </div>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
-<p>To explore the functionality of tidyvpc, we’ll use an altered version of obs_data(<code>vpc::simple_data$obs</code>) &amp; sim_data(<code>vpc::simple_data$sim</code>) from the vpc package. These datasets contains all necessary variables to explore the functionality of tidyvpc including:</p>
+<p>To explore the functionality of tidyvpc, we’ll use an altered version of obs_data(<code>vpc::simple_data$obs</code>) and sim_data(<code>vpc::simple_data$sim</code>) from the vpc package. These datasets contain all necessary variables to explore the functionality of tidyvpc including:</p>
 <ul>
 <li><p>DV (y variable)</p></li>
 <li><p>TIME (x variable)</p></li>
@@ -127,7 +127,7 @@
 <div id="data-structure" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-structure" class="anchor"></a>Data Structure</h3>
-<p><code>tidyvpc</code> requires specific structure of observed and simulated data in order to sucessfully generate VPC.</p>
+<p><code>tidyvpc</code> requires specific structure of observed and simulated data to successfully generate VPC.</p>
 <p>See <code><a href="../reference/obs_data.html">tidyvpc::obs_data</a></code> and <code><a href="../reference/sim_data.html">tidyvpc::sim_data</a></code> for example <a href="https://certara.github.io/tidyvpc/#data-preprocessing">data structure</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">obs_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html">as.data.table</a></span><span class="op">(</span><span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/obs_data.html">obs_data</a></span><span class="op">)</span>
@@ -153,11 +153,11 @@
 <div id="preprocessing-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#preprocessing-data" class="anchor"></a>Preprocessing data</h3>
-<p>First we’ll need to subset our data by filtering <code>MDV == 0</code> which removes rows where both <code>DV == 0</code> &amp; <code>TIME == 0</code>.</p>
+<p>First, we’ll need to subset our data by filtering <code>MDV == 0</code>, which removes rows where both <code>DV == 0</code> and <code>TIME == 0</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">obs_data</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span>
 <span class="va">sim_data</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span></code></pre></div>
-<p>Next we’ll add the prediction variable from the first replicate of simulated data into our observed data.</p>
+<p>Next, we’ll add the prediction variable from the first replicate of simulated data into our observed data.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">obs_data</span><span class="op">$</span><span class="va">PRED</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">REP</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">PRED</span><span class="op">]</span></code></pre></div>
 </div>
@@ -166,7 +166,7 @@
 <h2 class="hasAnchor">
 <a href="#observed" class="anchor"></a><code>observed()</code>
 </h2>
-<p>The <code><a href="../reference/observed.html">observed()</a></code> function is always the first function used in the VPC piping chain and is used to specify the observed dataset and corresponding variables. There are three arguments that are required in order to use <code>observed</code>. The first argument is either a <code>data.frame</code> or <code>data.table</code>, the second argument is the name of x-variable in the observed data, and the third argument is the name of the y-variable. Note variable names should be unquoted.</p>
+<p>The <code><a href="../reference/observed.html">observed()</a></code> function is always the first function used in the VPC piping chain and is used to specify the observed dataset and corresponding variables. There are three arguments that are required to use <code>observed</code>. The first argument is either a <code>data.frame</code> or <code>data.table</code>, the second argument is the name of x-variable in the observed data, and the third argument is the name of the y-variable. Note that variable names should be unquoted.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span>
 <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x <span class="op">=</span> <span class="va">TIME</span>, y <span class="op">=</span> <span class="va">DV</span><span class="op">)</span></code></pre></div>
@@ -184,9 +184,9 @@
 <h2 class="hasAnchor">
 <a href="#binning" class="anchor"></a><code>binning()</code>
 </h2>
-<p>The <code><a href="../reference/binning.html">binning()</a></code> function provides the binning method to derive the vpc and should be inputted as a character string in the <code>bin</code> argument. Binning methods include: “ntile”, “pam”, “sd”, “equal”, “pretty”, “quantile”, “kmeans”, “jenks”, “centers”, “breaks”. Some methods such as “ntile” and “pam” will require you to specify the number of bins using the <code>nbins</code> argument i.e. <code>nbins = 9</code>.</p>
-<p>If using <code>bin = "centers"</code> or <code>bin = "breaks</code> you must also provide the centers/breaks argument as numeric vector in the function i.e. <code>centers = c(1,3,5,7)</code>.</p>
-<p>You can also bin directly on x-variable. If using this type of binning, the bin argument should be the unquoted variable name that you used in the <code><a href="../reference/observed.html">observed()</a></code> function i.e. <code>bin = NTIME</code> for the Nominal Time variable in the data.</p>
+<p>The <code><a href="../reference/binning.html">binning()</a></code> function provides the binning method to derive the VPC and should be inputted as a character string in the <code>bin</code> argument. Binning methods include: “ntile”, “pam”, “sd”, “equal”, “pretty”, “quantile”, “kmeans”, “jenks”, “centers”, “breaks”. Some methods such as “ntile” and “pam” will require you to specify the number of bins using the <code>nbins</code> argument (e.g., <code>nbins = 9</code>).</p>
+<p>If using <code>bin = "centers"</code> or <code>bin = "breaks</code>, you must also provide the centers/breaks argument as a numeric vector in the function (e.g., <code>centers = c(1,3,5,7)</code>).</p>
+<p>You can also bin directly on x-variable. If using this type of binning, the bin argument should be the unquoted variable name that you used in the <code><a href="../reference/observed.html">observed()</a></code> function (e.g., <code>bin = NTIME</code> for the Nominal Time variable in the data).</p>
 <p>Binning on x-variable, NTIME</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -208,8 +208,8 @@
 <a href="#binless" class="anchor"></a><code>binless()</code>
 </h2>
 <p><em>Note: The <code><a href="../reference/binless.html">binless()</a></code> examples below relate to a continuous VPC. See <a href="">examples</a> of <code><a href="../reference/binless.html">binless()</a></code> implementation for categorical VPC.</em></p>
-<p>Binless methods for continuous VPC use additive quantile regression (AQR) in place of traditional binning. By default, <code><a href="../reference/binless.html">binless()</a></code> performs AQR at the 5%, 50%, and 95% quantiles but you can change this using the <code>qpred</code> argument in <code><a href="../reference/vpcstats.html">vpcstats()</a></code> which takes a numeric vector of length 3 i.e. <code>qpred =  c(.1, .5, .9)</code> for the 10%, 50%, 90% quantiles.</p>
-<p>The lambda smoothing parameters for each quantile are optimized by default with AIC as indicated by the <code>optimize = TRUE</code> argument, however, if you would like to use different lambda values for each quantile set <code>optimize = FALSE</code> and specify lambda values for each quantile as a numeric vector of length 3 with the <code>lambda</code> argument i.e. <code>lambda = c(1,3,2)</code> corresponds to the lambda values for the quantiles in the <code>qpred</code> argument (lower, median, upper). Note: the higher the lambda value the smoother fit to the data.</p>
+<p>Binless methods for continuous VPC use Additive Quantile Regression (AQR) in place of traditional binning. By default, <code><a href="../reference/binless.html">binless()</a></code> performs AQR at the 5%, 50%, and 95% quantiles, but you can change this using the <code>qpred</code> argument in <code><a href="../reference/vpcstats.html">vpcstats()</a></code>, which takes a numeric vector of length 3 (e.g., <code>qpred =  c(.1, .5, .9)</code> for the 10%, 50%, 90% quantiles).</p>
+<p>The lambda smoothing parameters for each quantile are optimized by default with AIC as indicated by the <code>optimize = TRUE</code> argument. If you would like to use different lambda values for each quantile set <code>optimize = FALSE</code> and specify lambda values for each quantile as a numeric vector of length 3 with the <code>lambda</code> argument (e.g., <code>lambda = c(1,3,2)</code> corresponds to the lambda values for the quantiles in the <code>qpred</code> argument (lower, median, upper)). Note: The higher the lambda value the smoother the fit to the data.</p>
 <p>Binless optimized</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -225,7 +225,7 @@
 <h2 class="hasAnchor">
 <a href="#vpcstats" class="anchor"></a><code>vpcstats()</code>
 </h2>
-<p>The <code><a href="../reference/vpcstats.html">vpcstats()</a></code> function is always the final function used in the piping chain and calculates the statistics needed to plot a VPC. If using <code><a href="../reference/binning.html">binning()</a></code>methods, you may specify alternative quantiles using the <code>qpred</code> argument. The default quantiles used are 5%, 50%, 95% i.e. <code>qpred = c(0.05, 0.5, 0.95)</code>. If using <code><a href="../reference/binless.html">binless()</a></code> method, there is no need to include the <code>qpred()</code> argument here as the quantile values supplied in the <code><a href="../reference/binless.html">binless()</a></code> function will be used to calculate the VPC statistics for plotting.</p>
+<p>The <code><a href="../reference/vpcstats.html">vpcstats()</a></code> function is always the final function used in the piping chain and calculates the statistics needed to plot a VPC. If using <code><a href="../reference/binning.html">binning()</a></code>methods, you may specify alternative quantiles using the <code>qpred</code> argument. The default quantiles used are 5%, 50%, 95% (e.g., <code>qpred = c(0.05, 0.5, 0.95)</code>).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -239,7 +239,7 @@
 <h2 class="hasAnchor">
 <a href="#stratify" class="anchor"></a><code>stratify()</code>
 </h2>
-<p>To stratify VPC include the <code><a href="../reference/stratify.html">stratify()</a></code> function before using the <code><a href="../reference/binning.html">binning()</a></code> or <code><a href="../reference/binless.html">binless()</a></code> function and use the unquoted stratification variable(s) name as a formula. Let’s stratify on <code>GENDER</code> in the data, which contains 2 levels (GENDER = “M”, GENDER = “F”). Include as many stratification variables as your model calls for.</p>
+<p>To stratify VPC, include the <code><a href="../reference/stratify.html">stratify()</a></code> function before using the <code><a href="../reference/binning.html">binning()</a></code> or <code><a href="../reference/binless.html">binless()</a></code> function and use the unquoted stratification variable(s) name as a formula. Let’s stratify on <code>GENDER</code> in the data, which contains 2 levels (GENDER = “M”, GENDER = “F”). Include as many stratification variables as your model calls for.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -281,7 +281,7 @@
 <p>First, let’s add an LLOQ variable to the observed data.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">obs_data</span><span class="op">$</span><span class="va">LLOQ</span> <span class="op">&lt;-</span> <span class="fl">50</span></code></pre></div>
-<p>Then we’ll specify lower limit of quantification as the unquoted variable name in our data <code>LLOQ</code>. Let’s also provide our own lambda values.</p>
+<p>Then we’ll specify lower limit of quantification as the unquoted variable name <code>LLOQ</code> in our data. Let’s also provide our own lambda values.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -310,7 +310,7 @@
 <a href="#predcorrect" class="anchor"></a><code>predcorrect()</code>
 </h2>
 <p><em>Note: The <code><a href="../reference/predcorrect.html">predcorrect()</a></code> function is only applicable for continuous VPC.</em></p>
-<p>To derive a prediction corrected VPC (pcVPC) use the <code><a href="../reference/predcorrect.html">predcorrect()</a></code> function. The <code><a href="../reference/predcorrect.html">predcorrect()</a></code> function takes one required argument <code>pred</code> which should be the unquoted variable name of the population prediction variable in the data. If using binning methods, the <code><a href="../reference/predcorrect.html">predcorrect()</a></code> function should be called <em>after</em> <code><a href="../reference/binning.html">binning()</a></code>, however, if performing LOESS pcVPC for <code><a href="../reference/binless.html">binless()</a></code> methods, use <code><a href="../reference/predcorrect.html">predcorrect()</a></code> <em>before</em> calling <code><a href="../reference/binless.html">binless()</a></code> and set <code><a href="../reference/binless.html">binless(loess.ypc = TRUE)</a></code>. Note: if model was fit using log scale of DV make sure to include the argument <code>log = TRUE</code> in <code><a href="../reference/predcorrect.html">predcorrect()</a></code> to perform the appropriate prediction correction calculation.</p>
+<p>To derive a prediction corrected VPC (pcVPC), use the <code><a href="../reference/predcorrect.html">predcorrect()</a></code> function. The <code><a href="../reference/predcorrect.html">predcorrect()</a></code> function takes one required argument, <code>pred</code>, which should be the unquoted variable name of the population prediction variable in the data. If using binning methods, the <code><a href="../reference/predcorrect.html">predcorrect()</a></code> function should be called <em>after</em> <code><a href="../reference/binning.html">binning()</a></code>. If performing LOESS pcVPC for <code><a href="../reference/binless.html">binless()</a></code> methods, use <code><a href="../reference/predcorrect.html">predcorrect()</a></code> <em>before</em> calling <code><a href="../reference/binless.html">binless()</a></code> and set <code><a href="../reference/binless.html">binless(loess.ypc = TRUE)</a></code>. Note: If the model was fit using log scale of DV, make sure to include the argument <code>log = TRUE</code> in <code><a href="../reference/predcorrect.html">predcorrect()</a></code> to perform the appropriate prediction correction calculation.</p>
 <p>Prediction corrected using binning methods.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -322,7 +322,7 @@
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cont_files/figure-html/unnamed-chunk-20-1.png" width="640"></p>
-<p>LOESS prediction corrected using binless method for 10%, 50%, 90% quantiles. If <code>optimize = TRUE</code>, the LOESS smoothing parameter, span, will be automatically optimize using AIC. Note: <code><a href="../reference/predcorrect.html">predcorrect()</a></code> must be called before <code><a href="../reference/binless.html">binless()</a></code> if setting <code>loess.ypc = TRUE</code>.</p>
+<p>LOESS prediction corrected using binless method for 10%, 50%, 90% quantiles. If <code>optimize = TRUE</code>, the LOESS smoothing parameter, span, will be automatically optimized using AIC. Note: <code><a href="../reference/predcorrect.html">predcorrect()</a></code> must be called before <code><a href="../reference/binless.html">binless()</a></code> if setting <code>loess.ypc = TRUE</code>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -333,7 +333,7 @@
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cont_files/figure-html/unnamed-chunk-21-1.png" width="640"></p>
-<p>To specify your own span value LOESS pcVPC instead of optimizing with AIC, use the <code>span</code> argument in the <code>binless</code> function. Span should be a numeric between [0,1], with higher values providing a smoother fit. Remember, to also include the smoothing parameters for AQR by using the <code>lambda</code> argument and set <code>optimize = FALSE</code>.</p>
+<p>To specify your own span value LOESS pcVPC instead of optimizing with AIC, use the <code>span</code> argument in the <code>binless</code> function. Span should be a numeric value between [0,1], with higher values providing a smoother fit. Remember, to also include the smoothing parameters for AQR by using the <code>lambda</code> argument and set <code>optimize = FALSE</code>.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -369,7 +369,7 @@
 <div id="different-smoothing-values-for-each-level-of-stratification-variable" class="section level3">
 <h3 class="hasAnchor">
 <a href="#different-smoothing-values-for-each-level-of-stratification-variable" class="anchor"></a>Different smoothing values for each level of stratification variable</h3>
-<p>To use different smoothing parameters for each level of stratification variable if using the <code><a href="../reference/binless.html">binless()</a></code> function use a single call of the <code><a href="../reference/binless.html">binless()</a></code> function and include a <code>data.frame</code> with the column names of stratification variable and corresponding level. To use different <code>span</code> values for each level of stratification variable use a vector the length of n levels of strata. Note: If using more than one stratification variable with the <code><a href="../reference/binless.html">binless()</a></code> function you must set <code>optimize = TRUE</code> and optimize lambda and span using AIC.</p>
+<p>To use different smoothing parameters for each level of stratification variable if using the <code><a href="../reference/binless.html">binless()</a></code> function, use a single call of the <code><a href="../reference/binless.html">binless()</a></code> function and include a <code>data.frame</code> with the column names of stratification variable and corresponding level. To use different <code>span</code> values for each level of stratification variable, use a vector the length of n levels of strata. Note: If using more than one stratification variable with the <code><a href="../reference/binless.html">binless()</a></code> function, you must set <code>optimize = TRUE</code> and optimize lambda and span using AIC.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">user_lambda</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>GENDER_F <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">2</span><span class="op">)</span>, GENDER_M <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.9</span>,<span class="fl">3</span>,<span class="fl">2.25</span><span class="op">)</span> <span class="op">)</span>
 
@@ -386,7 +386,7 @@
 <div id="visualize-bins" class="section level3">
 <h3 class="hasAnchor">
 <a href="#visualize-bins" class="anchor"></a>Visualize bins</h3>
-<p>If using <code><a href="../reference/binning.html">binning()</a></code> methods, you can visualize bins by using the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function on the <code>tidyvpcobj</code> without calling <code><a href="../reference/vpcstats.html">vpcstats()</a></code>. Once you are satisifed with the binning method, simply call <code><a href="../reference/vpcstats.html">vpcstats()</a></code> on the existing <code>tidyvpcobj</code> to compute VPC percentiles and prediction intervals i.e <code>vpc %&gt;% vpcstats()</code></p>
+<p>If using <code><a href="../reference/binning.html">binning()</a></code> methods, you can visualize bins by using the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function on the <code>tidyvpcobj</code> without calling <code><a href="../reference/vpcstats.html">vpcstats()</a></code>. Once you are satisfied with the binning method, simply call <code><a href="../reference/vpcstats.html">vpcstats()</a></code> on the existing <code>tidyvpcobj</code> to compute VPC percentiles and prediction intervals (e.g., <code>vpc %&gt;% vpcstats()</code>).</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -422,7 +422,7 @@
 <h3 class="hasAnchor">
 <a href="#using-ggplot2-with-tidyvpc" class="anchor"></a>Using <code>ggplot2</code> with <code>tidyvpc</code>
 </h3>
-<p>While the built in <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function make it easy to quickly visualize the derived VPC, the <code>tidyvpcobj</code> can be plotted using <code>ggplot2</code> for complete plot customization.</p>
+<p>While the built-in <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function make it easy to quickly visualize the derived VPC, the <code>tidyvpcobj</code> can be plotted using <code>ggplot2</code> for complete plot customization.</p>
 <div id="plot-vpc-with-ggplot2" class="section level4">
 <h4 class="hasAnchor">
 <a href="#plot-vpc-with-ggplot2" class="anchor"></a>Plot VPC with <code>ggplot2</code>
@@ -531,7 +531,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span>, legend.key.width <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"TIME"</span>, y <span class="op">=</span> <span class="st">"Concentration"</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cont_files/figure-html/unnamed-chunk-29-1.png" width="640"></p>
-<p>Alternatively, we can obtain the required data for plotting used in the above <code>bin_information</code> data frame by merging <code>vpc$stats</code> and <code><a href="../reference/bininfo.html">bininfo(vpc)</a></code> on <code>bin</code> in the <code>ggplot2</code> data argument. If stratifying you will need to include the name of the stratification variable(s) in the <code>data.table</code> merge i.e. <code>vpc$stats[bininfo(vpc), on=c("STUDY", "bin")]</code>. In the rectangle vpc below, we will stratify on <code>STUDY</code> and plot rectangles for each quantile.</p>
+<p>Alternatively, we can obtain the required data for plotting used in the above <code>bin_information</code> data frame by merging <code>vpc$stats</code> and <code><a href="../reference/bininfo.html">bininfo(vpc)</a></code> on <code>bin</code> in the <code>ggplot2</code> data argument. If stratifying, you will need to include the name of the stratification variable(s) in the <code>data.table</code> merge (e.g., <code>vpc$stats[bininfo(vpc), on=c("STUDY", "bin")]</code>). In the rectangle VPC below, we will stratify on <code>STUDY</code> and plot rectangles for each quantile.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">obs_data</span><span class="op">$</span><span class="va">LLOQ</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span>, <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fifelse.html">ifelse</a></span><span class="op">(</span><span class="va">STUDY</span> <span class="op">==</span> <span class="st">"Study A"</span>, <span class="fl">50</span>, <span class="fl">25</span><span class="op">)</span><span class="op">]</span>
 

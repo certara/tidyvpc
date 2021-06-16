@@ -21,8 +21,8 @@ as required by the other functions used in the VPC calculation.
 }
 \details{
 The consistency check is performed by comparing a combination of unique
-subject identifier (ID) and time. Both `data.frame`s must be given with
-those in positions 1 and 2 repectively.
+subject identifier (ID) and time. Both \code{data.frame}`s must be given with
+those in positions 1 and 2, respectively.
 }
 \examples{
 

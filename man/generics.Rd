@@ -4,7 +4,7 @@
 \alias{generics}
 \title{Perform a Visual Predictive Check (VPC) computation}
 \arguments{
-\item{o}{An object.}
+\item{o}{A \code{tidyvpcobj}.}
 
 \item{...}{Additional arguments.}
 }

@@ -3,33 +3,30 @@
 \name{predcorrect}
 \alias{predcorrect}
 \alias{predcorrect.tidyvpcobj}
-\title{predcorrect}
+\title{Prediction corrected Visual Predictive Check (pcVPC)}
 \usage{
 predcorrect(o, ...)
 
 \method{predcorrect}{tidyvpcobj}(o, pred, data = o$data, ..., log = FALSE)
 }
 \arguments{
-\item{o}{tidyvpc object}
+\item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{Other arguments to include}
+\item{...}{Other arguments to include.}
 
-\item{pred}{prediction variable in observed data}
+\item{pred}{Prediction variable in observed data.}
 
-\item{data}{observed data supplied in \code{observed()} function}
+\item{data}{Observed data supplied in \code{observed()} function.}
 
-\item{log}{logical indicating whether DV was modeled in logarithimic scale}
+\item{log}{Logical indicating whether DV was modeled in logarithmic scale.}
 }
 \value{
-Updates \code{tidyvpcobj} with required information to performing prediction correction which include \code{predcor} logical indicating whether
-  prediction corrected VPC is to be performed, \code{predcor.log} logical indicating whether the DV is on a log-scale, and the \code{pred} prediction
+Updates \code{tidyvpcobj} with required information to performing prediction correction, which includes the \code{predcor} logical indicating whether
+  prediction corrected VPC is to be performed, the \code{predcor.log} logical indicating whether the DV is on a log-scale, and the \code{pred} prediction
   column from the original data.
 }
 \description{
-Prediction corrected Visual Predictive Check (pcVPC)
-}
-\details{
-Specify prediction variable for pcVPC
+Specify prediction variable for pcVPC.
 }
 \examples{
 require(magrittr)

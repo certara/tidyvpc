@@ -3,37 +3,34 @@
 \name{censoring}
 \alias{censoring}
 \alias{censoring.tidyvpcobj}
-\title{censoring}
+\title{Censoring observed data for Visual Predictive Check (VPC)}
 \usage{
 censoring(o, ...)
 
 \method{censoring}{tidyvpcobj}(o, blq, lloq, alq, uloq, data = o$data, ...)
 }
 \arguments{
-\item{o}{tidyvpc object}
+\item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{Other arguments to include}
+\item{...}{Other arguments to include.}
 
-\item{blq}{blq variable if present in observed data}
+\item{blq}{blq variable if present in observed data.}
 
-\item{lloq}{lloq variable if present in observed data. Use numeric to specify lloq value}
+\item{lloq}{Numeric value or numeric variable in data indicating the upper limit of quantification.}
 
-\item{alq}{logical variable indicating above limit of quantification}
+\item{alq}{Logical variable indicating above limit of quantification.}
 
-\item{uloq}{number or numeric variable in data indicating the upper limit of quantification}
+\item{uloq}{Numeric value or numeric variable in data indicating the upper limit of quantification.}
 
-\item{data}{observed data supplied in \code{observed()} function}
+\item{data}{Observed data supplied in \code{observed()} function.}
 }
 \value{
 Updates \code{obs} \code{data.frame} in \code{tidypcobj} with censored values for observed data which includes \code{lloq} and \code{uloq} specified 
- values for lower/upper limit of quantification. Logicals for \code{blq} and \code{alq} are returned which indicate whether the DV value lies below/above limit 
+ values for lower/upper limit of quantification. Logicals for \code{blq} and \code{alq} are returned that indicate whether the DV value lies below/above limit 
  of quantification.
 }
 \description{
-Censoring observed data for Visual Predictive Check (VPC)
-}
-\details{
-Specify censoring variables or censoring value for VPC using this function
+Specify censoring variable or censoring value for VPC.
 }
 \examples{
 require(magrittr)

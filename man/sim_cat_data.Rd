@@ -3,11 +3,11 @@
 \docType{data}
 \name{sim_cat_data}
 \alias{sim_cat_data}
-\title{Example simulated data with categorical DV.}
+\title{Example simulated data with categorical DV}
 \format{
 A data frame with 401400 rows and 4 variables:
 \describe{
-  \item{PID_code}{Subect identifier}
+  \item{PID_code}{Subject identifier}
   \item{IVAR}{Time}
   \item{DV}{Categorical DV with 3 levels}
   \item{Replicate}{Replicate num for simulation}

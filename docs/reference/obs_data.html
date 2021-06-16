@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Example observed data from vpc package. — obs_data • tidyvpc</title>
+<title>Example observed data with continuous DV — obs_data • tidyvpc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Example observed data from vpc package. — obs_data" />
-<meta property="og:description" content="An observed dataset from a hypothetical PK model. Altered to include NTIME, GROUP, GENDER." />
+<meta property="og:title" content="Example observed data with continuous DV — obs_data" />
+<meta property="og:description" content="An observed dataset from a hypothetical PK model, altered to include NTIME, GROUP, GENDER." />
 
 
 
@@ -117,13 +117,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Example observed data from vpc package.</h1>
+    <h1>Example observed data with continuous DV</h1>
     <small class="dont-index">Source: <a href='https://github.com/certara/tidyvpc/blob/master/R/data.R'><code>R/data.R</code></a></small>
     <div class="hidden name"><code>obs_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>An observed dataset from a hypothetical PK model. Altered to include NTIME, GROUP, GENDER.</p>
+    <p>An observed dataset from a hypothetical PK model, altered to include NTIME, GROUP, GENDER.</p>
     </div>
 
     <pre class="usage"><span class='va'>obs_data</span></pre>
@@ -132,12 +132,12 @@
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p>A data.table with 600 rows and 7 variables:</p><dl>
-  <dt>ID</dt><dd><p>Subect identifier</p></dd>
+  <dt>ID</dt><dd><p>Subject identifier</p></dd>
   <dt>TIME</dt><dd><p>Time</p></dd>
   <dt>DV</dt><dd><p>Concentration of drug</p></dd>
   <dt>AMT</dt><dd><p>Amount of dosage initially administered at DV = 0, TIME = 0</p></dd>
   <dt>DOSE</dt><dd><p>Dosage amount</p></dd>
-  <dt>MDV</dt><dd><p>Dummy indiciating missing dependent variable value</p></dd>
+  <dt>MDV</dt><dd><p>Dummy indicating missing dependent variable value</p></dd>
   <dt>NTIME</dt><dd><p>Nominal Time</p></dd>
   <dt>GENDER</dt><dd><p>Character variable indicating subject's gender ("M", "F")</p></dd>
   <dt>STUDY</dt><dd><p>Character variable indicating study type ("Study A", "Study B")</p></dd>

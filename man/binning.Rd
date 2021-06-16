@@ -3,7 +3,7 @@
 \name{binning}
 \alias{binning}
 \alias{binning.tidyvpcobj}
-\title{binning}
+\title{Binning methods for Visual Predictive Check (VPC)}
 \usage{
 binning(o, ...)
 
@@ -22,35 +22,32 @@ binning(o, ...)
 )
 }
 \arguments{
-\item{o}{tidyvpc object}
+\item{o}{A \code{tidyvpcobj}.}
 
 \item{...}{Other arguments to include}
 
 \item{bin}{Character string indicating binning method or unquoted variable name if binning on x-variable.}
 
-\item{data}{Observed data supplied in \code{observed()} function}
+\item{data}{Observed data supplied in \code{observed()} function.}
 
-\item{xbin}{Character string indicating midpoint type for binning}
+\item{xbin}{Character string indicating midpoint type for binning.}
 
-\item{centers}{Numeric vector of centers for binning. Use \code{bin = "centers"} if supplying centers}
+\item{centers}{Numeric vector of centers for binning. Use \code{bin = "centers"} if supplying centers.}
 
-\item{breaks}{Numeric vector of breaks for binning. Use \code{bin = "breaks"} if supplying breaks}
+\item{breaks}{Numeric vector of breaks for binning. Use \code{bin = "breaks"} if supplying breaks.}
 
-\item{nbins}{Numeric number indicating the number of bins to use}
+\item{nbins}{Numeric number indicating the number of bins to use.}
 
-\item{altx}{Unquoted variable name in observed data for elternative x-variable binning}
+\item{altx}{Unquoted variable name in observed data for elternative x-variable binning.}
 
-\item{stratum}{List indicating the name of stratification variable and level if using different binning methods by strata}
+\item{stratum}{List indicating the name of stratification variable and level if using different binning methods by strata.}
 
-\item{by.strata}{Logical indicating whether binning should be performed by strata}
+\item{by.strata}{Logical indicating whether binning should be performed by strata.}
 }
 \value{
 Updates \code{tidyvpcobj} with \code{data.frame} containing bin information including left/right boundaries and midpoint as specified in \code{xbin} argument
 }
 \description{
-Binning methods for Visual Predictive Check (VPC)
-}
-\details{
 This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", and "dpih".
 You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see \code{\link[classInt]{classIntervals}}
 }

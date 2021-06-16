@@ -12,6 +12,9 @@ checks](https://cranchecks.info/badges/summary/tidyvpc)](https://cran.r-project.
 
 * Support for [categorical VPC](https://certara.github.io/tidyvpc/articles/tidyvpc_cat.html) using both binning and binless methods
 * Support for [NPDE](https://certara.github.io/tidyvpc/reference/npde.html)
+* CRAN release of `tidyvpc` 1.2 coming soon
+
+[Learn More](https://certara.github.io/tidyvpc/articles/tidyvpc_cat.html)
 
 ### Installation and Running information
 ```
@@ -94,7 +97,7 @@ ggplot(vpc$stats, aes(x=xbin)) +
 <img src='https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/snapshot1.png?raw=true' align="center" width="900" height="600" />
 
 
-Or use the built in `plot()` function from the tidyvpc package.
+Or use the built-in `plot()` function from the `tidyvpc` package.
 
 ``` r
 # Binless method using 10%, 50%, 90% quantiles and LOESS Prediction Corrected
@@ -116,7 +119,7 @@ plot(vpc)
 ### Shiny Application
 
 The `tidyvpc` package contains a wrapper function to install necessary dependencies and run the [Shiny-VPC Application](https://github.com/jameswcraig/shiny-vpc).
-Use the `runShinyVPC()` function from `tidyvpc` to parameterize VPC from a GUI and generate correpsponding `tidyvpc` 
+Use the `runShinyVPC()` function from `tidyvpc` to parameterize VPC from a GUI and generate corresponding `tidyvpc` 
 and `ggplot2` code to reproduce VPC in your local R session. 
 
 ``` r

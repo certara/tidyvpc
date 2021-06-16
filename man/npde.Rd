@@ -10,11 +10,11 @@ npde(o, ...)
 \method{npde}{tidyvpcobj}(o, id, data = o$data, smooth = FALSE, ...)
 }
 \arguments{
-\item{o}{A tidyvpc object.}
+\item{o}{A \code{tidyvpcobj}.}
 
 \item{...}{Additional arguments}
 
-\item{id}{A vector of IDs. Used to associate observations \code{y} that
+\item{id}{A vector of IDs. Used to associate observations (\code{y}) that
 originate from the same individual. Evaluated in the \code{data.frame}
 \code{data}.}
 

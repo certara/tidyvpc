@@ -3,20 +3,17 @@
 \name{nopredcorrect}
 \alias{nopredcorrect}
 \alias{nopredcorrect.tidyvpcobj}
-\title{nopredcorrect}
+\title{Remove prediction correction for Visual Predictive Check (VPC)}
 \usage{
 nopredcorrect(o, ...)
 
 \method{nopredcorrect}{tidyvpcobj}(o, ...)
 }
 \arguments{
-\item{o}{tidyvpcobj}
+\item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{other arguments to include}
+\item{...}{Other arguments to include.}
 }
 \description{
-No pred correction for Visual Predictive Check (VPC)
-}
-\details{
 Optional function to use indicating no pred correction for VPC.
 }
