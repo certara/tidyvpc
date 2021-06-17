@@ -6,7 +6,7 @@
 #' \code{data}.
 #' @param data A \code{data.frame}.
 #' @param smooth Should a uniform random perturbation be used to smooth the pd/pde values?
-#' @param ... Additional arguments
+#' @param ... Additional arguments.
 #'
 #' @references
 #'

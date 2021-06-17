@@ -31,7 +31,7 @@ NULL
 #' @param lloq Number or numeric variable in data indicating the lower limit of quantification.
 #' @param alq Logical variable indicating above limit of quantification .
 #' @param uloq Number or numeric variable in data indicating the upper limit of quantification.
-#' @param ... other arguments
+#' @param ... other arguments.
 #' @return A \code{tidyvpcobj} containing both original data and observed data formatted with \code{x} and \code{y} variables as specified in function.
 #'   Resulting data is of class \code{data.frame} and \code{data.table}.
 #' @examples
@@ -73,7 +73,7 @@ observed.data.frame <- function(o, x, yobs, pred=NULL, blq=NULL, lloq=-Inf, alq=
 #' @param o A \code{tidyvpcobj}.
 #' @param data A \code{data.frame} of simulated data.
 #' @param ysim Numeric y-variable, typically named DV.
-#' @param ... other arguments.
+#' @param ... Other arguments.
 #' @return A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with columns \code{x}, \code{y}, and \code{repl}, which indicates the replicate number.
 #'  The column \code{x} is used from the \code{observed()} function. Resulting dataset is of class \code{data.frame} and \code{data.table}.
 #' @examples
@@ -223,10 +223,10 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 #' 
 #' Use to specify stratification variables for VPC.
 #' 
-#' @param o A \code{tidyvpcobj}
+#' @param o A \code{tidyvpcobj}.
 #' @param formula Formula for stratification.
 #' @param data Observed data supplied in \code{observed()} function.
-#' @param ... Other arguments to include
+#' @param ... Other arguments to include.
 #' @return Returns updated \code{tidyvpcobj} with stratification formula, stratification column(s), and strat.split datasets, which
 #'   is \code{obs} split by unique levels of stratification variable(s). Resulting datasets are of class object \code{data.frame}
 #'   and \code{data.table}.
@@ -299,20 +299,20 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
 #' Binning methods for Visual Predictive Check (VPC)
 #' 
 #' This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", and "dpih".
-#' You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see \code{\link[classInt]{classIntervals}}
+#' You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see \code{\link[classInt]{classIntervals}}.
 #' 
 #' @param o A \code{tidyvpcobj}.
 #' @param bin Character string indicating binning method or unquoted variable name if binning on x-variable. 
 #' @param data Observed data supplied in \code{observed()} function.
 #' @param xbin Character string indicating midpoint type for binning.
-#' @param centers Numeric vector of centers for binning. Use \code{bin = "centers"} if supplying centers.
-#' @param breaks Numeric vector of breaks for binning. Use \code{bin = "breaks"} if supplying breaks.
+#' @param centers Numeric vector of centers for binning. Use \code{bin = "centers"}, if supplying centers.
+#' @param breaks Numeric vector of breaks for binning. Use \code{bin = "breaks"}, if supplying breaks.
 #' @param nbins Numeric number indicating the number of bins to use.
-#' @param altx  Unquoted variable name in observed data for elternative x-variable binning.
-#' @param stratum List indicating the name of stratification variable and level if using different binning methods by strata.
+#' @param altx  Unquoted variable name in observed data for alternative x-variable binning.
+#' @param stratum List indicating the name of stratification variable and level, if using different binning methods by strata.
 #' @param by.strata Logical indicating whether binning should be performed by strata.
 #' @param ... Other arguments to include
-#' @return Updates \code{tidyvpcobj} with \code{data.frame} containing bin information including left/right boundaries and midpoint as specified in \code{xbin} argument
+#' @return Updates \code{tidyvpcobj} with \code{data.frame} containing bin information including left/right boundaries and midpoint, as specified in \code{xbin} argument.
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{stratify}} \code{\link{binless}} \code{\link{vpcstats}}
 #' @examples 
 #' require(magrittr)
@@ -521,7 +521,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #' @param o A \code{tidyvpcobj}.
 #' @param optimize Logical indicating whether smoothing parameters should be optimized using AIC. 
 #' @param optimization.interval Numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if \code{optimize = TRUE}.
-#' @param loess.ypc Logical indicating loess prediction corrected VPC. Must first use \code{\link{predcorrect}}, if specifying \code{loess.ypc = TRUE}. Only applicable to continuous VPC.
+#' @param loess.ypc Logical indicating LOESS prediction corrected VPC. Must first use \code{\link{predcorrect}}, if specifying \code{loess.ypc = TRUE}. Only applicable to continuous VPC.
 #' @param lambda Numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a \code{data.frame} with given strata represented the column name, and value specified as a numeric vector of length 3.
 #' See below examples. Only applicable to continuous VPC with \code{optimize = FALSE}.
 #' @param span Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with \code{loess.ypc = TRUE} and \code{optimize = FALSE}.
@@ -1462,7 +1462,7 @@ bin_by_classInt <- function(style, nbins=NULL) {
 #' as required by the other functions used in the VPC calculation.
 #'
 #' The consistency check is performed by comparing a combination of unique
-#' subject identifier (ID) and time. Both \code{data.frame}`s must be given with
+#' subject identifier (ID) and time. Both \code{data.frame}s must be given with
 #' those in positions 1 and 2, respectively.
 #'
 #' @param obs,sim A `data.frame` with 2 columns (see Details).

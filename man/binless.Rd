@@ -27,7 +27,7 @@ binless(o, ...)
 
 \item{optimization.interval}{Numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if \code{optimize = TRUE}.}
 
-\item{loess.ypc}{Logical indicating loess prediction corrected VPC. Must first use \code{\link{predcorrect}}, if specifying \code{loess.ypc = TRUE}. Only applicable to continuous VPC.}
+\item{loess.ypc}{Logical indicating LOESS prediction corrected VPC. Must first use \code{\link{predcorrect}}, if specifying \code{loess.ypc = TRUE}. Only applicable to continuous VPC.}
 
 \item{lambda}{Numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a \code{data.frame} with given strata represented the column name, and value specified as a numeric vector of length 3.
 See below examples. Only applicable to continuous VPC with \code{optimize = FALSE}.}

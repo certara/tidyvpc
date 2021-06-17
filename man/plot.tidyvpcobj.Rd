@@ -46,12 +46,12 @@
 
 \item{legend.position}{A character string specifying the position of the legend.}
 
-\item{facet.scales}{A character string specifying the `scales` argument to use for facetting.}
+\item{facet.scales}{A character string specifying the \code{scales} argument to use for faceting.}
 
 \item{custom.theme}{A character string specifying theme from ggplot2 package.}
 }
 \value{
-A `ggplot` object.
+A \code{ggplot} object.
 }
 \description{
 Use ggplot2 graphics to plot and customize the appearance of VPC.

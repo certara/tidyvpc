@@ -12,7 +12,7 @@ npde(o, ...)
 \arguments{
 \item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{Additional arguments}
+\item{...}{Additional arguments.}
 
 \item{id}{A vector of IDs. Used to associate observations (\code{y}) that
 originate from the same individual. Evaluated in the \code{data.frame}

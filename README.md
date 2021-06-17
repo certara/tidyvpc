@@ -125,4 +125,4 @@ and `ggplot2` code to reproduce VPC in your local R session.
 ``` r
 runShinyVPC()
 ```
-*Note: Internet access is required to use `runShinyVPC()`*
+*Note: Internet access is required to use `runShinyVPC()`.*

@@ -215,7 +215,7 @@
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>Binless with user specified lambda values at 10%, 50%, 90% quantiles. Set <code>optimize = FALSE</code> and provide lambda smoothing parameters as a vector of length 3 for lower, median, upper quantiles.</p>
+<p>Binless with user-specified lambda values at 10%, 50%, 90% quantiles. Set <code>optimize = FALSE</code> and provide lambda smoothing parameters as a vector of length 3 for lower, median, upper quantiles.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -281,7 +281,7 @@
 <p>First, let’s add an LLOQ variable to the observed data.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">obs_data</span><span class="op">$</span><span class="va">LLOQ</span> <span class="op">&lt;-</span> <span class="fl">50</span></code></pre></div>
-<p>Then we’ll specify lower limit of quantification as the unquoted variable name <code>LLOQ</code> in our data. Let’s also provide our own lambda values.</p>
+<p>Then, we’ll specify lower limit of quantification as the unquoted variable name <code>LLOQ</code> in our data. Let’s also provide our own lambda values.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>

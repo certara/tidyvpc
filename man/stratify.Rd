@@ -10,9 +10,9 @@ stratify(o, ...)
 \method{stratify}{tidyvpcobj}(o, formula, data = o$data, ...)
 }
 \arguments{
-\item{o}{A \code{tidyvpcobj}}
+\item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{Other arguments to include}
+\item{...}{Other arguments to include.}
 
 \item{formula}{Formula for stratification.}
 

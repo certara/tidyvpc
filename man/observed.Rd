@@ -22,7 +22,7 @@ observed(o, ...)
 \arguments{
 \item{o}{A \code{data.frame} of observation data.}
 
-\item{...}{other arguments}
+\item{...}{other arguments.}
 
 \item{x}{Numeric x-variable, typically named TIME.}
 

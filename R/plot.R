@@ -13,10 +13,10 @@
 #' @param color A character vector of colors for the percentiles, from low to high.
 #' @param linetype A character vector of line type for the percentiles, from low to high.
 #' @param legend.position A character string specifying the position of the legend.
-#' @param facet.scales A character string specifying the `scales` argument to use for facetting.
+#' @param facet.scales A character string specifying the \code{scales} argument to use for faceting.
 #' @param custom.theme A character string specifying theme from ggplot2 package.
 #' @param ... Further arguments can be specified but are ignored.
-#' @return A `ggplot` object.
+#' @return A \code{ggplot} object.
 #' @seealso
 #' \code{ggplot}
 #' @export

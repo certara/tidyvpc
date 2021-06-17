@@ -163,7 +163,7 @@ vpc <- observed(obs_data, x=TIME, y=DV) %>%
     binless()
 ```
 
-Binless with user specified lambda values at 10%, 50%, 90% quantiles. Set `optimize = FALSE` and provide lambda smoothing parameters as a vector of length 3 for lower, median, upper quantiles.
+Binless with user-specified lambda values at 10%, 50%, 90% quantiles. Set `optimize = FALSE` and provide lambda smoothing parameters as a vector of length 3 for lower, median, upper quantiles.
 ```{r warning = FALSE}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
@@ -236,7 +236,7 @@ First, let's add an LLOQ variable to the observed data.
 obs_data$LLOQ <- 50
 ```
 
-Then we'll specify lower limit of quantification as the unquoted variable name `LLOQ` in our data. Let's also provide our own lambda values.
+Then, we'll specify lower limit of quantification as the unquoted variable name `LLOQ` in our data. Let's also provide our own lambda values.
 
 ```{r  fig.width = 9, fig.height = 6, out.width=640, warning = FALSE}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%

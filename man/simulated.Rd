@@ -12,7 +12,7 @@ simulated(o, ...)
 \arguments{
 \item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{other arguments.}
+\item{...}{Other arguments.}
 
 \item{data}{A \code{data.frame} of simulated data.}
 
