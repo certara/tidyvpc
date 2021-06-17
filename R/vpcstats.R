@@ -31,7 +31,7 @@ NULL
 #' @param lloq Number or numeric variable in data indicating the lower limit of quantification.
 #' @param alq Logical variable indicating above limit of quantification .
 #' @param uloq Number or numeric variable in data indicating the upper limit of quantification.
-#' @param ... other arguments.
+#' @param ... Other arguments.
 #' @return A \code{tidyvpcobj} containing both original data and observed data formatted with \code{x} and \code{y} variables as specified in function.
 #'   Resulting data is of class \code{data.frame} and \code{data.table}.
 #' @examples
@@ -311,7 +311,7 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
 #' @param altx  Unquoted variable name in observed data for alternative x-variable binning.
 #' @param stratum List indicating the name of stratification variable and level, if using different binning methods by strata.
 #' @param by.strata Logical indicating whether binning should be performed by strata.
-#' @param ... Other arguments to include
+#' @param ... Other arguments to include.
 #' @return Updates \code{tidyvpcobj} with \code{data.frame} containing bin information including left/right boundaries and midpoint, as specified in \code{xbin} argument.
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{stratify}} \code{\link{binless}} \code{\link{vpcstats}}
 #' @examples 
@@ -1455,14 +1455,14 @@ bin_by_classInt <- function(style, nbins=NULL) {
   }
 }
 
-#' Perform a consistency check on observed and simulated data.
+#' Perform a consistency check on observed and simulated data
 #' 
 #' This function performs a simple consistency check on an observed and
 #' simulated dataset to make sure they are consistent with respect to ordering
 #' as required by the other functions used in the VPC calculation.
 #'
 #' The consistency check is performed by comparing a combination of unique
-#' subject identifier (ID) and time. Both \code{data.frame}s must be given with
+#' subject identifier (ID) and time. Both \code{data.frame} objects must be given with
 #' those in positions 1 and 2, respectively.
 #'
 #' @param obs,sim A `data.frame` with 2 columns (see Details).

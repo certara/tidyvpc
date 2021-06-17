@@ -2,7 +2,7 @@
 % Please edit documentation in R/vpcstats.R
 \name{check_order}
 \alias{check_order}
-\title{Perform a consistency check on observed and simulated data.}
+\title{Perform a consistency check on observed and simulated data}
 \usage{
 check_order(obs, sim, tol = 1e-05)
 }
@@ -21,7 +21,7 @@ as required by the other functions used in the VPC calculation.
 }
 \details{
 The consistency check is performed by comparing a combination of unique
-subject identifier (ID) and time. Both \code{data.frame}s must be given with
+subject identifier (ID) and time. Both \code{data.frame} objects must be given with
 those in positions 1 and 2, respectively.
 }
 \examples{
