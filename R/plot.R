@@ -68,7 +68,9 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
         ggplot2::guides(
           fill=ggplot2::guide_legend(order=2),
           colour=ggplot2::guide_legend(order=2),
-          linetype=ggplot2::guide_legend(order=1))
+          linetype=ggplot2::guide_legend(order=1)) + 
+        ylab(sprintf("Observed/Simulated probabilities and associated %s%% CI", 100*vpc$conf.level)) +
+        xlab("TIME")
     } else {
       g <- ggplot2::ggplot(vpc$stats, ggplot2::aes(x = xbin)) +
         ggplot2::geom_ribbon(ggplot2::aes(ymin=lo, ymax=hi, fill=qname, col=qname, group=qname), alpha=0.1, col=NA) +
@@ -92,7 +94,9 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
         ggplot2::guides(
           fill=ggplot2::guide_legend(order=2),
           colour=ggplot2::guide_legend(order=2),
-          linetype=ggplot2::guide_legend(order=1))
+          linetype=ggplot2::guide_legend(order=1)) + 
+        ylab(sprintf("Observed/Simulated probabilities and associated %s%% CI", 100*vpc$conf.level)) +
+        xlab("TIME")
     }
   } else {
     g <- ggplot2::ggplot(vpc$strat)
@@ -207,7 +211,7 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
       }
     } else {
       if (!is.null(vpc$strat)) {
-        g <- g + ggplot2::facet_wrap(names(vpc$strat), scales=facet.scales)
+        g <- g + ggplot2::facet_wrap(names(vpc$strat), scales=facet.scales, label = label_both)
       }
     }
     
