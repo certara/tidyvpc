@@ -3,8 +3,6 @@
 
 [![](https://img.shields.io/badge/devel%20version-1.2.0-green.svg)](https://github.com/tidyvpc)
 [![](https://www.r-pkg.org/badges/version/tidyvpc?color=green)](https://cran.r-project.org/package=tidyvpc)
-[![CRAN
-checks](https://cranchecks.info/badges/summary/tidyvpc)](https://cran.r-project.org/web/checks/check_results_tidyvpc.html)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey)](https://cran.r-project.org/package=tidyvpc)
 

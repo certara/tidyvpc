@@ -13,7 +13,8 @@ Authors@R: c(
       person("Samer", "Mouksassi", email = "samermouksassi@gmail.com",
       role = c("aut")),
       person("Kris", "Jamsen",
-      role = c("ctb"))
+      role = c("ctb")),
+      person("Certara USA, Inc.", role = c("cph","fnd"))
     )
 Description: Perform a Visual Predictive Check (VPC), while accounting for 
     stratification, censoring, and prediction correction. Using piping from 

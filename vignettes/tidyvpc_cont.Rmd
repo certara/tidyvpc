@@ -13,6 +13,7 @@ options(datatable.print.nrows = 8)
 library(tidyvpc)
 library(ggplot2)
 library(magrittr)
+library(dplyr)
 set.seed(1014)
 ```
 
