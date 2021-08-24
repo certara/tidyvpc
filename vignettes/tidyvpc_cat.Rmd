@@ -197,6 +197,8 @@ should be the following: strat1, strat2, ..., DV.
 Add dummy strat variable to `obs_cat_data`:
 
 ```{r}
+library(dplyr)
+
 obs_cat_data <- obs_cat_data %>%
   mutate(gender = ifelse(PID_code %% 2 == 1, "male", "female"))
 ```
