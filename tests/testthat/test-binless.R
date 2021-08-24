@@ -34,7 +34,7 @@ test_that("cont vpc binless vpcstats are correct", {
   if(os == "windows"){
     location=system.file("extdata/Binless","stats.csv",package="tidyvpc")
   } else {
-    location=system.file("extdata/Binless_linux","stats_l.csv",package="tidyvpc")
+    location=system.file("extdata/Binless","stats_l.csv",package="tidyvpc")
   }
   
   stats <- fread(location, colClasses = c(qname = "factor"))
