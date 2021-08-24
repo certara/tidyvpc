@@ -15,7 +15,6 @@ library(tidyvpc)
 library(ggplot2)
 library(magrittr)
 library(data.table)
-library(dplyr)
 set.seed(1014)
 ```
 
@@ -36,6 +35,8 @@ The tidyvpc package has specific ordering requirements for the observed and simu
 The example datasets we'll use in this vignette are correctly ordered, but we will repeat this step for clarity.
 
 ```{r tidyvpc_setup}
+library(tidyvpc)
+library(data.table)
 
 obs_cat_data <- tidyvpc::obs_cat_data
 sim_cat_data <- tidyvpc::sim_cat_data
@@ -249,11 +250,9 @@ Generate VPC
 vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
   simulated(sim_cat_data, ysim = DV) %>%
   stratify(~ gender + Country_ID_code) %>%
-  binless(optimize = FALSE, , sp = user_sp) %>%
-  vpcstats(vpc.type = "categorical"
-           , conf.level = 0.9
-           , quantile.type = 6
-  )
+  binless(optimize = FALSE, sp = user_sp) %>%
+  vpcstats(vpc.type = "categorical", conf.level = 0.9, quantile.type = 6)
+
 plot(vpc, facet=TRUE)
 
 ```

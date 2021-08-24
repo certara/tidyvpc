@@ -1,4 +1,21 @@
 test_that("cont vpc binless vpcstats are correct", {
+  
+  get_os <- function(){
+    sysinf <- Sys.info()
+    if (!is.null(sysinf)){
+      os <- sysinf['sysname']
+      if (os == 'Darwin')
+        os <- "osx"
+    } else { ## mystery machine
+      os <- .Platform$OS.type
+      if (grepl("^darwin", R.version$os))
+        os <- "osx"
+      if (grepl("linux-gnu", R.version$os))
+        os <- "linux"
+    }
+    tolower(os)
+  }
+  
   obs_data <- tidyvpc::obs_data
   sim_data <- tidyvpc::sim_data
   
@@ -11,7 +28,14 @@ test_that("cont vpc binless vpcstats are correct", {
   vpc <- binless(vpc)
   vpc <- suppressWarnings(vpcstats(vpc))
   
-  location=system.file("extdata/Binless","stats.csv",package="tidyvpc")
+  
+  os <- get_os()
+  
+  if(os == "windows"){
+    location=system.file("extdata/Binless","stats.csv",package="tidyvpc")
+  } else {
+    location=system.file("extdata/Binless_linux","stats_l.csv",package="tidyvpc")
+  }
   
   stats <- fread(location, colClasses = c(qname = "factor"))
   
@@ -22,6 +46,23 @@ test_that("cont vpc binless vpcstats are correct", {
 
 
 test_that("cont vpc binless stratification vpcstats are correct", {
+  
+  get_os <- function(){
+    sysinf <- Sys.info()
+    if (!is.null(sysinf)){
+      os <- sysinf['sysname']
+      if (os == 'Darwin')
+        os <- "osx"
+    } else { ## mystery machine
+      os <- .Platform$OS.type
+      if (grepl("^darwin", R.version$os))
+        os <- "osx"
+      if (grepl("linux-gnu", R.version$os))
+        os <- "linux"
+    }
+    tolower(os)
+  }
+  
   obs_data <- tidyvpc::obs_data
   sim_data <- tidyvpc::sim_data
   
@@ -35,7 +76,13 @@ test_that("cont vpc binless stratification vpcstats are correct", {
   vpc <- binless(vpc)
   vpc <-  suppressWarnings(vpcstats(vpc))
   
-  location=system.file("extdata/Binless","strat_stats.csv",package="tidyvpc")
+  os <- get_os()
+  
+  if(os == "windows"){
+    location=system.file("extdata/Binless","strat_stats.csv",package="tidyvpc")
+  } else {
+    location=system.file("extdata/Binless","strat_stats_l.csv",package="tidyvpc")
+  }
   
   stats <- fread(location, colClasses = c(qname = "factor"))
   
