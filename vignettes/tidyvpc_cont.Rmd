@@ -81,7 +81,10 @@ head(obs_data)
 ```{r message=FALSE}
 sim_data <- data.table::as.data.table(tidyvpc::sim_data)
 head(sim_data)
+```
 
+```{r echo=FALSE}
+sim_data <- sim_data[REP <= 30]
 ```
 
 ### Preprocessing data
@@ -150,7 +153,7 @@ vpc <- observed(obs_data, x = TIME, y = DV) %>%
 
 ## `binless()`
 
-*Note: The `binless()` examples below relate to a continuous VPC. See [examples]() of `binless()` implementation for categorical VPC.*
+*Note: The `binless()` examples below relate to a continuous VPC. See [examples](https://certara.github.io/tidyvpc/articles/tidyvpc_cat.html) of `binless()` implementation for categorical VPC.*
 
 Binless methods for continuous VPC use Additive Quantile Regression (AQR) in place of traditional binning.  By default, `binless()` performs AQR at the 5%, 50%, and 95% quantiles, but you can change this using the `qpred` argument in `vpcstats()`, which takes a numeric vector of length 3 (e.g., `qpred =  c(.1, .5, .9)` for the 10%, 50%, 90% quantiles).
 

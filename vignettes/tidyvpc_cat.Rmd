@@ -46,6 +46,9 @@ sim_cat_data <- sim_cat_data[order(Replicate, PID_code, IVAR)]
 
 ```
 
+```{r echo=FALSE}
+sim_cat_data <- sim_cat_data[Replicate <= 30]
+```
 
 ## Binning
 

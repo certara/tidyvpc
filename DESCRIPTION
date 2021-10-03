@@ -2,13 +2,13 @@ Package: tidyvpc
 Type: Package
 Title: VPC Percentiles and Prediction Intervals
 Version: 1.2.0
-Date: 2021-05-26
+Date: 2021-09-29
 Authors@R: c(
       person("Olivier", "Barriere", email = "olivier.barriere@gmail.com",
       role = c("aut")),
       person("Benjamin", "Rich", email = "mail@benjaminrich.net",
       role = c("aut")),
-      person("James", "Craig", email = "jameswbcraig@gmail.com",
+      person("James", "Craig", email = "james.craig@certara.com",
       role = c("aut", "cre")),
       person("Samer", "Mouksassi", email = "samermouksassi@gmail.com",
       role = c("aut")),
@@ -52,4 +52,4 @@ License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

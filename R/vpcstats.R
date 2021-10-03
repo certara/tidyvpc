@@ -1198,51 +1198,6 @@ print.tidyvpcobj <- function(x, ...) {
   update(o, stats = stats, pctblq = pctblq, vpc.type = vpc.type)
 }
 
-#' Run Shiny app for tidyvpc
-#' 
-#' Use this function to run Shiny application to parameterize VPC from a GUI and generate corresponding tidyvpc code to derive VPC.
-#' 
-#' @seealso \href{https://github.com/jameswcraig/shiny-vpc/blob/master/README.md/}{Shiny-VPC GitHub}
-#' @export
-
-runShinyVPC <- function() {
-    packagesCRAN <- c("remotes", "shiny", "backports", "DT", "ggplot2", "rlang", "shinyAce", "shinydashboard", "shinydashboardPlus", "shinyjs", "shinycssloaders", "shinyWidgets")
-    cat("In order to run Shiny VPC, the following packages are required: ", paste0("\n",packagesCRAN))
-    ANSWER <- readline("Enter y/n to install any missing packages and run Shiny VPC: ")
-    if (substr(ANSWER, 1, 1) == "y") {
-      cat("Installing Packages...")
-    for(i in packagesCRAN) {
-      if(system.file(package = i) == "") {
-        install.packages(i)
-      }
-    }
-      if(system.file(package = "shinymeta") == "") {
-        remotes::install_github("rstudio/shinymeta")
-      }
-      shiny::runGitHub("shiny-vpc", "jameswcraig")
-    } else {
-      cat("Required packages must be installed to execute runShinyVPC()")
-  }
-  
-  
-  # }
-  # 
-  # if (length(setdiff(packagesCRAN, rownames(find.package()))) > 0) {
-  #   showPrompt(title = "R will install the following packages to run Shiny VPC:", message = print(setdiff(packagesCRAN, rownames(find.package()))), default = NULL)
-  #   install.packages(setdiff(packagesCRAN, rownames(find.package())))  
-  # }
-  # 
-  # if(!is.element("shinymeta", installed.packages()[,1])) {
-  #   if (requireNamespace("remotes", quietly = TRUE)) {
-  #     remotes::install_github("rstudio/shinymeta")
-  #   }
-  # }
-  # 
-  # if (requireNamespace("shiny", quietly = TRUE)) {
-  # shiny::runGitHub("shiny-vpc", "jameswcraig")
-  # }
-  
-}
 
 #' Obtain information about the bins from a \code{tidyvpcobj}
 #' @param o An object.
