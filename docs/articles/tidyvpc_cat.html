@@ -73,7 +73,7 @@
 
       
 
-      </header><script src="tidyvpc_cat_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="tidyvpc_cat_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to categorical VPC</h1>
@@ -99,7 +99,9 @@
 <p><strong>Simulated data must be ordered by: Replicate, Subject-ID, IVAR (Time)</strong></p>
 <p>The example datasets we’ll use in this vignette are correctly ordered, but we will repeat this step for clarity.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
+
 <span class="va">obs_cat_data</span> <span class="op">&lt;-</span> <span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/obs_cat_data.html">obs_cat_data</a></span>
 <span class="va">sim_cat_data</span> <span class="op">&lt;-</span> <span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/sim_cat_data.html">sim_cat_data</a></span>
 
@@ -113,8 +115,7 @@
 <p>The syntax for a continuous VPC and categorical VPC are nearly identical, except in <code><a href="../reference/vpcstats.html">vpcstats()</a></code> function, specify <code>vpc.type = "categorical"</code></p>
 <p>In the example below, we’ll bin directly on our (rounded) x variable, agemonths.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">agemonths</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span><span class="op">)</span>
@@ -124,8 +125,7 @@
 <p>Let’s explore stratification and provide a different binning method in the following VPC. We can also change our confidence level and quantile type for the prediction intervals (shaded area) by specifying <code>conf.level = .9</code> and <code>quantile.type = 6</code>.</p>
 <p><em>Note: Phoenix uses <code>quantile.type = 6</code> while tidyvpc uses <code>quantile.type = 7</code> by default.</em></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="st">"pam"</span>, nbins <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -142,25 +142,23 @@
 <h3 class="hasAnchor">
 <a href="#optimize-sp-using-aic" class="anchor"></a>Optimize <code>sp</code> using AIC</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
-<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-2-1.png" width="720" style="display: block; margin: auto;"></p>
+<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-3-1.png" width="720" style="display: block; margin: auto;"></p>
 <p>We can increase the interval used to optimize value of smoothing parameters using the <code>optimization.interval</code> argument of the <code><a href="../reference/binless.html">binless()</a></code> function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">TRUE</span>, optimization.interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
-<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-3-1.png" width="720" style="display: block; margin: auto;"></p>
+<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-4-1.png" width="720" style="display: block; margin: auto;"></p>
 </div>
 <div id="user-defined-sp" class="section level3">
 <h3 class="hasAnchor">
@@ -173,8 +171,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">zlencat</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0 1 2</span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="va">sp_user</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>p0 <span class="op">=</span> <span class="fl">300</span>,
+<code class="sourceCode R"><span class="va">sp_user</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>p0 <span class="op">=</span> <span class="fl">300</span>,
                 p1 <span class="op">=</span> <span class="fl">50</span>,
                 p2 <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -184,7 +181,7 @@
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
-<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-6-1.png" width="720" style="display: block; margin: auto;"></p>
+<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-7-1.png" width="720" style="display: block; margin: auto;"></p>
 <div id="specifying-sp-for-each-strata" class="section level4">
 <h4 class="hasAnchor">
 <a href="#specifying-sp-for-each-strata" class="anchor"></a>Specifying <code>sp</code> for each strata</h4>
@@ -219,7 +216,7 @@
            , quantile.type <span class="op">=</span> <span class="fl">6</span>
   <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-9-1.png" width="720" style="display: block; margin: auto;"></p>
+<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-10-1.png" width="720" style="display: block; margin: auto;"></p>
 </div>
 <div id="multiple-stratification-variables" class="section level5">
 <h5 class="hasAnchor">
@@ -227,8 +224,20 @@
 <p>If supplying <code>sp</code> argument with one or more stratification variables, the order of elements in the list provided should be the following: strat1, strat2, …, DV.</p>
 <p>Add dummy strat variable to <code>obs_cat_data</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obs_cat_data</span> <span class="op">&lt;-</span> <span class="va">obs_cat_data</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>gender <span class="op">=</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fifelse.html">ifelse</a></span><span class="op">(</span><span class="va">PID_code</span> <span class="op">%%</span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'dplyr'</span>
+<span class="co">#&gt; The following objects are masked from 'package:data.table':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     between, first, last</span>
+<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     filter, lag</span>
+<span class="co">#&gt; The following objects are masked from 'package:base':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
+<span class="va">obs_cat_data</span> <span class="op">&lt;-</span> <span class="va">obs_cat_data</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gender <span class="op">=</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fifelse.html">ifelse</a></span><span class="op">(</span><span class="va">PID_code</span> <span class="op">%%</span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -268,13 +277,11 @@
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">gender</span> <span class="op">+</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, , sp <span class="op">=</span> <span class="va">user_sp</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>
-           , conf.level <span class="op">=</span> <span class="fl">0.9</span>
-           , quantile.type <span class="op">=</span> <span class="fl">6</span>
-  <span class="op">)</span>
+  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">user_sp</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, conf.level <span class="op">=</span> <span class="fl">0.9</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
+
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-14-1.png" width="720" style="display: block; margin: auto;"></p>
+<p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-15-1.png" width="720" style="display: block; margin: auto;"></p>
 </div>
 </div>
 </div>

@@ -1,7 +1,7 @@
 
-# tidyvpc <a href='https://github.com/jameswcraig/tidyvpc/'><img src='https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true' align="right" height="200" /></a>
+# tidyvpc <a href='https://github.com/certara/tidyvpc/'><img src='https://github.com/certara/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true' align="right" height="200" /></a>
 
-[![](https://img.shields.io/badge/devel%20version-1.2.0-green.svg)](https://github.com/tidyvpc)
+[![](https://img.shields.io/badge/devel%20version-1.2.0-green.svg)](https://github.com/certara/tidyvpc)
 [![](https://www.r-pkg.org/badges/version/tidyvpc?color=green)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey)](https://cran.r-project.org/package=tidyvpc)
@@ -10,7 +10,6 @@
 
 * Support for [categorical VPC](https://certara.github.io/tidyvpc/articles/tidyvpc_cat.html) using both binning and binless methods
 * Support for [NPDE](https://certara.github.io/tidyvpc/reference/npde.html)
-* CRAN release of `tidyvpc` 1.2 coming soon
 
 [Learn More](https://certara.github.io/tidyvpc/articles/tidyvpc_cat.html)
 
@@ -92,7 +91,7 @@ ggplot(vpc$stats, aes(x=xbin)) +
     labs(x="Time (h)", y="Concentration (ng/mL)")
 ```
 
-<img src='https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/snapshot1.png?raw=true' align="center" width="900" height="600" />
+<img src='https://github.com/certara/tidyvpc/blob/master/inst/img/snapshot1.png?raw=true' align="center" width="900" height="600" />
 
 
 Or use the built-in `plot()` function from the `tidyvpc` package.
@@ -112,15 +111,4 @@ vpc <- observed(obs_data, x=TIME, y=DV) %>%
 
 plot(vpc)
 ```
-<img src='https://github.com/jameswcraig/tidyvpc/blob/master/inst/img/snapshot2.png?raw=true' align="center" width="900" height="600" />
-
-### Shiny Application
-
-The `tidyvpc` package contains a wrapper function to install necessary dependencies and run the [Shiny-VPC Application](https://github.com/jameswcraig/shiny-vpc).
-Use the `runShinyVPC()` function from `tidyvpc` to parameterize VPC from a GUI and generate corresponding `tidyvpc` 
-and `ggplot2` code to reproduce VPC in your local R session. 
-
-``` r
-runShinyVPC()
-```
-*Note: Internet access is required to use `runShinyVPC()`.*
+<img src='https://github.com/certara/tidyvpc/blob/master/inst/img/snapshot2.png?raw=true' align="center" width="900" height="600" />
