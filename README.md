@@ -22,7 +22,7 @@ remotes::install_github("certara/tidyvpc")
 ```
 
 ### Data Preprocessing
-`tidyvpc` requires specific structure of observed and simulated data in order to sucessfully generate VPC.
+`tidyvpc` requires specific structure of observed and simulated data in order to successfully generate VPC.
 
 * DV cannot be missing in observed/simulated data i.e. subset `MDV == 0`
 * Observed data must be ordered by: Subject-ID, IVAR (Time)
@@ -106,8 +106,8 @@ vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     stratify(~ GENDER) %>%
     predcorrect(pred=PRED) %>%
-    binless(qpred = c(0.1, 0.5, 0.9), loess.ypc = TRUE) %>%
-    vpcstats()
+    binless(loess.ypc = TRUE) %>%
+    vpcstats(qpred = c(0.1, 0.5, 0.9))
 
 plot(vpc)
 ```

@@ -61,6 +61,33 @@
     </li>
   </ul>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Certara R Packages
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="https://certara.github.io/R-RsNLME/index.html">RsNLME</a>
+    </li>
+    <li>
+      <a href="https://certara.github.io/R-RsNLME-model-builder/index.html">RsNLME Model Builder</a>
+    </li>
+    <li>
+      <a href="https://certara.github.io/R-RsNLME-model-executor/index.html">RsNLME Model Executor</a>
+    </li>
+    <li>
+      <a href="https://certara.github.io/R-Xpose-NLME/index.html">Xpose.NLME</a>
+    </li>
+    <li>
+      <a href="https://certara.github.io/R-model-results/index.html">Model Results</a>
+    </li>
+    <li>
+      <a href="https://certara.github.io/R-VPCResults/">VPC Results</a>
+    </li>
+  </ul>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -106,7 +133,7 @@ remotes::install_github("certara/tidyvpc")</a></code></pre>
 <div id="data-preprocessing" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-preprocessing" class="anchor"></a>Data Preprocessing</h3>
-<p><code>tidyvpc</code> requires specific structure of observed and simulated data in order to sucessfully generate VPC.</p>
+<p><code>tidyvpc</code> requires specific structure of observed and simulated data in order to successfully generate VPC.</p>
 <ul>
 <li>DV cannot be missing in observed/simulated data i.e. subset <code>MDV == 0</code>
 </li>
@@ -183,8 +210,8 @@ remotes::install_github("certara/tidyvpc")</a></code></pre>
     <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">GENDER</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="reference/predcorrect.html">predcorrect</a></span><span class="op">(</span>pred<span class="op">=</span><span class="va">PRED</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/binless.html">binless</a></span><span class="op">(</span>qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span>, loess.ypc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span>
+    <span class="fu"><a href="reference/binless.html">binless</a></span><span class="op">(</span>loess.ypc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">)</span></code></pre></div>
 <p><img src="https://github.com/certara/tidyvpc/blob/master/inst/img/snapshot2.png?raw=true" align="center" width="900" height="600"></p>
