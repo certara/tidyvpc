@@ -15,6 +15,10 @@
 
 ### Installation and Running information
 ```
+# CRAN
+install.packages("tidyvpc")
+
+# Development
 # If there are errors (converted from warning) during installation related to packages built under different version of R,
 # they can be ignored by setting the environment variable R_REMOTES_NO_ERRORS_FROM_WARNINGS="true" before calling install_github()
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
@@ -22,7 +26,7 @@ remotes::install_github("certara/tidyvpc")
 ```
 
 ### Data Preprocessing
-`tidyvpc` requires specific structure of observed and simulated data in order to successfully generate VPC.
+`tidyvpc` requires a specific structure of observed and simulated data in order to successfully generate VPC.
 
 * DV cannot be missing in observed/simulated data i.e. subset `MDV == 0`
 * Observed data must be ordered by: Subject-ID, IVAR (Time)

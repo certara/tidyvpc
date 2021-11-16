@@ -125,7 +125,11 @@
 <div id="installation-and-running-information" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation-and-running-information" class="anchor"></a>Installation and Running information</h3>
-<pre><code><a href="https://rdrr.io/r/base/Sys.setenv.html"># If there are errors (converted from warning) during installation related to packages built under different version of R,
+<pre><code><a href="https://rdrr.io/r/utils/install.packages.html"># CRAN
+install.packages("tidyvpc")
+
+# Development
+# If there are errors (converted from warning) during installation related to packages built under different version of R,
 # they can be ignored by setting the environment variable R_REMOTES_NO_ERRORS_FROM_WARNINGS="true" before calling install_github()
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 remotes::install_github("certara/tidyvpc")</a></code></pre>
@@ -133,7 +137,7 @@ remotes::install_github("certara/tidyvpc")</a></code></pre>
 <div id="data-preprocessing" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-preprocessing" class="anchor"></a>Data Preprocessing</h3>
-<p><code>tidyvpc</code> requires specific structure of observed and simulated data in order to successfully generate VPC.</p>
+<p><code>tidyvpc</code> requires a specific structure of observed and simulated data in order to successfully generate VPC.</p>
 <ul>
 <li>DV cannot be missing in observed/simulated data i.e. subset <code>MDV == 0</code>
 </li>
