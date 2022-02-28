@@ -227,48 +227,22 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
 
 
 .get_colors <- function(n){
-  if(n <= 1){
-    stop("Levels must be greater than 1")
-  }
-  if(n == 2){
-    colors <- c("green", "blue")
-  } else if(n == 3){
-    colors <- c("green", "blue", "red")
-  } else if(n == 4){
-    colors <- c("green", "blue", "red", "orange")
-  } else if(n == 5){
-    colors <- c("green", "blue", "red", "orange", "purple")
-  } else if(n == 6){
-    colors <- c("green", "blue", "red", "orange", "purple", "yellow")
-  }
+  stopifnot(n > 1 && n < 11)
   
-  colors
+  colors <- c("#59A14FE6","#4E79A7E6", "#E15759E6", "#F28E2BE6",
+              "#B07AA1E6", "#EDC948E6", "#FF9DA7E6", "#9C755FE6",
+              "#BAB0ACE6")
+  
+  colors[1:n]
 }
-
-
-
 
 
 
 .get_lines <- function(n){
-  if(n <= 1){
-    stop("Levels must be greater than 1")
-  }
-  if(n == 2){
-    lines <- c("solid", "dashed")
-  } else if(n == 3){
-    lines <- c("solid", "dashed", "dotted")
-  } else if(n == 4){
-    lines <- c("solid", "dashed", "dotted", "dotdash")
-  } else if(n == 5){
-    lines <- c("solid", "dashed", "dotted", "dotdash", "longdash")
-  } else if(n == 6){
-    lines <- c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
-  }
+  stopifnot(n > 1 && n < 11)
   
-  lines
+  lines <- c("solid", "dashed", "dotted", "dotdash", "longdash",
+               "twodash", "solid", "dashed", "dotted", "dotdash")
+  
+  lines[1:n]
 }
-
-
-
-
