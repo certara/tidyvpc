@@ -157,7 +157,11 @@ plot.tidyvpcobj <- function(x, ..., facet = FALSE, show.points=TRUE, show.bounda
     }
   } else {
     if (!is.null(vpc$strat)) {
-      g <- g + ggplot2::facet_grid(vpc$strat.formula, scales=facet.scales)
+      if(length(as.list(vpc$strat.formula)) == 3) {
+        g <- g + ggplot2::facet_grid(vpc$strat.formula, scales=facet.scales)
+      } else {
+        g <- g + ggplot2::facet_wrap(names(vpc$strat), scales=facet.scales)
+      }
     }
   }
   
