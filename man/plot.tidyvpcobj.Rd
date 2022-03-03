@@ -6,7 +6,6 @@
 \usage{
 \method{plot}{tidyvpcobj}(
   x,
-  ...,
   facet = FALSE,
   show.points = TRUE,
   show.boundaries = TRUE,
@@ -16,17 +15,20 @@
   ylab = NULL,
   color = c("red", "blue", "red"),
   linetype = c("dotted", "solid", "dashed"),
+  point.alpha = 0.4,
+  point.size = 1,
+  ribbon.alpha = 0.1,
   legend.position = "top",
   facet.scales = "free",
-  custom.theme = "ggplot2::theme_bw"
+  custom.theme = "ggplot2::theme_bw",
+  ...
 )
 }
 \arguments{
 \item{x}{A \code{tidyvpcobj}.}
 
-\item{...}{Further arguments can be specified but are ignored.}
-
-\item{facet}{Should the resulting plot automatically facet by category? Only applicable for categorical VPC.}
+\item{facet}{Set to \code{TRUE} to facet plot by quantile (continuous VPC) or 
+category (categorical VPC).}
 
 \item{show.points}{Should the observed data points be plotted?}
 
@@ -44,11 +46,21 @@
 
 \item{linetype}{A character vector of line type for the percentiles, from low to high.}
 
-\item{legend.position}{A character string specifying the position of the legend.}
+\item{point.alpha}{Numeric value specifying transparency of points.}
 
-\item{facet.scales}{A character string specifying the \code{scales} argument to use for faceting.}
+\item{point.size}{Numeric value specifying size of point.}
+
+\item{ribbon.alpha}{Numeric value specifying transparency of ribbon.}
+
+\item{legend.position}{A character string specifying the position of the legend. Options are 
+\code{"top", "bottom", "left", "right"}.}
+
+\item{facet.scales}{A character string specifying the \code{scales} argument to use for faceting. Options 
+are \code{"free", "fixed"}.}
 
 \item{custom.theme}{A character string specifying theme from ggplot2 package.}
+
+\item{...}{Further arguments can be specified but are ignored.}
 }
 \value{
 A \code{ggplot} object.
