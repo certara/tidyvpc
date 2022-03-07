@@ -17,6 +17,8 @@
   linetype = c("dotted", "solid", "dashed"),
   point.alpha = 0.4,
   point.size = 1,
+  point.shape = "circle-fill",
+  point.stroke = 1,
   ribbon.alpha = 0.1,
   legend.position = "top",
   facet.scales = "free",
@@ -49,6 +51,11 @@ category (categorical VPC).}
 \item{point.alpha}{Numeric value specifying transparency of points.}
 
 \item{point.size}{Numeric value specifying size of point.}
+
+\item{point.shape}{Character one of \code{"circle", "circle-fill", "diamond", "diamond-fill",
+"square", "square-fill", "triangle-fill" , "triangle")}. Defaults to \code{"circle-fill"}.}
+
+\item{point.stroke}{Numeric value specifying size of point stroke.}
 
 \item{ribbon.alpha}{Numeric value specifying transparency of ribbon.}
 

@@ -15,6 +15,9 @@
 #' @param linetype A character vector of line type for the percentiles, from low to high.
 #' @param point.alpha Numeric value specifying transparency of points.
 #' @param point.size Numeric value specifying size of point.
+#' @param point.shape Character one of \code{"circle", "circle-fill", "diamond", "diamond-fill",
+#'  "square", "square-fill", "triangle-fill" , "triangle")}. Defaults to \code{"circle-fill"}.
+#' @param point.stroke Numeric value specifying size of point stroke.
 #' @param ribbon.alpha Numeric value specifying transparency of ribbon.
 #' @param legend.position A character string specifying the position of the legend. Options are 
 #' \code{"top", "bottom", "left", "right"}.
@@ -37,14 +40,23 @@ plot.tidyvpcobj <- function(x,
                             linetype=c("dotted", "solid", "dashed"),
                             point.alpha = 0.4,
                             point.size = 1,
+                            point.shape = "circle-fill",
+                            point.stroke = 1,
                             ribbon.alpha = 0.1,
                             legend.position="top", 
                             facet.scales="free", 
-                            custom.theme = "ggplot2::theme_bw",
+                            custom.theme = "ggplot2::theme_bw", #support function
                             ...) {
   
   xbin <- lo <- hi <- qname <- md <- y <- xleft <- xright <- ypc <- l.ypc <- bin <- blq <- alq <- pname <-  NULL
   . <- list
+  
+  point_shape_vec <-  c("circle" = 1, "circle-fill" = 19,  "diamond" = 5, "diamond-fill" = 18,
+                        "square" = 0, "square-fill" = 15,  "triangle-fill" = 17, "triangle" = 2)
+  if(!point.shape %in% names(point_shape_vec))
+    stop(paste0("point.shape must be one of ", paste0(names(point_shape_vec), collapse = ", ")))
+  
+  point.shape <- as.numeric(point_shape_vec[names(point_shape_vec) == point.shape])
 
   vpc <- x
   
@@ -147,11 +159,13 @@ plot.tidyvpcobj <- function(x,
       points.dat[, color := reorder2(factor(bin), x), by=vpc$strat]
       points.dat[, color := factor(color)]
       points.dat <- points.dat[!(blq|alq)]
-      g <- g + ggplot2::geom_point(data=points.dat, ggplot2::aes(x=x, y=y, color=color), size=point.size, alpha=point.alpha, show.legend=FALSE) +
+      g <- g + ggplot2::geom_point(data=points.dat, ggplot2::aes(x=x, y=y, color=color),
+                                   size=point.size, alpha=point.alpha, shape = point.shape, stroke = point.stroke, show.legend=FALSE) +
         ggplot2::scale_color_brewer(palette="Set1")
     } else {
       points.dat <- points.dat[!(blq|alq)]
-      g <- g + ggplot2::geom_point(data=points.dat, ggplot2::aes(x=x, y=y), size=point.size, alpha=point.alpha)
+      g <- g + ggplot2::geom_point(data=points.dat, ggplot2::aes(x=x, y=y), 
+                                   size=point.size, shape = point.shape, stroke = point.stroke, alpha=point.alpha)
     }
   }
   
@@ -192,7 +206,7 @@ plot.tidyvpcobj <- function(x,
         geom_ribbon(aes(ymin = lo, ymax = hi, fill = pname, col = pname, group = pname), alpha = ribbon.alpha, col = NA) +
         geom_line(aes(y = md, col = pname, group = pname)) +
         geom_line(aes(y = y, linetype = pname), size = 1) +
-        geom_point(aes(x = x, y = y), size = point.size, alpha = point.alpha) +
+        geom_point(aes(x = x, y = y), size = point.size, alpha = point.alpha, shape = point.shape, stroke = point.stroke) +
         ylab(sprintf("Observed/Simulated probabilities and associated %s%% CI", 100*vpc$conf.level)) +
         xlab("TIME") +
         scale_colour_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level) , breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
@@ -212,7 +226,7 @@ plot.tidyvpcobj <- function(x,
       geom_ribbon(aes(ymin = lo, ymax = hi, fill = pname, col = pname, group = pname), alpha = ribbon.alpha, col = NA) +
       geom_line(aes(y = md, col = pname, group = pname)) +
       geom_line(aes(y = y, linetype = pname), size = 1) +
-      geom_point(aes(x = xbin, y = y), size = point.size, alpha = point.alpha) +
+      geom_point(aes(x = xbin, y = y), size = point.size, alpha = point.alpha, shape = point.shape, stroke = point.stroke) +
       ylab(sprintf("Observed/Simulated probabilities and associated %s%% CI", 100*vpc$conf.level)) +
       xlab("TIME") +
       scale_colour_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level), breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
