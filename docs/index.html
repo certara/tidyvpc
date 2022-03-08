@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -113,26 +113,52 @@
 <a href="#tidyvpc-" class="anchor"></a>tidyvpc <a href="https://github.com/certara/tidyvpc/"><img src="https://github.com/certara/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true" align="right" height="200"></a>
 </h1></div>
 
-<div id="whats-new-in-12" class="section level2">
+<div id="whats-new-in-13" class="section level2">
 <h2 class="hasAnchor">
-<a href="#whats-new-in-12" class="anchor"></a>What’s New in 1.2?</h2>
+<a href="#whats-new-in-13" class="anchor"></a>What’s New in 1.3?</h2>
+<p><code>tidyvpc v1.3.0</code> provides additional arguments to control aesthetics in the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function. In addition, an <a href="https://github.com/certara/tidyvpc/issues/11">issue</a> has been fixed where VPC’s with one-sided statification formulas once again use <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap()</a></code> and two-sided stratification formulas use <code><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid()</a></code>.</p>
+<p>Additional arguments to the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function include:</p>
 <ul>
-<li>Support for <a href="https://certara.github.io/tidyvpc/articles/tidyvpc_cat.html">categorical VPC</a> using both binning and binless methods</li>
-<li>Support for <a href="https://certara.github.io/tidyvpc/reference/npde.html">NPDE</a>
-</li>
+<li><code>point.size</code></li>
+<li><code>point.stroke</code></li>
+<li><code>point.shape</code></li>
+<li><code>point.alpha</code></li>
+<li><code>ribbon.alpha</code></li>
 </ul>
-<p><a href="https://certara.github.io/tidyvpc/articles/tidyvpc_cat.html">Learn More</a></p>
+<p><a href="https://certara.github.io/tidyvpc/articles/tidyvpc_1_3_0.html">Learn More</a></p>
 <div id="installation-and-running-information" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation-and-running-information" class="anchor"></a>Installation and Running information</h3>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html"># CRAN
-install.packages("tidyvpc")
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># CRAN</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tidyvpc"</span><span class="op">)</span>
 
-# Development
-# If there are errors (converted from warning) during installation related to packages built under different version of R,
-# they can be ignored by setting the environment variable R_REMOTES_NO_ERRORS_FROM_WARNINGS="true" before calling install_github()
-Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
-remotes::install_github("certara/tidyvpc")</a></code></pre>
+<span class="co"># Development</span>
+<span class="co"># If there are errors (converted from warning) during installation related to packages</span>
+<span class="co"># built under different version of R, they can be ignored by setting the environment variable </span>
+<span class="co"># R_REMOTES_NO_ERRORS_FROM_WARNINGS="true" before calling remotes::install_github()</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span><span class="op">(</span>R_REMOTES_NO_ERRORS_FROM_WARNINGS<span class="op">=</span><span class="st">"true"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"certara/tidyvpc"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="learning-tidyvpc" class="section level3">
+<h3 class="hasAnchor">
+<a href="#learning-tidyvpc" class="anchor"></a>Learning <code>tidyvpc</code>
+</h3>
+<p>The <a href="https://certara.github.io/R-VPCResults/"><code>Certara.VPCResults</code></a> package offers a Shiny app that can be used to easily generate the underlying <code>tidyvpc</code> and <code>ggplot2</code> code used to create your VPC.</p>
+<p>After importing the observed and simulated data into your R environment, use the function <a href="https://certara.github.io/R-VPCResults/reference/vpcResultsUI.html"><code>vpcResultsUI()</code></a> to parameterize the VPC and customize the resulting plot output using the Shiny GUI - then generate the R code to reproduce from command line!</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"Certara.VPCResults"</span>,
+                 repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"https://certara.jfrog.io/artifactory/certara-cran-release-public/"</span>,
+                           <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span>,
+                 method <span class="op">=</span> <span class="st">"libcurl"</span><span class="op">)</span>
+                 
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Certara.VPCResults</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/pkg/Certara.VPCResults/man/vpcResultsUI.html">vpcResultsUI</a></span><span class="op">(</span>observed <span class="op">=</span> <span class="va">obs_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span>, simulated <span class="op">=</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<p><img src="articles/img/vpc_results_overview.gif"></p>
+<p>The Shiny application can serve as a learning heuristic and ensures reproducibility by allowing you to save <code>R</code> and/or <code>Rmd</code> scripts. Additionally, you may render RMarkdown to an <code>html</code>, <code>pdf</code>, or <code>docx</code> output report. Click <a href="https://certara.github.io/R-VPCResults/">here</a> to learn more about <a href="https://certara.github.io/R-VPCResults/"><code>Certara.VPCResults</code></a>.</p>
 </div>
 <div id="data-preprocessing" class="section level3">
 <h3 class="hasAnchor">
@@ -149,7 +175,7 @@ remotes::install_github("certara/tidyvpc")</a></code></pre>
 <div id="usage" class="section level3">
 <h3 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span>
@@ -162,14 +188,14 @@ remotes::install_github("certara/tidyvpc")</a></code></pre>
 <span class="va">obs_data</span><span class="op">$</span><span class="va">LLOQ</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">STUDY</span> <span class="op">==</span> <span class="st">"Study A"</span>, <span class="fl">50</span>, <span class="fl">25</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co"># Binning Method on x-variable (NTIME)</span>
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/censoring.html">censoring</a></span><span class="op">(</span>blq<span class="op">=</span><span class="op">(</span><span class="va">DV</span> <span class="op">&lt;</span> <span class="va">LLOQ</span><span class="op">)</span>, lloq<span class="op">=</span><span class="va">LLOQ</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="va">NTIME</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="reference/censoring.html">censoring</a></span><span class="op">(</span>blq<span class="op">=</span><span class="op">(</span><span class="va">DV</span> <span class="op">&lt;</span> <span class="va">LLOQ</span><span class="op">)</span>, lloq<span class="op">=</span><span class="va">LLOQ</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="va">NTIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="reference/vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>Plot Code:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">$</span><span class="va">stats</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">xbin</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin<span class="op">=</span><span class="va">lo</span>, ymax<span class="op">=</span><span class="va">hi</span>, fill<span class="op">=</span><span class="va">qname</span>, col<span class="op">=</span><span class="va">qname</span>, group<span class="op">=</span><span class="va">qname</span><span class="op">)</span>, alpha<span class="op">=</span><span class="fl">0.1</span>, col<span class="op">=</span><span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
@@ -204,17 +230,17 @@ remotes::install_github("certara/tidyvpc")</a></code></pre>
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"Time (h)"</span>, y<span class="op">=</span><span class="st">"Concentration (ng/mL)"</span><span class="op">)</span></code></pre></div>
 <p><img src="https://github.com/certara/tidyvpc/blob/master/inst/img/snapshot1.png?raw=true" align="center" width="900" height="600"></p>
 <p>Or use the built-in <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function from the <code>tidyvpc</code> package.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Binless method using 10%, 50%, 90% quantiles and LOESS Prediction Corrected</span>
 
 <span class="co"># Add PRED variable to observed data from first replicate of sim_data</span>
 <span class="va">obs_data</span><span class="op">$</span><span class="va">PRED</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">REP</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">PRED</span><span class="op">]</span>
 
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">GENDER</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/predcorrect.html">predcorrect</a></span><span class="op">(</span>pred<span class="op">=</span><span class="va">PRED</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="reference/binless.html">binless</a></span><span class="op">(</span>loess.ypc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">GENDER</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="reference/predcorrect.html">predcorrect</a></span><span class="op">(</span>pred<span class="op">=</span><span class="va">PRED</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="reference/binless.html">binless</a></span><span class="op">(</span>loess.ypc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">)</span></code></pre></div>
@@ -258,7 +284,7 @@ remotes::install_github("certara/tidyvpc")</a></code></pre>
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/certara/tidyvpc"><img src="https://img.shields.io/badge/devel%20version-1.2.0-green.svg"></a></li>
+<li><a href="https://github.com/certara/tidyvpc"><img src="https://img.shields.io/badge/devel%20version-1.3.0-green.svg"></a></li>
 <li><a href="https://cran.r-project.org/package=tidyvpc"><img src="https://www.r-pkg.org/badges/version/tidyvpc?color=green"></a></li>
 <li><a href="https://cran.r-project.org/package=tidyvpc"><img src="http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue"></a></li>
 <li><a href="https://cran.r-project.org/package=tidyvpc"><img src="http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey"></a></li>

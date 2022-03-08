@@ -1,6 +1,14 @@
 ## Release summary
 
-This is a minor release that implements support for categorical VPC, using both traditional binning and new binless methods.
+This is a minor release that provides additional arguments to control aesthetics in the plot() function. In addition, an [issue](https://github.com/certara/tidyvpc/issues/11) has been fixed where VPC's with one-sided statification formulas once again use `facet_wrap()` and two-sided stratification formulas use `facet_grid()`.
+
+Additional arguments to the `plot()` function include:
+
+* `point.size`
+* `point.stroke`
+* `point.shape`
+* `point.alpha`
+* `ribbon.alpha`
 
 ## Test environments
 

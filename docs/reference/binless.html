@@ -74,7 +74,7 @@ VPC, this is obtained using a generalized additive model (gam(family = &quot;bin
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -222,71 +222,98 @@ should be specified as unique combination of strata + DV, in ascending order. Se
     <div class='dont-index'><p><code><a href='observed.html'>observed</a></code> <code><a href='simulated.html'>simulated</a></code> <code><a href='censoring.html'>censoring</a></code> <code><a href='predcorrect.html'>predcorrect</a></code> <code><a href='stratify.html'>stratify</a></code> <code><a href='binning.html'>binning</a></code> <code><a href='vpcstats.html'>vpcstats</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'><a href='https://magrittr.tidyverse.org'>magrittr</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: magrittr</span></div><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'><a href='https://r-datatable.com'>data.table</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: data.table</span></div><div class='input'>
-<span class='va'>obs_data</span> <span class='op'>&lt;-</span> <span class='va'>obs_data</span><span class='op'>[</span><span class='va'>MDV</span> <span class='op'>==</span> <span class='fl'>0</span><span class='op'>]</span>
-<span class='va'>sim_data</span> <span class='op'>&lt;-</span> <span class='va'>sim_data</span><span class='op'>[</span><span class='va'>MDV</span> <span class='op'>==</span> <span class='fl'>0</span><span class='op'>]</span>
-
-
- <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_data</span>, y <span class='op'>=</span> <span class='va'>DV</span>, x <span class='op'>=</span> <span class='va'>TIME</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_data</span>, y <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'>binless</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='input'>      
- <span class='co'># Binless example with LOESS prediction correction</span>
- 
- <span class='va'>obs_data</span><span class='op'>$</span><span class='va'>PRED</span> <span class='op'>&lt;-</span> <span class='va'>sim_data</span><span class='op'>[</span><span class='va'>REP</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='va'>PRED</span><span class='op'>]</span>
- 
- <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_data</span>, y <span class='op'>=</span> <span class='va'>DV</span>, x <span class='op'>=</span> <span class='va'>TIME</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_data</span>, y <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='predcorrect.html'>predcorrect</a></span><span class='op'>(</span>pred <span class='op'>=</span> <span class='va'>PRED</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'>binless</span><span class='op'>(</span>optimize <span class='op'>=</span> <span class='cn'>TRUE</span>, loess.ypc <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='input'>      
-<span class='co'># Binless example with user specified lambda values stratified on </span>
-<span class='co'># "GENDER" with 2 levels ("M", "F"), 10%, 50%, 90% quantiles.</span>
- 
- <span class='va'>lambda_strat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span><span class='op'>(</span>
- GENDER_M <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>5</span>,<span class='fl'>2</span><span class='op'>)</span>,
- GENDER_F <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>4</span><span class='op'>)</span>
- <span class='op'>)</span>
- 
- <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_data</span>, y <span class='op'>=</span> <span class='va'>DV</span>, x <span class='op'>=</span> <span class='va'>TIME</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_data</span>, y <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='stratify.html'>stratify</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>GENDER</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'>binless</span><span class='op'>(</span>optimize <span class='op'>=</span> <span class='cn'>FALSE</span>, lambda <span class='op'>=</span> <span class='va'>lambda_strat</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-      <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>qpred <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>0.9</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='output co'>#&gt; <span class='warning'>Warning: tiny diagonals replaced with Inf when calling blkfct</span></div><div class='input'>      
- <span class='co'># Binless example for categorical DV with optimized smoothing</span>
- <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_cat_data</span>, x <span class='op'>=</span> <span class='va'>agemonths</span>, yobs <span class='op'>=</span> <span class='va'>zlencat</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-       <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_cat_data</span>, ysim <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-       <span class='fu'><a href='stratify.html'>stratify</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>Country_ID_code</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-       <span class='fu'>binless</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-       <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>vpc.type <span class='op'>=</span> <span class='st'>"cat"</span>, quantile.type <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>
-       
- <span class='co'># Binless example for categorical DV with user specified sp values</span>
- <span class='va'>user_sp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
- Country1_prob0 <span class='op'>=</span> <span class='fl'>100</span>,
- Country1_prob1 <span class='op'>=</span> <span class='fl'>3</span>,
- Country1_prob2 <span class='op'>=</span> <span class='fl'>4</span>,
- Country2_prob0 <span class='op'>=</span> <span class='fl'>90</span>,
- Country2_prob1 <span class='op'>=</span> <span class='fl'>3</span>,
- Country2_prob2 <span class='op'>=</span> <span class='fl'>4</span>,
- Country3_prob0 <span class='op'>=</span> <span class='fl'>55</span>,
- Country3_prob1 <span class='op'>=</span> <span class='fl'>3</span>,
- Country3_prob2 <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
- 
- <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_cat_data</span>, x <span class='op'>=</span> <span class='va'>agemonths</span>, yobs <span class='op'>=</span> <span class='va'>zlencat</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-        <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_cat_data</span>, ysim <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-        <span class='fu'><a href='stratify.html'>stratify</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>Country_ID_code</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-        <span class='fu'>binless</span><span class='op'>(</span>optimize <span class='op'>=</span> <span class='cn'>FALSE</span>, sp <span class='op'>=</span> <span class='va'>user_sp</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-        <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>vpc.type <span class='op'>=</span> <span class='st'>"categorical"</span>, conf.level <span class='op'>=</span> <span class='fl'>0.9</span>, quantile.type <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>
-<span class='co'># }</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'><a href='https://magrittr.tidyverse.org'>magrittr</a></span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: magrittr</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>package 'magrittr' was built under R version 4.1.2</span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'><a href='https://r-datatable.com'>data.table</a></span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: data.table</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>package 'data.table' was built under R version 4.1.2</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>obs_data</span> <span class='op'>&lt;-</span> <span class='va'>obs_data</span><span class='op'>[</span><span class='va'>MDV</span> <span class='op'>==</span> <span class='fl'>0</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>sim_data</span> <span class='op'>&lt;-</span> <span class='va'>sim_data</span><span class='op'>[</span><span class='va'>MDV</span> <span class='op'>==</span> <span class='fl'>0</span><span class='op'>]</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'> <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_data</span>, y <span class='op'>=</span> <span class='va'>DV</span>, x <span class='op'>=</span> <span class='va'>TIME</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_data</span>, y <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'>binless</span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-in'>      </span>
+<span class='r-in'> <span class='co'># Binless example with LOESS prediction correction</span></span>
+<span class='r-in'> </span>
+<span class='r-in'> <span class='va'>obs_data</span><span class='op'>$</span><span class='va'>PRED</span> <span class='op'>&lt;-</span> <span class='va'>sim_data</span><span class='op'>[</span><span class='va'>REP</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='va'>PRED</span><span class='op'>]</span></span>
+<span class='r-in'> </span>
+<span class='r-in'> <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_data</span>, y <span class='op'>=</span> <span class='va'>DV</span>, x <span class='op'>=</span> <span class='va'>TIME</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_data</span>, y <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='predcorrect.html'>predcorrect</a></span><span class='op'>(</span>pred <span class='op'>=</span> <span class='va'>PRED</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'>binless</span><span class='op'>(</span>optimize <span class='op'>=</span> <span class='cn'>TRUE</span>, loess.ypc <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-in'>      </span>
+<span class='r-in'><span class='co'># Binless example with user specified lambda values stratified on </span></span>
+<span class='r-in'><span class='co'># "GENDER" with 2 levels ("M", "F"), 10%, 50%, 90% quantiles.</span></span>
+<span class='r-in'> </span>
+<span class='r-in'> <span class='va'>lambda_strat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span><span class='op'>(</span></span>
+<span class='r-in'> GENDER_M <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>5</span>,<span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'> GENDER_F <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>4</span><span class='op'>)</span></span>
+<span class='r-in'> <span class='op'>)</span></span>
+<span class='r-in'> </span>
+<span class='r-in'> <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_data</span>, y <span class='op'>=</span> <span class='va'>DV</span>, x <span class='op'>=</span> <span class='va'>TIME</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_data</span>, y <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='stratify.html'>stratify</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>GENDER</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'>binless</span><span class='op'>(</span>optimize <span class='op'>=</span> <span class='cn'>FALSE</span>, lambda <span class='op'>=</span> <span class='va'>lambda_strat</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>      <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>qpred <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>0.9</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class='r-in'>      </span>
+<span class='r-in'> <span class='co'># Binless example for categorical DV with optimized smoothing</span></span>
+<span class='r-in'> <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_cat_data</span>, x <span class='op'>=</span> <span class='va'>agemonths</span>, yobs <span class='op'>=</span> <span class='va'>zlencat</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>       <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_cat_data</span>, ysim <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>       <span class='fu'><a href='stratify.html'>stratify</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>Country_ID_code</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>       <span class='fu'>binless</span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>       <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>vpc.type <span class='op'>=</span> <span class='st'>"cat"</span>, quantile.type <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span></span>
+<span class='r-in'>       </span>
+<span class='r-in'> <span class='co'># Binless example for categorical DV with user specified sp values</span></span>
+<span class='r-in'> <span class='va'>user_sp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'> Country1_prob0 <span class='op'>=</span> <span class='fl'>100</span>,</span>
+<span class='r-in'> Country1_prob1 <span class='op'>=</span> <span class='fl'>3</span>,</span>
+<span class='r-in'> Country1_prob2 <span class='op'>=</span> <span class='fl'>4</span>,</span>
+<span class='r-in'> Country2_prob0 <span class='op'>=</span> <span class='fl'>90</span>,</span>
+<span class='r-in'> Country2_prob1 <span class='op'>=</span> <span class='fl'>3</span>,</span>
+<span class='r-in'> Country2_prob2 <span class='op'>=</span> <span class='fl'>4</span>,</span>
+<span class='r-in'> Country3_prob0 <span class='op'>=</span> <span class='fl'>55</span>,</span>
+<span class='r-in'> Country3_prob1 <span class='op'>=</span> <span class='fl'>3</span>,</span>
+<span class='r-in'> Country3_prob2 <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span></span>
+<span class='r-in'> </span>
+<span class='r-in'> <span class='va'>vpc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='observed.html'>observed</a></span><span class='op'>(</span><span class='va'>obs_cat_data</span>, x <span class='op'>=</span> <span class='va'>agemonths</span>, yobs <span class='op'>=</span> <span class='va'>zlencat</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>        <span class='fu'><a href='simulated.html'>simulated</a></span><span class='op'>(</span><span class='va'>sim_cat_data</span>, ysim <span class='op'>=</span> <span class='va'>DV</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>        <span class='fu'><a href='stratify.html'>stratify</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>Country_ID_code</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>        <span class='fu'>binless</span><span class='op'>(</span>optimize <span class='op'>=</span> <span class='cn'>FALSE</span>, sp <span class='op'>=</span> <span class='va'>user_sp</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>        <span class='fu'><a href='vpcstats.html'>vpcstats</a></span><span class='op'>(</span>vpc.type <span class='op'>=</span> <span class='st'>"categorical"</span>, conf.level <span class='op'>=</span> <span class='fl'>0.9</span>, quantile.type <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># }</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
