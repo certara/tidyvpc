@@ -8,7 +8,7 @@
 
 ## What's New in 1.3?
 
-`tidyvpc v1.3.0` provides additional arguments to control aesthetics in the `plot()` function. In addition, an [issue](https://github.com/certara/tidyvpc/issues/11) has been fixed where VPC's with one-sided statification formulas once again use `facet_wrap()` and two-sided stratification formulas use `facet_grid()`.
+`tidyvpc v1.3.0` provides additional arguments to control aesthetics in the `plot()` function. In addition, an [issue](https://github.com/certara/tidyvpc/issues/11) has been fixed where VPC's with one-sided stratification formulas once again use `facet_wrap()` and two-sided stratification formulas use `facet_grid()`.
 
 Additional arguments to the `plot()` function include:
 

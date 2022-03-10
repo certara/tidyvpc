@@ -125,8 +125,12 @@
 <h2 class="hasAnchor">
 <a href="#one-sided-stratify-formula-uses-facet_wrap" class="anchor"></a>One sided stratify() formula uses facet_wrap()</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span></code></pre></div>
+<pre><code>## tidyvpc is part of Certara.R!
+## Follow the link below to learn more about R package development at Cerara.
+## https://certara.github.io/R-Certara/</code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
 <span class="va">obs_data</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span>
 <span class="va">sim_data</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span>
 
@@ -138,7 +142,7 @@
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_1_3_0_files/figure-html/unnamed-chunk-2-1.png" width="3600"></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">GENDER</span> <span class="op">+</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
@@ -151,7 +155,7 @@
 <div id="two-sided-formula-uses-facet_grid" class="section level2">
 <h2 class="hasAnchor">
 <a href="#two-sided-formula-uses-facet_grid" class="anchor"></a>Two-sided formula uses facet_grid()</h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="va">GENDER</span> <span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
@@ -165,7 +169,7 @@
 <h2 class="hasAnchor">
 <a href="#using-facet-true-argument" class="anchor"></a>Using facet = TRUE argument</h2>
 <p>We can use facet = TRUE argument to facet continuous VPC by quantile or facet categorical VPC by predicted probability.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
@@ -173,7 +177,7 @@
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, point.alpha <span class="op">=</span> <span class="fl">0.1</span>, point.size <span class="op">=</span> <span class="fl">1</span>, ribbon.alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_1_3_0_files/figure-html/unnamed-chunk-5-1.png" width="3600"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
@@ -186,28 +190,28 @@
 <h2 class="hasAnchor">
 <a href="#changing-point-size-point-alpha-point-shape-point-stroke-and-ribbon-alpha" class="anchor"></a>Changing point size, point alpha, point shape, point stroke, and ribbon alpha</h2>
 <p>Setup categorical VPC.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">agemonths</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span><span class="op">)</span></code></pre></div>
 <p>Adjust point size.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, point.size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_1_3_0_files/figure-html/unnamed-chunk-8-1.png" width="3600"></p>
 <p>Setup continuous VPC.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, point.size <span class="op">=</span> <span class="fl">1.5</span>, point.stroke <span class="op">=</span> <span class="fl">2.5</span>, point.alpha <span class="op">=</span> <span class="fl">0.1</span>, ribbon.alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_1_3_0_files/figure-html/unnamed-chunk-10-1.png" width="3600"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, point.size <span class="op">=</span> <span class="fl">5</span>, point.stroke <span class="op">=</span> <span class="fl">0.3</span>, point.shape <span class="op">=</span> <span class="st">"triangle"</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_1_3_0_files/figure-html/unnamed-chunk-11-1.png" width="3600"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, point.size <span class="op">=</span> <span class="fl">7</span>, point.shape <span class="op">=</span> <span class="st">"square-fill"</span>, point.alpha <span class="op">=</span> <span class="fl">0.1</span>, ribbon.alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_1_3_0_files/figure-html/unnamed-chunk-12-1.png" width="3600"></p>
 </div>
