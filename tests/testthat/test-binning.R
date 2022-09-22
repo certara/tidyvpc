@@ -70,3 +70,36 @@ test_that("cat obs strat vpcstats is correct", {
   testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
   
 })
+
+test_that("binning methods are valid", {
+
+  ## Subest MDV = 0
+  obs <- obs_data[MDV == 0]
+  sim <- sim_data[MDV == 0]
+  
+  vpc <- observed(obs, x = TIME, y = DV )
+  vpc <- simulated(vpc, sim, y = DV)
+  
+  centers <- c(0,1,5,8,12)
+  vpc <- binning(vpc, bin = "centers", centers = centers)
+  expect_equal(vpc$xbin$bin, as.factor(centers))
+  
+  vpc <- binning(vpc, bin = "breaks", breaks = c(1,3,6,9,11))
+  expect_true(length(levels(vpc$xbin$bin)) == 11)
+  
+  vpc <- binning(vpc, bin = "breaks", breaks = c(1,3,6,9,11))
+  expect_true(length(levels(vpc$xbin$bin)) == 11)
+  
+  vpc <- binning(vpc, bin = "pam", nbins = 6)
+  expect_true(max(vpc$xbin$xbin) < 12)
+  
+  vpc <- binning(vpc, bin = "ntile", nbins = 6)
+  expect_true(nrow(vpc$xbin) == 6)
+  
+  vpc <- binning(vpc, bin = "eqcut", nbins = 12)
+  expect_true(nrow(vpc$xbin) == 12)
+  
+  vpc <- binning(vpc, bin = "sd", nbins = 4)
+  expect_true(nrow(vpc$xbin) == 6)
+  
+})

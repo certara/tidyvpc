@@ -1,20 +1,21 @@
-test_that("cont vpc binless vpcstats are correct", {
-  skip_on_cran()
-  get_os <- function(){
-    sysinf <- Sys.info()
-    if (!is.null(sysinf)){
-      os <- sysinf['sysname']
-      if (os == 'Darwin')
-        os <- "osx"
-    } else { ## mystery machine
-      os <- .Platform$OS.type
-      if (grepl("^darwin", R.version$os))
-        os <- "osx"
-      if (grepl("linux-gnu", R.version$os))
-        os <- "linux"
-    }
-    tolower(os)
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
   }
+  tolower(os)
+}
+
+test_that("cont vpc binless vpcstats are correct", {
+  #skip_on_cran()
   
   obs_data <- tidyvpc::obs_data
   sim_data <- tidyvpc::sim_data
@@ -46,22 +47,7 @@ test_that("cont vpc binless vpcstats are correct", {
 
 
 test_that("cont vpc binless stratification vpcstats are correct", {
-  skip_on_cran()
-  get_os <- function(){
-    sysinf <- Sys.info()
-    if (!is.null(sysinf)){
-      os <- sysinf['sysname']
-      if (os == 'Darwin')
-        os <- "osx"
-    } else { ## mystery machine
-      os <- .Platform$OS.type
-      if (grepl("^darwin", R.version$os))
-        os <- "osx"
-      if (grepl("linux-gnu", R.version$os))
-        os <- "linux"
-    }
-    tolower(os)
-  }
+  #skip_on_cran()
   
   obs_data <- tidyvpc::obs_data
   sim_data <- tidyvpc::sim_data
@@ -92,7 +78,7 @@ test_that("cont vpc binless stratification vpcstats are correct", {
 })
 
 test_that("cat vpc binless vpcstats are correct", {
-  skip_on_cran()
+ # skip_on_cran()
   obs_cat_data <- tidyvpc::obs_cat_data
   sim_cat_data <- tidyvpc::sim_cat_data
 
@@ -115,7 +101,7 @@ test_that("cat vpc binless vpcstats are correct", {
 
 
 test_that("cat vpc binless stratification vpcstats are correct", {
-  skip_on_cran()
+  #skip_on_cran()
   obs_cat_data <- tidyvpc::obs_cat_data
   sim_cat_data <- tidyvpc::sim_cat_data
   
