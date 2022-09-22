@@ -2097,6 +2097,6 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
 
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste0("tidyvpc is part of Certara.R!\n",
-                               "Follow the link below to learn more about R package development at Cerara.\n",
+                               "Follow the link below to learn more about PMx R package development at Certara.\n",
                                "https://certara.github.io/R-Certara/"))
 }
