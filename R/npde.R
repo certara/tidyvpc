@@ -130,8 +130,8 @@ npde.tidyvpcobj <- function(o, id, data=o$data, smooth=FALSE, ...) {
 
   obssim <- data.table(
     y    = c(o$obs$y, o$sim$y),
-    id   = rep(id, len=(niter + 1)*nrow(obs)),
-    iter = rep(0:niter, each=nrow(obs)))
+    id   = rep(id, length.out=(niter + 1)*nrow(o$obs)),
+    iter = rep(0:niter, each=nrow(o$obs)))
 
   obssim <- obssim[, rn := (1:.N)][, cbind(rn, calc.npde(y, iter, smooth=smooth)), by=id][order(rn)][, rn := NULL]
 
