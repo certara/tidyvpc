@@ -47,3 +47,26 @@ test_that("censoring output is valid", {
   testthat::expect_equal(sum(vpc$obs$alq), sum(obs_strat_alq$num_alq))
   
 })
+
+test_that("censoring errors are expected", {
+  obs_data <- obs_data[MDV == 0]
+  sim_data <- sim_data[MDV == 0]
+  
+  # Add LLOQ
+  obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
+  
+  vpc <- observed(obs_data, x = TIME, y = DV )
+  vpc <- simulated(vpc, sim_data, y = DV)
+
+  expect_error(censoring(vpc, blq = DV < LLOQ, lloq = NA))
+  expect_error(censoring(vpc, blq = DV < LLOQ, lloq = NULL))
+  expect_error(censoring(vpc, blq = NA, lloq = NA))
+  expect_error(censoring(vpc, blq = 10))
+  expect_error(censoring(vpc, blq = TRUE, lloq = -Inf))
+  
+  expect_error(censoring(vpc, alq = 100))
+  expect_error(censoring(vpc, alq = NA))
+  expect_error(censoring(vpc, alq = TRUE, uloq = NULL))
+  expect_error(censoring(vpc, alq = TRUE, uloq = NA))
+  expect_error(censoring(vpc, alq = TRUE, uloq = Inf))
+})
