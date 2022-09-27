@@ -103,3 +103,37 @@ test_that("binning methods are valid", {
   expect_true(nrow(vpc$xbin) == 6)
   
 })
+
+
+test_that("binning by stratum works", {
+  obs_data <- obs_data[MDV == 0]
+  sim_data <- sim_data[MDV == 0]
+  obs_data$PRED <- sim_data[REP == 1, PRED]
+  
+  vpc <- observed(obs_data, x=TIME, y=DV)
+  vpc <- simulated(vpc, sim_data, y=DV)
+  vpc <- stratify(vpc, ~ GENDER + STUDY) 
+  vpc <- binning(vpc, stratum = list(GENDER = "M", STUDY = "Study A"), bin = "jenks", nbins = 5, by.strata = T)
+  vpc <- binning(vpc, stratum = list(GENDER = "F", STUDY = "Study A"), bin = "centers", centers = c(0.5,3,5,10,15), by.strata = T)
+  vpc <- binning(vpc, stratum = list(GENDER = "M", STUDY = "Study B"), bin = "kmeans", by.strata = T)
+  vpc <- binning(vpc, stratum = list(GENDER = "F", STUDY = "Study B"), bin = "pam", nbins = 5, by.strata = T)
+  vpc <- predcorrect(vpc, pred=PRED) 
+  vpc <- vpcstats(vpc)
+  
+  expect_true(class(vpc) == "tidyvpcobj" && vpc$bin.by.strata)
+  
+})
+
+  
+test_that("binning errors are valid", {
+  
+  obs <- obs_data[MDV == 0]
+  sim <- sim_data[MDV == 0]
+  
+  vpc <- observed(obs, x = TIME, y = DV )
+  vpc <- simulated(vpc, sim, y = DV)
+  expect_true(class(binning(vpc, xbin = NTIME)) == "tidyvpcobj")
+  expect_error(binning(vpc, xbin = c(1:5)))
+  
+})
+  
