@@ -40,8 +40,11 @@ test_that("cont vpc binless vpcstats are correct", {
   
   stats <- fread(location, colClasses = c(qname = "factor"))
   
+  str(stats)
+  
+  str(vpc$stats)
   #Check for equality, dispatches to data.table::all.equal method
-  testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
+  expect_equal(vpc$stats, stats)
   
 })
 
@@ -73,7 +76,7 @@ test_that("cont vpc binless stratification vpcstats are correct", {
   stats <- fread(location, colClasses = c(qname = "factor"))
   
   #Check for equality, dispatches to data.table::all.equal method
-  testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
+  expect_equal(vpc$stats, stats)
   
 })
 
@@ -124,7 +127,7 @@ test_that("cat vpc binless vpcstats are correct", {
   
 
   #Check for equality, dispatches to data.table::all.equal method
-  testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
+  expect_equal(vpc$stats, stats)
 
 })
 
@@ -148,7 +151,7 @@ test_that("cat vpc binless stratification vpcstats are correct", {
   
 
   #Check for equality, dispatches to data.table::all.equal method
-  testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
+  expect_equal(vpc$stats, stats)
 
 })
 
