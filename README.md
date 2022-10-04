@@ -5,6 +5,7 @@
 [![](https://www.r-pkg.org/badges/version/tidyvpc?color=green)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey)](https://cran.r-project.org/package=tidyvpc)
+[![Codecov testcoverage](https://codecov.io/gh/certara/tidyvpc/branch/master/graph/badge.svg)](https://codecov.io/gh/certara/tidyvpc?branch=master)
 
 ## What's New in 1.3?
 
