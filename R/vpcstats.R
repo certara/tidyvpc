@@ -311,7 +311,7 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
 #' @param altx  Unquoted variable name in observed data for alternative x-variable binning.
 #' @param stratum List indicating the name of stratification variable and level, if using different binning methods by strata.
 #' @param by.strata Logical indicating whether binning should be performed by strata.
-#' @param ... Other arguments to include.
+#' @param ... Other arguments to include for \code{classIntervals}. See \code{...} usage for \code{style} in \code{?classIntervals}.
 #' @return Updates \code{tidyvpcobj} with \code{data.frame} containing bin information including left/right boundaries and midpoint, as specified in \code{xbin} argument.
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{stratify}} \code{\link{binless}} \code{\link{vpcstats}}
 #' @examples 
@@ -421,8 +421,8 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
   } else if (is.character(bin) && length(bin) == 1) {
     
     known.classInt.styles <- c("fixed", "sd", "equal", "pretty", "quantile",
-                               "kmeans", "hclust", "bclust", "fisher", "jenks", "dpih")
-    
+                               "kmeans", "hclust", "bclust", "fisher", "jenks", 
+                               "dpih", "headtails", "maximum", "box")
     if (bin == "centers") {
       if (missing(centers)) {
         stop("centers must be specified to use this binning method")
