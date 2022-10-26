@@ -18,7 +18,7 @@ test_that("npde colnames are correct", {
 
 
 test_that("npde results are correct", {
-  #skip_on_cran()
+  skip_on_cran()
   
   obs <- obs_data[MDV==0]
   sim <- sim_data[MDV==0]
