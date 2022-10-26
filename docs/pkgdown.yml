@@ -1,9 +1,9 @@
-pandoc: 2.11.4
-pkgdown: 1.6.1
+pandoc: '2.18'
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
-  tidyvpc_1_3_0: tidyvpc_1_3_0.html
   tidyvpc_cat: tidyvpc_cat.html
   tidyvpc_cont: tidyvpc_cont.html
-last_built: 2022-03-10T15:10Z
+  tidyvpc_whats_new: tidyvpc_whats_new.html
+last_built: 2022-10-26T20:57Z
 

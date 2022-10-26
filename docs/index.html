@@ -22,9 +22,17 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0E7W4HDPHF"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0E7W4HDPHF');
+</script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -37,7 +45,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
       </span>
     </div>
 
@@ -47,7 +55,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -61,37 +69,16 @@
     </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Certara R Packages
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="https://certara.github.io/R-RsNLME/index.html">RsNLME</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-RsNLME-model-builder/index.html">RsNLME Model Builder</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-RsNLME-model-executor/index.html">RsNLME Model Executor</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-Xpose-NLME/index.html">Xpose.NLME</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-model-results/index.html">Model Results</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-VPCResults/">VPC Results</a>
-    </li>
-  </ul>
+  <a href="news/index.html">Changelog</a>
+</li>
+<li>
+  <a href="https://certara.github.io/R-Certara/index.html" class="external-link">Certara.R</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/certara/tidyvpc/">
+  <a href="https://github.com/certara/tidyvpc/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -108,61 +95,54 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="tidyvpc-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#tidyvpc-" class="anchor"></a>tidyvpc <a href="https://github.com/certara/tidyvpc/"><img src="https://github.com/certara/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true" align="right" height="200"></a>
+<div class="section level1">
+<div class="page-header"><h1 id="tidyvpc-">tidyvpc <a href="https://github.com/certara/tidyvpc/" class="external-link"><img src="https://github.com/certara/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true" align="right" style="float:right; height: 150px;" height="200"></a>
+<a class="anchor" aria-label="anchor" href="#tidyvpc-"></a>
 </h1></div>
 
-<div id="whats-new-in-13" class="section level2">
-<h2 class="hasAnchor">
-<a href="#whats-new-in-13" class="anchor"></a>What’s New in 1.3?</h2>
-<p><code>tidyvpc v1.3.0</code> provides additional arguments to control aesthetics in the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function. In addition, an <a href="https://github.com/certara/tidyvpc/issues/11">issue</a> has been fixed where VPC’s with one-sided stratification formulas once again use <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap()</a></code> and two-sided stratification formulas use <code><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid()</a></code>.</p>
-<p>Additional arguments to the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function include:</p>
-<ul>
-<li><code>point.size</code></li>
-<li><code>point.stroke</code></li>
-<li><code>point.shape</code></li>
-<li><code>point.alpha</code></li>
-<li><code>ribbon.alpha</code></li>
-</ul>
-<p><a href="https://certara.github.io/tidyvpc/articles/tidyvpc_1_3_0.html">Learn More</a></p>
-<div id="installation-and-running-information" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation-and-running-information" class="anchor"></a>Installation and Running information</h3>
+<div class="section level3">
+<h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h3>
+<p><code>tidyvpc</code> provides a flexible and comprehensive toolkit for parameterizing a Visual Predictive Check (VPC) in R. With <code>tidyverse</code> style syntax, you can chain together functions (e.g., <code>%&gt;%</code> or <code>|&gt;</code>) to easily perform stratification, censoring, prediction correction, and more. <code>tidyvpc</code> supports both continuous and categorical VPC.</p>
+<p><a href="https://certara.github.io/tidyvpc/articles/tidyvpc_whats_new.html" class="external-link">Learn More</a></p>
+</div>
+<div class="section level3">
+<h3 id="installation-and-running-information">Installation and Running information<a class="anchor" aria-label="anchor" href="#installation-and-running-information"></a>
+</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># CRAN</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tidyvpc"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"tidyvpc"</span><span class="op">)</span>
 
 <span class="co"># Development</span>
 <span class="co"># If there are errors (converted from warning) during installation related to packages</span>
 <span class="co"># built under different version of R, they can be ignored by setting the environment variable </span>
 <span class="co"># R_REMOTES_NO_ERRORS_FROM_WARNINGS="true" before calling remotes::install_github()</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span><span class="op">(</span>R_REMOTES_NO_ERRORS_FROM_WARNINGS<span class="op">=</span><span class="st">"true"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"certara/tidyvpc"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_REMOTES_NO_ERRORS_FROM_WARNINGS<span class="op">=</span><span class="st">"true"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"certara/tidyvpc"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="learning-tidyvpc" class="section level3">
-<h3 class="hasAnchor">
-<a href="#learning-tidyvpc" class="anchor"></a>Learning <code>tidyvpc</code>
+<div class="section level3">
+<h3 id="learning-tidyvpc">Learning <code>tidyvpc</code>
+<a class="anchor" aria-label="anchor" href="#learning-tidyvpc"></a>
 </h3>
-<p>The <a href="https://certara.github.io/R-VPCResults/"><code>Certara.VPCResults</code></a> package offers a Shiny app that can be used to easily generate the underlying <code>tidyvpc</code> and <code>ggplot2</code> code used to create your VPC.</p>
-<p>After importing the observed and simulated data into your R environment, use the function <a href="https://certara.github.io/R-VPCResults/reference/vpcResultsUI.html"><code>vpcResultsUI()</code></a> to parameterize the VPC and customize the resulting plot output using the Shiny GUI - then generate the R code to reproduce from command line!</p>
+<p>The <a href="https://certara.github.io/R-VPCResults/" class="external-link"><code>Certara.VPCResults</code></a> package offers a Shiny app that can be used to easily generate the underlying <code>tidyvpc</code> and <code>ggplot2</code> code used to create your VPC.</p>
+<p>After importing the observed and simulated data into your R environment, use the function <a href="https://certara.github.io/R-VPCResults/reference/vpcResultsUI.html" class="external-link"><code>vpcResultsUI()</code></a> to parameterize the VPC and customize the resulting plot output using the Shiny GUI - then generate the R code to reproduce from command line!</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"Certara.VPCResults"</span>,
-                 repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"https://certara.jfrog.io/artifactory/certara-cran-release-public/"</span>,
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"Certara.VPCResults"</span>,
+                 repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://certara.jfrog.io/artifactory/certara-cran-release-public/"</span>,
                            <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span>,
                  method <span class="op">=</span> <span class="st">"libcurl"</span><span class="op">)</span>
                  
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Certara.VPCResults</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc" class="external-link">tidyvpc</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">Certara.VPCResults</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/Certara.VPCResults/man/vpcResultsUI.html">vpcResultsUI</a></span><span class="op">(</span>observed <span class="op">=</span> <span class="va">obs_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span>, simulated <span class="op">=</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/Certara.VPCResults/man/vpcResultsUI.html" class="external-link">vpcResultsUI</a></span><span class="op">(</span>observed <span class="op">=</span> <span class="va">obs_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span>, simulated <span class="op">=</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <p><img src="articles/img/vpc_results_overview.gif"></p>
-<p>The Shiny application can serve as a learning heuristic and ensures reproducibility by allowing you to save <code>R</code> and/or <code>Rmd</code> scripts. Additionally, you may render RMarkdown to an <code>html</code>, <code>pdf</code>, or <code>docx</code> output report. Click <a href="https://certara.github.io/R-VPCResults/">here</a> to learn more about <a href="https://certara.github.io/R-VPCResults/"><code>Certara.VPCResults</code></a>.</p>
+<p>The Shiny application can serve as a learning heuristic and ensures reproducibility by allowing you to save <code>R</code> and/or <code>Rmd</code> scripts. Additionally, you may render RMarkdown to an <code>html</code>, <code>pdf</code>, or <code>docx</code> output report. Click <a href="https://certara.github.io/R-VPCResults/" class="external-link">here</a> to learn more about <a href="https://certara.github.io/R-VPCResults/" class="external-link"><code>Certara.VPCResults</code></a>.</p>
 </div>
-<div id="data-preprocessing" class="section level3">
-<h3 class="hasAnchor">
-<a href="#data-preprocessing" class="anchor"></a>Data Preprocessing</h3>
+<div class="section level3">
+<h3 id="data-preprocessing">Data Preprocessing<a class="anchor" aria-label="anchor" href="#data-preprocessing"></a>
+</h3>
 <p><code>tidyvpc</code> requires a specific structure of observed and simulated data in order to successfully generate VPC.</p>
 <ul>
 <li>DV cannot be missing in observed/simulated data i.e. subset <code>MDV == 0</code>
@@ -172,134 +152,145 @@
 </ul>
 <p>See <code><a href="reference/obs_data.html">tidyvpc::obs_data</a></code> and <code><a href="reference/sim_data.html">tidyvpc::sim_data</a></code> for example data structures.</p>
 </div>
-<div id="usage" class="section level3">
-<h3 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h3>
+<div class="section level3">
+<h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc" class="external-link">tidyvpc</a></span><span class="op">)</span>
 
 <span class="co"># Filter MDV = 0</span>
 <span class="va">obs_data</span> <span class="op">&lt;-</span> <span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="reference/obs_data.html">obs_data</a></span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span>
 <span class="va">sim_data</span> <span class="op">&lt;-</span> <span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="reference/sim_data.html">sim_data</a></span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span>
 
 <span class="co">#Add LLOQ for each Study </span>
-<span class="va">obs_data</span><span class="op">$</span><span class="va">LLOQ</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">STUDY</span> <span class="op">==</span> <span class="st">"Study A"</span>, <span class="fl">50</span>, <span class="fl">25</span><span class="op">)</span><span class="op">]</span>
+<span class="va">obs_data</span><span class="op">$</span><span class="va">LLOQ</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">STUDY</span> <span class="op">==</span> <span class="st">"Study A"</span>, <span class="fl">50</span>, <span class="fl">25</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co"># Binning Method on x-variable (NTIME)</span>
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/censoring.html">censoring</a></span><span class="op">(</span>blq<span class="op">=</span><span class="op">(</span><span class="va">DV</span> <span class="op">&lt;</span> <span class="va">LLOQ</span><span class="op">)</span>, lloq<span class="op">=</span><span class="va">LLOQ</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="va">NTIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/censoring.html">censoring</a></span><span class="op">(</span>blq<span class="op">=</span><span class="op">(</span><span class="va">DV</span> <span class="op">&lt;</span> <span class="va">LLOQ</span><span class="op">)</span>, lloq<span class="op">=</span><span class="va">LLOQ</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="va">NTIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="reference/vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>Plot Code:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">$</span><span class="va">stats</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">xbin</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin<span class="op">=</span><span class="va">lo</span>, ymax<span class="op">=</span><span class="va">hi</span>, fill<span class="op">=</span><span class="va">qname</span>, col<span class="op">=</span><span class="va">qname</span>, group<span class="op">=</span><span class="va">qname</span><span class="op">)</span>, alpha<span class="op">=</span><span class="fl">0.1</span>, col<span class="op">=</span><span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">md</span>, col<span class="op">=</span><span class="va">qname</span>, group<span class="op">=</span><span class="va">qname</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">y</span>, linetype<span class="op">=</span><span class="va">qname</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">obs_data</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">STUDY</span>, <span class="va">LLOQ</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,
-        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>yintercept<span class="op">=</span><span class="va">LLOQ</span><span class="op">)</span>, linetype<span class="op">=</span><span class="st">"dotted"</span>, size<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">obs_data</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">STUDY</span>, <span class="va">LLOQ</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,
-        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">10</span>, y<span class="op">=</span><span class="va">LLOQ</span>, label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"LLOQ"</span>, <span class="va">LLOQ</span>, sep<span class="op">=</span><span class="st">"="</span><span class="op">)</span>,<span class="op">)</span>, vjust<span class="op">=</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_colour_manual</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">$</span><span class="va">stats</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">xbin</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin<span class="op">=</span><span class="va">lo</span>, ymax<span class="op">=</span><span class="va">hi</span>, fill<span class="op">=</span><span class="va">qname</span>, col<span class="op">=</span><span class="va">qname</span>, group<span class="op">=</span><span class="va">qname</span><span class="op">)</span>, alpha<span class="op">=</span><span class="fl">0.1</span>, col<span class="op">=</span><span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">md</span>, col<span class="op">=</span><span class="va">qname</span>, group<span class="op">=</span><span class="va">qname</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">y</span>, linetype<span class="op">=</span><span class="va">qname</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs_data</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">STUDY</span>, <span class="va">LLOQ</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,
+        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>yintercept<span class="op">=</span><span class="va">LLOQ</span><span class="op">)</span>, linetype<span class="op">=</span><span class="st">"dotted"</span>, size<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs_data</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">STUDY</span>, <span class="va">LLOQ</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,
+        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">10</span>, y<span class="op">=</span><span class="va">LLOQ</span>, label<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"LLOQ"</span>, <span class="va">LLOQ</span>, sep<span class="op">=</span><span class="st">"="</span><span class="op">)</span>,<span class="op">)</span>, vjust<span class="op">=</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>
         name<span class="op">=</span><span class="st">"Simulated Percentiles\nMedian (lines) 95% CI (areas)"</span>,
-        breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q0.05"</span>, <span class="st">"q0.5"</span>, <span class="st">"q0.95"</span><span class="op">)</span>,
-        values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span>,
-        labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"5%"</span>, <span class="st">"50%"</span>, <span class="st">"95%"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span>
+        breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"q0.05"</span>, <span class="st">"q0.5"</span>, <span class="st">"q0.95"</span><span class="op">)</span>,
+        values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span>,
+        labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"5%"</span>, <span class="st">"50%"</span>, <span class="st">"95%"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>
         name<span class="op">=</span><span class="st">"Simulated Percentiles\nMedian (lines) 95% CI (areas)"</span>,
-        breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q0.05"</span>, <span class="st">"q0.5"</span>, <span class="st">"q0.95"</span><span class="op">)</span>,
-        values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span>,
-        labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"5%"</span>, <span class="st">"50%"</span>, <span class="st">"95%"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_linetype_manual</a></span><span class="op">(</span>
+        breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"q0.05"</span>, <span class="st">"q0.5"</span>, <span class="st">"q0.95"</span><span class="op">)</span>,
+        values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span>,
+        labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"5%"</span>, <span class="st">"50%"</span>, <span class="st">"95%"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linetype_manual</a></span><span class="op">(</span>
         name<span class="op">=</span><span class="st">"Observed Percentiles\n(black lines)"</span>,
-        breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"q0.05"</span>, <span class="st">"q0.5"</span>, <span class="st">"q0.95"</span><span class="op">)</span>,
-        values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"dotted"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span><span class="op">)</span>,
-        labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"5%"</span>, <span class="st">"50%"</span>, <span class="st">"95%"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>
-        fill<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>order<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,
-        colour<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>order<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,
-        linetype<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>order<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>
+        breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"q0.05"</span>, <span class="st">"q0.5"</span>, <span class="st">"q0.95"</span><span class="op">)</span>,
+        values<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dotted"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span><span class="op">)</span>,
+        labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"5%"</span>, <span class="st">"50%"</span>, <span class="st">"95%"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>
+        fill<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>order<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,
+        colour<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>order<span class="op">=</span><span class="fl">2</span><span class="op">)</span>,
+        linetype<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>order<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>
         legend.position<span class="op">=</span><span class="st">"top"</span>,
-        legend.key.width<span class="op">=</span><span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"Time (h)"</span>, y<span class="op">=</span><span class="st">"Concentration (ng/mL)"</span><span class="op">)</span></code></pre></div>
+        legend.key.width<span class="op">=</span><span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"Time (h)"</span>, y<span class="op">=</span><span class="st">"Concentration (ng/mL)"</span><span class="op">)</span></code></pre></div>
 <p><img src="https://github.com/certara/tidyvpc/blob/master/inst/img/snapshot1.png?raw=true" align="center" width="900" height="600"></p>
-<p>Or use the built-in <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function from the <code>tidyvpc</code> package.</p>
+<p>Or use the built-in <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function from the <code>tidyvpc</code> package.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Binless method using 10%, 50%, 90% quantiles and LOESS Prediction Corrected</span>
 
 <span class="co"># Add PRED variable to observed data from first replicate of sim_data</span>
 <span class="va">obs_data</span><span class="op">$</span><span class="va">PRED</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">REP</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">PRED</span><span class="op">]</span>
 
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">GENDER</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/predcorrect.html">predcorrect</a></span><span class="op">(</span>pred<span class="op">=</span><span class="va">PRED</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/binless.html">binless</a></span><span class="op">(</span>loess.ypc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-    <span class="fu"><a href="reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span>
+<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">GENDER</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/predcorrect.html">predcorrect</a></span><span class="op">(</span>pred<span class="op">=</span><span class="va">PRED</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/binless.html">binless</a></span><span class="op">(</span>loess.ypc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vpc</span><span class="op">)</span></code></pre></div>
 <p><img src="https://github.com/certara/tidyvpc/blob/master/inst/img/snapshot2.png?raw=true" align="center" width="900" height="600"></p>
-</div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=tidyvpc">https://​cloud.r-project.org/​package=tidyvpc</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/certara/tidyvpc/">https://​github.com/​certara/​tidyvpc/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/certara/tidyvpc/issues">https://​github.com/​certara/​tidyvpc/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=tidyvpc" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/certara/tidyvpc/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/certara/tidyvpc/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing tidyvpc</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Olivier Barriere <br><small class="roles"> Author </small>  </li>
 <li>Benjamin Rich <br><small class="roles"> Author </small>  </li>
 <li>James Craig <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Samer Mouksassi <br><small class="roles"> Author </small>  </li>
 <li>Certara USA, Inc. <br><small class="roles"> Copyright holder, funder </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/certara/tidyvpc"><img src="https://img.shields.io/badge/devel%20version-1.3.0-green.svg"></a></li>
-<li><a href="https://cran.r-project.org/package=tidyvpc"><img src="https://www.r-pkg.org/badges/version/tidyvpc?color=green"></a></li>
-<li><a href="https://cran.r-project.org/package=tidyvpc"><img src="http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue"></a></li>
-<li><a href="https://cran.r-project.org/package=tidyvpc"><img src="http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey"></a></li>
+<li><a href="https://github.com/certara/tidyvpc" class="external-link"><img src="https://img.shields.io/badge/devel%20version-1.4.0-green.svg"></a></li>
+<li><a href="https://cran.r-project.org/package=tidyvpc" class="external-link"><img src="https://www.r-pkg.org/badges/version/tidyvpc?color=green"></a></li>
+<li><a href="https://cran.r-project.org/package=tidyvpc" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue"></a></li>
+<li><a href="https://cran.r-project.org/package=tidyvpc" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey"></a></li>
+<li><a href="https://codecov.io/gh/certara/tidyvpc?branch=master" class="external-link"><img src="https://codecov.io/gh/certara/tidyvpc/branch/master/graph/badge.svg" alt="Codecov testcoverage"></a></li>
+<li><a href="https://certara.github.io/R-Certara/index.html" class="external-link"><img src="https://img.shields.io/badge/Certara.R-package-orange.svg" alt="Certara.R package"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Olivier Barriere, Benjamin Rich, James Craig, Samer Mouksassi, Certara USA, Inc..</p>
+  <p></p>
+<p>Developed by Olivier Barriere, Benjamin Rich, James Craig, Samer Mouksassi, Certara USA, Inc..</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -307,6 +298,8 @@
 
   
 
+
+  
 
   </body>
 </html>

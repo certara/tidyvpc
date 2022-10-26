@@ -1,24 +1,16 @@
 
-# tidyvpc <a href='https://github.com/certara/tidyvpc/'><img src='https://github.com/certara/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true' align="right" height="200" /></a>
+# tidyvpc <a href='https://github.com/certara/tidyvpc/'><img src='https://github.com/certara/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true' align="right" style = "float:right; height: 150px;" height="200" /></a>
 
-[![](https://img.shields.io/badge/devel%20version-1.3.0-green.svg)](https://github.com/certara/tidyvpc)
+[![](https://img.shields.io/badge/devel%20version-1.4.0-green.svg)](https://github.com/certara/tidyvpc)
 [![](https://www.r-pkg.org/badges/version/tidyvpc?color=green)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey)](https://cran.r-project.org/package=tidyvpc)
 [![Codecov testcoverage](https://codecov.io/gh/certara/tidyvpc/branch/master/graph/badge.svg)](https://codecov.io/gh/certara/tidyvpc?branch=master)
 [![Certara.R package](https://img.shields.io/badge/Certara.R-package-orange.svg)](https://certara.github.io/R-Certara/index.html)
 
-## What's New in 1.3?
+### Overview
 
-`tidyvpc v1.3.0` provides additional arguments to control aesthetics in the `plot()` function. In addition, an [issue](https://github.com/certara/tidyvpc/issues/11) has been fixed where VPC's with one-sided stratification formulas once again use `facet_wrap()` and two-sided stratification formulas use `facet_grid()`.
-
-Additional arguments to the `plot()` function include:
-
-* `point.size`
-* `point.stroke`
-* `point.shape`
-* `point.alpha`
-* `ribbon.alpha`
+`tidyvpc` provides a flexible and comprehensive toolkit for parameterizing a Visual Predictive Check (VPC) in R.  With `tidyverse` style syntax, you can chain together functions (e.g., `%>%` or `|>`) to easily perform stratification, censoring, prediction correction, and more. `tidyvpc` supports both continuous and categorical VPC.
 
 [Learn More](https://certara.github.io/tidyvpc/articles/tidyvpc_whats_new.html)
 

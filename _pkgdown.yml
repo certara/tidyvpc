@@ -3,7 +3,7 @@ template:
     bootswatch: united
 navbar:
   structure:
-    left:  [home, reference, articles, news]
+    left:  [home, reference, articles, news, CertaraR]
     right: [github]
     navbar:
   components:
@@ -15,18 +15,6 @@ navbar:
        href: articles/tidyvpc_cont.html
      - text: Categorical VPC
        href: articles/tidyvpc_cat.html
-    news:
-     text: Certara R Packages
-     menu:
-     - text: RsNLME
-       href: https://certara.github.io/R-RsNLME/index.html
-     - text: RsNLME Model Builder
-       href: https://certara.github.io/R-RsNLME-model-builder/index.html
-     - text: RsNLME Model Executor
-       href: https://certara.github.io/R-RsNLME-model-executor/index.html
-     - text: Xpose.NLME
-       href: https://certara.github.io/R-Xpose-NLME/index.html
-     - text: Model Results
-       href: https://certara.github.io/R-model-results/index.html
-     - text: VPC Results
-       href: https://certara.github.io/R-VPCResults/
+    CertaraR:
+     text: Certara.R
+     href: https://certara.github.io/R-Certara/index.html

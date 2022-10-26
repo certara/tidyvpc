@@ -16,9 +16,17 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-0E7W4HDPHF"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0E7W4HDPHF');
+</script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
       </span>
     </div>
 
@@ -41,7 +49,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -55,37 +63,16 @@
     </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Certara R Packages
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="https://certara.github.io/R-RsNLME/index.html">RsNLME</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-RsNLME-model-builder/index.html">RsNLME Model Builder</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-RsNLME-model-executor/index.html">RsNLME Model Executor</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-Xpose-NLME/index.html">Xpose.NLME</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-model-results/index.html">Model Results</a>
-    </li>
-    <li>
-      <a href="https://certara.github.io/R-VPCResults/">VPC Results</a>
-    </li>
-  </ul>
+  <a href="../news/index.html">Changelog</a>
+</li>
+<li>
+  <a href="https://certara.github.io/R-Certara/index.html" class="external-link">Certara.R</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/certara/tidyvpc/">
+  <a href="https://github.com/certara/tidyvpc/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -100,134 +87,162 @@
 
       
 
-      </header><script src="tidyvpc_cat_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to categorical VPC</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/certara/tidyvpc/blob/master/vignettes/tidyvpc_cat.Rmd"><code>vignettes/tidyvpc_cat.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/certara/tidyvpc/blob/HEAD/vignettes/tidyvpc_cat.Rmd" class="external-link"><code>vignettes/tidyvpc_cat.Rmd</code></a></small>
       <div class="hidden name"><code>tidyvpc_cat.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The tidyvpc package allows users to generate VPC for categorical data using both binning and binless methods.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>The tidyvpc package allows users to generate VPC for categorical data
+using both binning and binless methods.</p>
 </div>
-<div id="data-setup" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data-setup" class="anchor"></a>Data Setup</h2>
-<p>The tidyvpc package has specific ordering requirements for the observed and simulated input datasets.</p>
-<p><strong>Observed data must be ordered by: Subject-ID, IVAR (Time)</strong></p>
-<p><strong>Simulated data must be ordered by: Replicate, Subject-ID, IVAR (Time)</strong></p>
-<p>The example datasets we’ll use in this vignette are correctly ordered, but we will repeat this step for clarity.</p>
+<div class="section level2">
+<h2 id="data-setup">Data Setup<a class="anchor" aria-label="anchor" href="#data-setup"></a>
+</h2>
+<p>The tidyvpc package has specific ordering requirements for the
+observed and simulated input datasets.</p>
+<p><strong>Observed data must be ordered by: Subject-ID, IVAR
+(Time)</strong></p>
+<p><strong>Simulated data must be ordered by: Replicate, Subject-ID,
+IVAR (Time)</strong></p>
+<p>The example datasets we’ll use in this vignette are correctly
+ordered, but we will repeat this step for clarity.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc">tidyvpc</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/certara/tidyvpc" class="external-link">tidyvpc</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span>
 
 <span class="va">obs_cat_data</span> <span class="op">&lt;-</span> <span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/obs_cat_data.html">obs_cat_data</a></span>
 <span class="va">sim_cat_data</span> <span class="op">&lt;-</span> <span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/sim_cat_data.html">sim_cat_data</a></span>
 
-<span class="va">obs_cat_data</span> <span class="op">&lt;-</span> <span class="va">obs_cat_data</span><span class="op">[</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/setorder.html">order</a></span><span class="op">(</span><span class="va">PID_code</span>, <span class="va">agemonths</span><span class="op">)</span><span class="op">]</span>
-<span class="va">sim_cat_data</span> <span class="op">&lt;-</span> <span class="va">sim_cat_data</span><span class="op">[</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/setorder.html">order</a></span><span class="op">(</span><span class="va">Replicate</span>, <span class="va">PID_code</span>, <span class="va">IVAR</span><span class="op">)</span><span class="op">]</span></code></pre></div>
+<span class="va">obs_cat_data</span> <span class="op">&lt;-</span> <span class="va">obs_cat_data</span><span class="op">[</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">order</a></span><span class="op">(</span><span class="va">PID_code</span>, <span class="va">agemonths</span><span class="op">)</span><span class="op">]</span>
+<span class="va">sim_cat_data</span> <span class="op">&lt;-</span> <span class="va">sim_cat_data</span><span class="op">[</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">order</a></span><span class="op">(</span><span class="va">Replicate</span>, <span class="va">PID_code</span>, <span class="va">IVAR</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 </div>
-<div id="binning" class="section level2">
-<h2 class="hasAnchor">
-<a href="#binning" class="anchor"></a>Binning</h2>
-<p>All traditional binning methods are available to the user, see <code><a href="../reference/binning.html">?binning</a></code>. Note, additional methods available in the <code>classInt</code> package can be provided in the <code>bin</code> argument.</p>
-<p>The syntax for a continuous VPC and categorical VPC are nearly identical, except in <code><a href="../reference/vpcstats.html">vpcstats()</a></code> function, specify <code>vpc.type = "categorical"</code></p>
-<p>In the example below, we’ll bin directly on our (rounded) x variable, agemonths.</p>
+<div class="section level2">
+<h2 id="binning">Binning<a class="anchor" aria-label="anchor" href="#binning"></a>
+</h2>
+<p>All traditional binning methods are available to the user, see
+<code><a href="../reference/binning.html">?binning</a></code>. Note, additional methods available in the
+<code>classInt</code> package can be provided in the <code>bin</code>
+argument.</p>
+<p>The syntax for a continuous VPC and categorical VPC are nearly
+identical, except in <code><a href="../reference/vpcstats.html">vpcstats()</a></code> function, specify
+<code>vpc.type = "categorical"</code></p>
+<p>In the example below, we’ll bin directly on our (rounded) x variable,
+agemonths.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">agemonths</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">agemonths</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cat_files/figure-html/binning_1-1.png" width="720" style="display: block; margin: auto;"></p>
-<p>Let’s explore stratification and provide a different binning method in the following VPC. We can also change our confidence level and quantile type for the prediction intervals (shaded area) by specifying <code>conf.level = .9</code> and <code>quantile.type = 6</code>.</p>
-<p><em>Note: Phoenix uses <code>quantile.type = 6</code> while tidyvpc uses <code>quantile.type = 7</code> by default.</em></p>
+<p>Let’s explore stratification and provide a different binning method
+in the following VPC. We can also change our confidence level and
+quantile type for the prediction intervals (shaded area) by specifying
+<code>conf.level = .9</code> and <code>quantile.type = 6</code>.</p>
+<p><em>Note: Phoenix uses <code>quantile.type = 6</code> while tidyvpc
+uses <code>quantile.type = 7</code> by default.</em></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="st">"pam"</span>, nbins <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="st">"pam"</span>, nbins <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, conf.level <span class="op">=</span> <span class="fl">.9</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cat_files/figure-html/binning_2-1.png" width="720" style="display: block; margin: auto;"></p>
 </div>
-<div id="binless" class="section level2">
-<h2 class="hasAnchor">
-<a href="#binless" class="anchor"></a>Binless</h2>
-<p>A binless approach was developed to fit categorical data using <code>gam(family = "binomial")</code>. Users can optimize smoothing parameter for the binless fit using <code>binless(optimize = TRUE)</code> (default), in which case, the optimized smoothing parameters for each category of DV in the observed data will be automatically defined by minimization of AIC.</p>
-<div id="optimize-sp-using-aic" class="section level3">
-<h3 class="hasAnchor">
-<a href="#optimize-sp-using-aic" class="anchor"></a>Optimize <code>sp</code> using AIC</h3>
+<div class="section level2">
+<h2 id="binless">Binless<a class="anchor" aria-label="anchor" href="#binless"></a>
+</h2>
+<p>A binless approach was developed to fit categorical data using
+<code>gam(family = "binomial")</code>. Users can optimize smoothing
+parameter for the binless fit using
+<code>binless(optimize = TRUE)</code> (default), in which case, the
+optimized smoothing parameters for each category of DV in the observed
+data will be automatically defined by minimization of AIC.</p>
+<div class="section level3">
+<h3 id="optimize-sp-using-aic">Optimize <code>sp</code> using AIC<a class="anchor" aria-label="anchor" href="#optimize-sp-using-aic"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-3-1.png" width="720" style="display: block; margin: auto;"></p>
-<p>We can increase the interval used to optimize value of smoothing parameters using the <code>optimization.interval</code> argument of the <code><a href="../reference/binless.html">binless()</a></code> function.</p>
+<p>We can increase the interval used to optimize value of smoothing
+parameters using the <code>optimization.interval</code> argument of the
+<code><a href="../reference/binless.html">binless()</a></code> function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">TRUE</span>, optimization.interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">TRUE</span>, optimization.interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-4-1.png" width="720" style="display: block; margin: auto;"></p>
 </div>
-<div id="user-defined-sp" class="section level3">
-<h3 class="hasAnchor">
-<a href="#user-defined-sp" class="anchor"></a>User-defined <code>sp</code>
+<div class="section level3">
+<h3 id="user-defined-sp">User-defined <code>sp</code><a class="anchor" aria-label="anchor" href="#user-defined-sp"></a>
 </h3>
-<p>Alternatively, users may supply their own smoothing parameters using the <code>sp</code> argument.</p>
-<p>This method uses <code>gam</code> with sp values specified for each level of categorical DV.</p>
-<p><em>Note: The <code>sp</code> argument must be a list of the same length/order corresponding to the unique values of our categorical DV. See additional details in the next section, if stratification is specified. </em></p>
+<p>Alternatively, users may supply their own smoothing parameters using
+the <code>sp</code> argument.</p>
+<p>This method uses <code>gam</code> with sp values specified for each
+level of categorical DV.</p>
+<p><em>Note: The <code>sp</code> argument must be a list of the same
+length/order corresponding to the unique values of our categorical DV.
+See additional details in the next section, if stratification is
+specified. </em></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">zlencat</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">zlencat</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0 1 2</span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="va">sp_user</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>p0 <span class="op">=</span> <span class="fl">300</span>,
+<span class="va">sp_user</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p0 <span class="op">=</span> <span class="fl">300</span>,
                 p1 <span class="op">=</span> <span class="fl">50</span>,
                 p2 <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">sp_user</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">sp_user</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span>, legend.position <span class="op">=</span> <span class="st">"bottom"</span>, facet.scales <span class="op">=</span> <span class="st">"fixed"</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-7-1.png" width="720" style="display: block; margin: auto;"></p>
-<div id="specifying-sp-for-each-strata" class="section level4">
-<h4 class="hasAnchor">
-<a href="#specifying-sp-for-each-strata" class="anchor"></a>Specifying <code>sp</code> for each strata</h4>
-<div id="one-stratification-variable" class="section level5">
-<h5 class="hasAnchor">
-<a href="#one-stratification-variable" class="anchor"></a>One stratification variable</h5>
-<p>If providing user-supplied sp parameters with one or more stratification variables, the order of sp should be specified as unique combination of strata + DV, in ascending order.</p>
+<div class="section level4">
+<h4 id="specifying-sp-for-each-strata">Specifying <code>sp</code> for each strata<a class="anchor" aria-label="anchor" href="#specifying-sp-for-each-strata"></a>
+</h4>
+<div class="section level5">
+<h5 id="one-stratification-variable">One stratification variable<a class="anchor" aria-label="anchor" href="#one-stratification-variable"></a>
+</h5>
+<p>If providing user-supplied sp parameters with one or more
+stratification variables, the order of sp should be specified as unique
+combination of strata + DV, in ascending order.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">Country_ID_code</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">Country_ID_code</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 1 2 3</span>
-<span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">zlencat</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">zlencat</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0 1 2</span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">user_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">user_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
            Country1_prob0 <span class="op">=</span> <span class="fl">100</span>,
            Country1_prob1 <span class="op">=</span> <span class="fl">3</span>,
            Country1_prob2 <span class="op">=</span> <span class="fl">4</span>,
@@ -239,24 +254,26 @@
            Country3_prob2 <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p>Generate VPC</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">user_sp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">user_sp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>
            , conf.level <span class="op">=</span> <span class="fl">0.9</span>
            , quantile.type <span class="op">=</span> <span class="fl">6</span>
   <span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-10-1.png" width="720" style="display: block; margin: auto;"></p>
 </div>
-<div id="multiple-stratification-variables" class="section level5">
-<h5 class="hasAnchor">
-<a href="#multiple-stratification-variables" class="anchor"></a>Multiple stratification variables</h5>
-<p>If supplying <code>sp</code> argument with one or more stratification variables, the order of elements in the list provided should be the following: strat1, strat2, …, DV.</p>
+<div class="section level5">
+<h5 id="multiple-stratification-variables">Multiple stratification variables<a class="anchor" aria-label="anchor" href="#multiple-stratification-variables"></a>
+</h5>
+<p>If supplying <code>sp</code> argument with one or more stratification
+variables, the order of elements in the list provided should be the
+following: strat1, strat2, …, DV.</p>
 <p>Add dummy strat variable to <code>obs_cat_data</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'dplyr'</span>
 <span class="co">#&gt; The following objects are masked from 'package:data.table':</span>
@@ -269,23 +286,26 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     intersect, setdiff, setequal, union</span>
 
-<span class="va">obs_cat_data</span> <span class="op">&lt;-</span> <span class="va">obs_cat_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gender <span class="op">=</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fifelse.html">ifelse</a></span><span class="op">(</span><span class="va">PID_code</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">obs_cat_data</span> <span class="op">&lt;-</span> <span class="va">obs_cat_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>gender <span class="op">=</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">PID_code</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">2</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"male"</span>, <span class="st">"female"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">gender</span> <span class="op">+</span> <span class="va">Country_ID_code</span><span class="op">)</span></code></pre></div>
 <p>View ordering of stratification variables and DV:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">gender</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">gender</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "female" "male"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">Country_ID_code</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">Country_ID_code</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 1 2 3</span>
-<span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">zlencat</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/duplicated.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs_cat_data</span><span class="op">$</span><span class="va">zlencat</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0 1 2</span></code></pre></div>
-<p>We first specified <code>gender</code>, then <code>Country_ID_code</code> in above formula, so our list of smoothing parameters provided to <code>sp</code> argument should be ordered as:</p>
+<p>We first specified <code>gender</code>, then
+<code>Country_ID_code</code> in above formula, so our list of smoothing
+parameters provided to <code>sp</code> argument should be ordered
+as:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">user_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">user_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
   female.1.prob0 <span class="op">=</span> <span class="fl">1</span>,
   female.1.prob1 <span class="op">=</span> <span class="fl">3</span>,
   female.1.prob2 <span class="op">=</span> <span class="fl">9</span>,
@@ -307,13 +327,13 @@
 <span class="op">)</span></code></pre></div>
 <p>Generate VPC</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">gender</span> <span class="op">+</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">user_sp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+<code class="sourceCode R"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">gender</span> <span class="op">+</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/binless.html">binless</a></span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">user_sp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="../reference/vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, conf.level <span class="op">=</span> <span class="fl">0.9</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vpc</span>, facet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="tidyvpc_cat_files/figure-html/unnamed-chunk-15-1.png" width="720" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -332,11 +352,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Olivier Barriere, Benjamin Rich, James Craig, Samer Mouksassi, Certara USA, Inc..</p>
+  <p></p>
+<p>Developed by Olivier Barriere, Benjamin Rich, James Craig, Samer Mouksassi, Certara USA, Inc..</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -344,6 +366,8 @@
 
   
 
+
+  
 
   </body>
 </html>
