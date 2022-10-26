@@ -607,7 +607,7 @@ binless <- function(o, ...) UseMethod("binless")
 #' @export
 binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7), loess.ypc = FALSE,  lambda = NULL, span = NULL, sp = NULL, ...) {
   
-  if(class(o) != "tidyvpcobj") {
+  if(!inherits(o, "tidyvpcobj")) {
     stop("No tidyvpcobj found, observed(...) %>% simulated(...) must be called prior to binless()")
   }
   

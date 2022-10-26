@@ -120,7 +120,7 @@ test_that("binning by stratum works", {
   vpc <- predcorrect(vpc, pred=PRED) 
   vpc <- vpcstats(vpc)
   
-  expect_true(class(vpc) == "tidyvpcobj" && vpc$bin.by.strata)
+  expect_true(inherits(vpc, "tidyvpcobj") && vpc$bin.by.strata)
   
 })
 
@@ -132,7 +132,7 @@ test_that("binning errors are valid", {
   
   vpc <- observed(obs, x = TIME, y = DV )
   vpc <- simulated(vpc, sim, y = DV)
-  expect_true(class(binning(vpc, xbin = NTIME)) == "tidyvpcobj")
+  expect_true(inherits(binning(vpc, xbin = NTIME), "tidyvpcobj"))
   expect_error(binning(vpc, xbin = c(1:5)))
   
 })

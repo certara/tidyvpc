@@ -38,10 +38,10 @@ test_that("npde results are correct", {
   vpc <- binning(vpc, "eqcut", nbins=10)
   vpc <- vpcstats(vpc)
   
-  testthat::expect_true(class(vpc)[1]=="tidyvpcobj")
+  testthat::expect_true(inherits(vpc, "tidyvpcobj"))
   
   vpc_plot <- tidyvpc:::plot.tidyvpcobj(vpc, point.alpha = 0.25)
 
-  testthat::expect_true(class(vpc_plot)[1]=="gg")
+  testthat::expect_true(inherits(vpc_plot, "ggplot"))
   
 })

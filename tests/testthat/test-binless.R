@@ -183,6 +183,6 @@ test_that("binless errors are correct", {
   expect_true(is.data.frame(vpc$vpc.method$lambda))
   
   vpc <- suppressWarnings(vpcstats(vpc))
-  expect_true(class(print(vpc)) == "tidyvpcobj")
+  expect_true(inherits(print(vpc), "tidyvpcobj"))
   
 })
