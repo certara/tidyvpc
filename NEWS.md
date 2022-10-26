@@ -2,6 +2,7 @@
 * Fix for npde calculation fix npde calc [#16](https://github.com/certara/tidyvpc/pull/16)
 * Added R CMD check and test coverage workflows [#18](https://github.com/certara/tidyvpc/pull/18)
 * Support `headtails`, `maximum`, and `box` binning methods [#23](https://github.com/certara/tidyvpc/pull/23)
+* Usage of `predcorrect()` may now occur either before or after call to `binless(loess.ypc=TRUE)`
 * Additional unit tests
 
 # tidyvpc 1.3.0
