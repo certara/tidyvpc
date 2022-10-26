@@ -24,7 +24,7 @@ binning(o, ...)
 \arguments{
 \item{o}{A \code{tidyvpcobj}.}
 
-\item{...}{Other arguments to include.}
+\item{...}{Other arguments to include for \code{classIntervals}. See \code{...} usage for \code{style} in \code{?classIntervals}.}
 
 \item{bin}{Character string indicating binning method or unquoted variable name if binning on x-variable.}
 

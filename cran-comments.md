@@ -1,19 +1,11 @@
 ## Release summary
 
-This is a minor release that provides additional arguments to control aesthetics in the plot() function. In addition, an [issue](https://github.com/certara/tidyvpc/issues/11) has been fixed where VPC's with one-sided statification formulas once again use `facet_wrap()` and two-sided stratification formulas use `facet_grid()`.
-
-Additional arguments to the `plot()` function include:
-
-* `point.size`
-* `point.stroke`
-* `point.shape`
-* `point.alpha`
-* `ribbon.alpha`
+This is a minor release that provides support for the following additional binning methods available in `classInt v0.4.8`: `headtails`, `maximum`, and `box`. In addition, a [fix](https://github.com/certara/tidyvpc/pull/16) has been made for an issue found inside the `npde()` function.
 
 ## Test environments
 
-* Windows 10 Enterprise, R 4.1.1
-* Red Hat Enterprise Linux 7, R 4.0.3
+* Windows 10 Enterprise, R 4.2.1
+* Ubuntu 20.04.5, R 4.2.1
 
 ## R CMD check results
 
