@@ -629,12 +629,6 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
       x <- c(sp = x))
   }
   
-  
- 
-  if(loess.ypc && is.null(o$predcor)) {
-    stop("Use predcorrect() before binless() in order to use LOESS prediction corrected")
-  }
-  
   if(!is.null(span) && !loess.ypc) {
     stop("Set loess.ypc = TRUE and optimize = FALSE if setting span smoothing parameter for LOESS prediction corrected")
   }
@@ -1572,6 +1566,9 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
   environment(.autoloess) <- environment()
   
   if (loess.ypc) {  #Split data on strata to optimize loess
+    if (is.null(o$predcor)) {
+      stop("Must use predcorrect() if binless(loess.ypc=TRUE)")
+    }
     if (!is.null(o$strat)) {
       pred <- o$pred
       obs <- cbind(obs, pred)

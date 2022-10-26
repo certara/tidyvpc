@@ -20,7 +20,7 @@ Additional arguments to the `plot()` function include:
 * `point.alpha`
 * `ribbon.alpha`
 
-[Learn More](https://certara.github.io/tidyvpc/articles/tidyvpc_1_3_0.html)
+[Learn More](https://certara.github.io/tidyvpc/articles/tidyvpc_whats_new.html)
 
 ### Installation and Running information
 

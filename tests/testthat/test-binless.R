@@ -15,7 +15,7 @@ get_os <- function(){
 }
 
 test_that("cont vpc binless vpcstats are correct", {
-  #skip_on_cran()
+  skip_on_cran()
   
   obs_data <- tidyvpc::obs_data
   sim_data <- tidyvpc::sim_data
@@ -50,7 +50,7 @@ test_that("cont vpc binless vpcstats are correct", {
 
 
 test_that("cont vpc binless stratification vpcstats are correct", {
-  #skip_on_cran()
+  skip_on_cran()
   
   obs_data <- tidyvpc::obs_data
   sim_data <- tidyvpc::sim_data
@@ -110,7 +110,7 @@ test_that("cont vpc binless censoring vpcstats are correct", {
 })
 
 test_that("cat vpc binless vpcstats are correct", {
- # skip_on_cran()
+  skip_on_cran()
   obs_cat_data <- tidyvpc::obs_cat_data
   sim_cat_data <- tidyvpc::sim_cat_data
 
@@ -133,7 +133,7 @@ test_that("cat vpc binless vpcstats are correct", {
 
 
 test_that("cat vpc binless stratification vpcstats are correct", {
-  #skip_on_cran()
+  skip_on_cran()
   obs_cat_data <- tidyvpc::obs_cat_data
   sim_cat_data <- tidyvpc::sim_cat_data
   
@@ -173,8 +173,10 @@ test_that("binless errors are correct", {
   vpc <- observed(obs_data, x=TIME, y=DV)
   vpc <- simulated(vpc, sim_data, y=DV)
   vpc <- stratify(vpc, ~ GENDER)
-  expect_error(binless(vpc, loess.ypc = TRUE))
   expect_error(binless(vpc, span = c(.6, .85), loess.ypc = FALSE))
+  
+  vpc <- binless(vpc, loess.ypc=TRUE)
+  expect_error(vpcstats(vpc))
   
   vpc <- predcorrect(vpc, pred=PRED)
   vpc <- binless(vpc, lambda = user_lambda, loess.ypc = TRUE, span = c(.6, .85))
