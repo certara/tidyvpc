@@ -14,5 +14,5 @@
 ^docs$
 ^pkgdown$
 ^_pkgdown\.yml$
-
+vignettes/tidyvpc_whats_new\.Rmd
 ^\.github$

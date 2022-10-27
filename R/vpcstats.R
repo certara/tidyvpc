@@ -316,6 +316,7 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
 #' @return Updates \code{tidyvpcobj} with \code{data.frame} containing bin information including left/right boundaries and midpoint, as specified in \code{xbin} argument.
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{stratify}} \code{\link{binless}} \code{\link{vpcstats}}
 #' @examples 
+#' \donttest{
 #' require(magrittr)
 #' 
 #'  # Binning on x-variable NTIME
@@ -350,6 +351,7 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
 #'       simulated(sim_cat_data, y = DV) %>%
 #'       binning(bin = round(agemonths, 0)) %>%
 #'       vpcstats(vpc.type = "categorical")
+#' }
 #' 
 #' @export
 binning <- function(o, ...) UseMethod("binning")
