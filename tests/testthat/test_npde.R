@@ -6,11 +6,11 @@ test_that("npde colnames are correct", {
     simulated(sim, y=DV) %>%
     npde(id=ID)
   
-  testthat::expect_true(
+  expect_true(
     all(colnames(npde$npdeobs) == c("id", "iter","epred", "eres",  "ewres", "npd", "npde"))
   )
   
-  testthat::expect_true(
+  expect_true(
     all(colnames(npde$npdesim) == c("id", "iter","epred", "eres",  "ewres", "npd", "npde"))
   )
 
@@ -31,17 +31,17 @@ test_that("npde results are correct", {
 
   stats <- fread(location)
   
-  testthat::expect_equal(npde$npdeobs, stats)
+  expect_equal(npde$npdeobs, stats)
   
   vpc <- observed(npde$npdeobs, x=epred, y=npde) 
   vpc <- simulated(vpc, npde$npdesim, y=npde)
   vpc <- binning(vpc, "eqcut", nbins=10)
   vpc <- vpcstats(vpc)
   
-  testthat::expect_true(inherits(vpc, "tidyvpcobj"))
+  expect_true(inherits(vpc, "tidyvpcobj"))
   
   vpc_plot <- tidyvpc:::plot.tidyvpcobj(vpc, point.alpha = 0.25)
 
-  testthat::expect_true(inherits(vpc_plot, "ggplot"))
+  expect_true(inherits(vpc_plot, "ggplot"))
   
 })

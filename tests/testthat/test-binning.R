@@ -19,7 +19,7 @@ test_that("obs bins equal stats bins", {
   unique_bins_vpc <- unique(vpc$stats$bin)
 
   #Check that bins match for binning on xvar NTIME
-  testthat::expect_equal(unique_bins_obs, unique_bins_vpc)
+  expect_equal(unique_bins_obs, unique_bins_vpc)
   
 })
 
@@ -42,7 +42,7 @@ test_that("cat obs vpcstats is correct", {
   
   
   #Check for equality, dispatches to data.table::all.equal method
-  testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
+  expect_identical(all.equal(vpc$stats, stats), TRUE)
 
 })
 
@@ -67,7 +67,7 @@ test_that("cat obs strat vpcstats is correct", {
   
   
   #Check for equality, dispatches to data.table::all.equal method
-  testthat::expect_identical(all.equal(vpc$stats, stats), TRUE)
+  expect_identical(all.equal(vpc$stats, stats), TRUE)
   
 })
 

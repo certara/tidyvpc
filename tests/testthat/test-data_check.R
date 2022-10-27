@@ -12,10 +12,10 @@ test_that("obs and sim data length checks", {
   vpc <- simulated(vpc, sim_data, y = DV)
   
   #Check for column length
-  testthat::expect_length(obs_data, length(vpc$data))
+  expect_length(obs_data, length(vpc$data))
   
   #Check for row length
-  testthat::expect_equal(nrow(obs_data), nrow((vpc$data)))
+  expect_equal(nrow(obs_data), nrow((vpc$data)))
   
   
   

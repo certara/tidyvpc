@@ -27,7 +27,7 @@ test_that("censoring output is valid", {
   #Generate logical for blq in observed data
   obs_strat_blq <- obs_data[, num_blq := ifelse(DV < LLOQ, TRUE, FALSE), by = STUDY]
   #Check sum of TRUE logicals in obs_strat_
-  testthat::expect_equal(sum(vpc$obs$blq), sum(obs_strat_blq$num_blq))
+  expect_equal(sum(vpc$obs$blq), sum(obs_strat_blq$num_blq))
   
   vpc <- observed(obs_data, x = TIME, y = DV )
   
@@ -44,7 +44,7 @@ test_that("censoring output is valid", {
   #Generate logical for blq in observed data
   obs_strat_alq <- obs_data[, num_alq := ifelse(DV > LLOQ, TRUE, FALSE), by = STUDY]
   #Check sum of TRUE logicals in obs_strat_
-  testthat::expect_equal(sum(vpc$obs$alq), sum(obs_strat_alq$num_alq))
+  expect_equal(sum(vpc$obs$alq), sum(obs_strat_alq$num_alq))
   
 })
 
