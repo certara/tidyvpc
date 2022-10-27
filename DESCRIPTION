@@ -34,7 +34,7 @@ Imports:
     rlang (>= 0.3.0), 
     methods,
     mgcv,
-    classInt (>= 0.4.8),
+    classInt,
     ggplot2,
     stats,
     fastDummies
