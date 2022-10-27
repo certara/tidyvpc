@@ -5,7 +5,7 @@
 [![](https://www.r-pkg.org/badges/version/tidyvpc?color=green)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey)](https://cran.r-project.org/package=tidyvpc)
-[![Codecov testcoverage](https://codecov.io/gh/certara/tidyvpc/branch/master/graph/badge.svg)](https://codecov.io/gh/certara/tidyvpc?branch=master)
+[![Codecov testcoverage](https://codecov.io/gh/certara/tidyvpc/branch/master/graph/badge.svg)](https://app.codecov.io/gh/certara/tidyvpc?branch=master)
 [![Certara.R package](https://img.shields.io/badge/Certara.R-package-orange.svg)](https://certara.github.io/R-Certara/index.html)
 
 ### Overview
