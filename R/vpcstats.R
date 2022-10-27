@@ -10,6 +10,7 @@
 #' @import data.table
 #' @import ggplot2
 #' @importFrom magrittr %>%
+#' @importFrom utils packageVersion
 #' @import quantreg
 #' @import classInt
 #' @importFrom mgcv gam

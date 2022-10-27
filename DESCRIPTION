@@ -37,7 +37,8 @@ Imports:
     classInt,
     ggplot2,
     stats,
-    fastDummies
+    fastDummies,
+    utils
 Suggests:
     cluster,
     dplyr,
