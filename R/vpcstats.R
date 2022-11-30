@@ -299,7 +299,7 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
 
 #' Binning methods for Visual Predictive Check (VPC)
 #' 
-#' This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", and "dpih".
+#' This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", "dpih", "box", "headtails", and "maximum".
 #' You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see \code{\link[classInt]{classIntervals}}.
 #' 
 #' @param o A \code{tidyvpcobj}.
