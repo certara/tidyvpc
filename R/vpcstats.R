@@ -723,8 +723,8 @@ predcorrect.tidyvpcobj <- function(o, pred, data=o$data, ..., log=FALSE) {
     o$obs[, ypc := (mpred - pred) + y]
     o$sim[, ypc := (mpred - pred) + y]
   } else {
-    o$obs[, ypc := (mpred/pred)*y]
-    o$sim[, ypc := (mpred/pred)*y]
+    o$obs[, ypc := ifelse(pred == 0, 0, (mpred/pred)*y)]
+    o$sim[, ypc := ifelse(pred == 0, 0, (mpred/pred)*y)]
   }
   
   
