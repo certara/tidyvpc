@@ -20,10 +20,10 @@
 NULL
 
 #' Specify observed dataset and variables for VPC
-#' 
+#'
 #' The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC. Note: Observed
 #' data must not contain missing DV and may require filtering \code{MDV == 0} before generating VPC.
-#' 
+#'
 #' @param o A \code{data.frame} of observation data.
 #' @param x Numeric x-variable, typically named TIME.
 #' @param yobs Numeric y-variable, typically named DV.
@@ -36,11 +36,11 @@ NULL
 #' @return A \code{tidyvpcobj} containing both original data and observed data formatted with \code{x} and \code{y} variables as specified in function.
 #'   Resulting data is of class \code{data.frame} and \code{data.table}.
 #' @examples
-#' 
+#'
 #' obs_data <- obs_data[MDV == 0]
 #' sim_data <- sim_data[MDV == 0]
-#' 
-#' vpc <- observed(obs_data, x=TIME, y=DV) 
+#'
+#' vpc <- observed(obs_data, x=TIME, y=DV)
 #'
 #' @seealso \code{\link{simulated}} \code{\link{censoring}} \code{\link{stratify}} \code{\link{predcorrect}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
 #' @export
@@ -59,18 +59,18 @@ observed.data.frame <- function(o, x, yobs, pred=NULL, blq=NULL, lloq=-Inf, alq=
   alq  <- rlang::eval_tidy(rlang::enquo(alq),  data)
 
   obs <- data.table(x, y=yobs, blq, lloq, alq, uloq)
-  
+
   o <- structure(list(data=data), class="tidyvpcobj")
   o <- update(o, obs=obs, pred=pred)
   censoring(o)
 }
 
 #' Specify simulated dataset and variables for VPC
-#' 
-#' The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not 
-#' contain missing DV and may require filtering \code{MDV == 0} before generating VPC. The ordering of observed and simulated 
+#'
+#' The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not
+#' contain missing DV and may require filtering \code{MDV == 0} before generating VPC. The ordering of observed and simulated
 #' data must also be consistent, with replicates in simulated data stacked on top of each other.
-#' 
+#'
 #' @param o A \code{tidyvpcobj}.
 #' @param data A \code{data.frame} of simulated data.
 #' @param ysim Numeric y-variable, typically named DV.
@@ -79,10 +79,10 @@ observed.data.frame <- function(o, x, yobs, pred=NULL, blq=NULL, lloq=-Inf, alq=
 #'  The column \code{x} is used from the \code{observed()} function. Resulting dataset is of class \code{data.frame} and \code{data.table}.
 #' @examples
 #' require(magrittr)
-#' 
+#'
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
-#'     simulated(sim_data, y=DV) 
-#'     
+#'     simulated(sim_data, y=DV)
+#'
 #' @seealso \code{\link{observed}} \code{\link{censoring}} \code{\link{stratify}} \code{\link{predcorrect}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
 #' @name simulated
 #' @export
@@ -96,15 +96,15 @@ simulated.tidyvpcobj <- function(o, data, ysim, ...) {
   x    <- obs$x
   nrep <- length(ysim)/nrow(obs)
   repl <- rep(1:nrep, each=nrow(obs))
-  
+
   sim <- data.table(x, y=ysim, repl)
   update(o, sim=sim)
 }
 
 #' Censoring observed data for Visual Predictive Check (VPC)
-#' 
+#'
 #' Specify censoring variable or censoring value for VPC.
-#' 
+#'
 #' @param o A \code{tidyvpcobj}.
 #' @param blq blq variable if present in observed data.
 #' @param lloq Numeric value or numeric variable in data indicating the upper limit of quantification.
@@ -112,22 +112,22 @@ simulated.tidyvpcobj <- function(o, data, ysim, ...) {
 #' @param uloq Numeric value or numeric variable in data indicating the upper limit of quantification.
 #' @param data Observed data supplied in \code{observed()} function.
 #' @param ... Other arguments to include.
-#' @return Updates \code{obs} \code{data.frame} in \code{tidypcobj} with censored values for observed data which includes \code{lloq} and \code{uloq} specified 
-#'  values for lower/upper limit of quantification. Logicals for \code{blq} and \code{alq} are returned that indicate whether the DV value lies below/above limit 
-#'  of quantification. 
+#' @return Updates \code{obs} \code{data.frame} in \code{tidypcobj} with censored values for observed data which includes \code{lloq} and \code{uloq} specified
+#'  values for lower/upper limit of quantification. Logicals for \code{blq} and \code{alq} are returned that indicate whether the DV value lies below/above limit
+#'  of quantification.
 #' @examples
 #' require(magrittr)
-#' 
+#'
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'     simulated(sim_data, y=DV) %>%
 #'     censoring(blq=(DV < 50), lloq=50) %>%
 #'     binning(bin = "pam", nbins = 5) %>%
 #'     vpcstats()
-#' 
+#'
 #' #Using LLOQ variable in data with different values of LLOQ by Study:
-#' 
+#'
 #' obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
-#' 
+#'
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'     simulated(sim_data, y=DV) %>%
 #'     censoring(blq=(DV < LLOQ), lloq=LLOQ) %>%
@@ -135,10 +135,10 @@ simulated.tidyvpcobj <- function(o, data, ysim, ...) {
 #'     binning(bin = "kmeans", nbins = 4) %>%
 #'     vpcstats()
 #'
-#'  
+#'
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{stratify}} \code{\link{predcorrect}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
 
-#' @export 
+#' @export
 censoring <- function(o, ...) UseMethod("censoring")
 
 #' @rdname censoring
@@ -167,7 +167,7 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 
   if (is.null(blq)) {
     blq <- FALSE
-  } 
+  }
   if (!is.logical(blq)) {
     stop("blq must be of type logical")
   }
@@ -177,7 +177,7 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
   if (is.null(lloq)) {
     if (any(blq)) {
       stop("No lloq specified for blq")
-    } 
+    }
     lloq <- -Inf
   }
   if (!is.numeric(lloq)) {
@@ -189,7 +189,7 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 
   if (is.null(alq)) {
     alq <- FALSE
-  } 
+  }
   if (!is.logical(alq)) {
     stop("alq must be of type logical")
   }
@@ -201,14 +201,14 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
       stop("No uloq specified for alq")
     }
     uloq <- Inf
-  } 
+  }
   if (!is.numeric(uloq)) {
     stop("uloq must be of type numeric")
   }
   if (any(alq & (is.na(uloq) | uloq == Inf))) {
     stop("No uloq specified for alq")
   }
-  
+
   .blq <- blq
   .lloq <- lloq
   .alq <- alq
@@ -221,9 +221,9 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 }
 
 #' Stratification for Visual Predictive Check (VPC)
-#' 
+#'
 #' Use to specify stratification variables for VPC.
-#' 
+#'
 #' @param o A \code{tidyvpcobj}.
 #' @param formula Formula for stratification.
 #' @param data Observed data supplied in \code{observed()} function.
@@ -231,9 +231,9 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 #' @return Returns updated \code{tidyvpcobj} with stratification formula, stratification column(s), and strat.split datasets, which
 #'   is \code{obs} split by unique levels of stratification variable(s). Resulting datasets are of class object \code{data.frame}
 #'   and \code{data.table}.
-#' @examples 
+#' @examples
 #' require(magrittr)
-#' 
+#'
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'     simulated(sim_data, y=DV) %>%
 #'     stratify(~ GENDER) %>%
@@ -241,15 +241,14 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 #'     vpcstats()
 #'
 #' # Example with 2-way stratification by GENDER and STUDY.
-#' 
+#'
 #' vpc <- vpc %>%
 #'     stratify(~ GENDER + STUDY) %>%
 #'     binning(bin = "centers", centers = c(1,3,5,7,10)) %>%
 #'     vpcstats()
 #'
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
-
-#' @export 
+#' @export
 stratify <- function(o, ...) UseMethod("stratify")
 
 #' @method stratify tidyvpcobj
@@ -280,30 +279,30 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
   } else {
     strat <- as.data.table(model.frame(formula, data))
   }
-  
+
   reserved.names <- c("x", "y", "ypc", "pred", "blq", "lloq", "repl", "bin", "xbin", "qname", "lo", "md", "hi",
                       "nobs", "xmedian", "xmean", "xmin", "xmax", "xmid", "xleft", "xright", "xcenter")
   if (any(names(strat) %in% reserved.names)) {
     stop(paste0("The names of used for stratification must not include: ",
                 paste0(reserved.names, collapse=", ")))
   }
-  
+
   o$obs[, names(strat) := strat]
-  
+
   strat.split <- split(o$obs, strat)
-  
+
   strat.split <- strat.split[lapply(strat.split,NROW)>0]
-  
+
   update(o, strat=strat, strat.split = strat.split, strat.formula=formula)
 }
 
 #' Binning methods for Visual Predictive Check (VPC)
-#' 
+#'
 #' This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", "dpih", "box", "headtails", and "maximum".
 #' You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see \code{\link[classInt]{classIntervals}}.
-#' 
+#'
 #' @param o A \code{tidyvpcobj}.
-#' @param bin Character string indicating binning method or unquoted variable name if binning on x-variable. 
+#' @param bin Character string indicating binning method or unquoted variable name if binning on x-variable.
 #' @param data Observed data supplied in \code{observed()} function.
 #' @param xbin Character string indicating midpoint type for binning.
 #' @param centers Numeric vector of centers for binning. Use \code{bin = "centers"}, if supplying centers.
@@ -315,28 +314,28 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
 #' @param ... Other arguments to include for \code{classIntervals}. See \code{...} usage for \code{style} in \code{?classIntervals}.
 #' @return Updates \code{tidyvpcobj} with \code{data.frame} containing bin information including left/right boundaries and midpoint, as specified in \code{xbin} argument.
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{stratify}} \code{\link{binless}} \code{\link{vpcstats}}
-#' @examples 
+#' @examples
 #' \donttest{
 #' require(magrittr)
-#' 
+#'
 #'  # Binning on x-variable NTIME
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'     simulated(sim_data, y=DV) %>%
 #'     binning(bin = NTIME) %>%
 #'     vpcstats()
-#'     
+#'
 #'  # Binning using ntile and xmean for midpoint
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'     simulated(sim_data, y=DV) %>%
 #'     binning(bin = "ntile", nbins = 8, xbin = "xmean") %>%
 #'     vpcstats()
-#'     
+#'
 #'  # Binning using centers
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'     simulated(sim_data, y=DV) %>%
 #'     binning(bin = "centers", centers = c(1,3,5,7)) %>%
 #'     vpcstats()
-#'         
+#'
 #'  # Different Binning for each level of Strata
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'     simulated(sim_data, y=DV) %>%
@@ -344,15 +343,15 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
 #'     binning(stratum = list(GENDER = "M"), bin = "jenks", nbins = 5, by.strata = TRUE) %>%
 #'     binning(stratum = list(GENDER = "F"), bin = "pam", nbins = 4, by.strata = TRUE) %>%
 #'     vpcstats()
-#'     
+#'
 #'  # Binning Categorical DV using rounded time variable
-#'   
+#'
 #'   vpc <- observed(obs_cat_data, x = agemonths, y = zlencat ) %>%
 #'       simulated(sim_cat_data, y = DV) %>%
 #'       binning(bin = round(agemonths, 0)) %>%
 #'       vpcstats(vpc.type = "categorical")
 #' }
-#' 
+#'
 #' @export
 binning <- function(o, ...) UseMethod("binning")
 
@@ -361,7 +360,7 @@ binning <- function(o, ...) UseMethod("binning")
 binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, breaks, nbins, altx, stratum=NULL, by.strata=TRUE,  ...) {
   keep <- i <- NULL
   . <- list
-  
+
   # If xbin is numeric, then that is the bin
   xbin <- rlang::eval_tidy(rlang::enquo(xbin), data)
   if (is.numeric(xbin)) {
@@ -378,25 +377,25 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
       bin <- rlang::eval_tidy(rlang::enquo(bin), data)
     }
   }
-  
+
   # If you don't want to bin on the observed x, you can specify an alternate x for binning
   if (missing(altx)) {
     x <- o$obs$x
   } else {
     x <- rlang::eval_tidy(rlang::enquo(altx), data)
   }
-  
+
   if (!missing(nbins)) {
     nbins <- rlang::eval_tidy(rlang::enquo(nbins), data)
     if (is.numeric(nbins) && !is.null(o$strat) && (length(nbins) == nrow(o$strat))) {
       nbins <- data.table(nbins)[, .(nbins=unique(nbins)), by=o$strat]
     }
   }
-  
+
   args <- lapply(rlang::enquos(...), rlang::eval_tidy, data=data)
-  
+
   by.strata <- isTRUE(by.strata)
-  
+
   # Check if specific stratum selected (can be more than 1), setup filter
   if (!is.null(stratum)) {
     if (!is.list(stratum)) {
@@ -414,7 +413,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
   } else {
     filter <- rep(T, nrow(o$obs))  # Keep all
   }
-  
+
   # If xbin is numeric, then that is the bin
   if (is.numeric(xbin)) {
     if (length(xbin) != nrow(o$obs)) {
@@ -422,9 +421,9 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
     }
     bin <- xbin
   } else if (is.character(bin) && length(bin) == 1) {
-    
+
     known.classInt.styles <- c("fixed", "sd", "equal", "pretty", "quantile",
-                               "kmeans", "hclust", "bclust", "fisher", "jenks", 
+                               "kmeans", "hclust", "bclust", "fisher", "jenks",
                                "dpih", "headtails", "maximum", "box")
     if (bin == "centers") {
       if (missing(centers)) {
@@ -466,7 +465,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
       stop(sprintf("Unknown binning method: %s", bin))
     }
   }
-  
+
   if (is.function(bin)) {
     xdat <- data.table(i=1:nrow(o$obs), x=x)
     if (any(is.na(xdat[filter]$x))) {
@@ -492,14 +491,14 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
   }
   o$obs[filter, bin := as.factor(j)]
   bin <- o$obs$bin
-  
+
   if (!is.null(o$strat)) {
     stratbin <- data.table(o$strat, bin)
   } else {
     stratbin <- data.table(bin)
   }
   o <- update(o, .stratbin=stratbin, bin.by.strata=by.strata)
-  
+
   # Assign an x value to each bin
   if (is.numeric(xbin)) {
     xbin <- data.table(xbin=xbin)[, .(xbin = unique(xbin)), by=stratbin]
@@ -516,13 +515,13 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 }
 
 #' Perform binless Visual Predictive Check (VPC)
-#' 
+#'
 #' Use this function in place of traditional binning methods to derive VPC. For continuous
 #' VPC, this is obtained using additive quantile regression (\code{quantreg::rqss()}) and LOESS for pcVPC. While for categorical
 #' VPC, this is obtained using a generalized additive model (\code{gam(family = "binomial")}).
-#' 
+#'
 #' @param o A \code{tidyvpcobj}.
-#' @param optimize Logical indicating whether smoothing parameters should be optimized using AIC. 
+#' @param optimize Logical indicating whether smoothing parameters should be optimized using AIC.
 #' @param optimization.interval Numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if \code{optimize = TRUE}.
 #' @param loess.ypc Logical indicating LOESS prediction corrected VPC. Must first use \code{\link{predcorrect}}, if specifying \code{loess.ypc = TRUE}. Only applicable to continuous VPC.
 #' @param lambda Numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a \code{data.frame} with given strata represented the column name, and value specified as a numeric vector of length 3.
@@ -533,57 +532,57 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #' @param ... Other arguments to include will be ignored.
 #' @return For continuous VPC, updates \code{tidyvpcobj} with additive quantile regression fits for observed and simulated data for quantiles specified in the \code{qpred} argument of \code{vpcstats()}.
 #'   If the \code{optimize = TRUE} argument is specified, the resulting \code{tidyvpcobj} will contain optimized lambda values according to AIC.  For prediction
-#'   corrected VPC (pcVPC), specifying \code{loess.ypc = TRUE} will return optimized span value for LOESS smoothing. For categorical VPC, 
+#'   corrected VPC (pcVPC), specifying \code{loess.ypc = TRUE} will return optimized span value for LOESS smoothing. For categorical VPC,
 #'   updates \code{tidyvpcobj} with fits obtained by \code{gam(family="binomial")} for observed and simulated data for each category of DV (in each stratum if \code{stratify} defined).
 #'   If \code{optimize = TRUE} argument is specified, the resulting \code{tidyvpcobj} wil contain optimized \code{sp} values according to AIC.
 
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{stratify}} \code{\link{binning}} \code{\link{vpcstats}}
-#' @examples 
+#' @examples
 #' \donttest{
-#' 
+#'
 #' require(magrittr)
 #' require(data.table)
-#' 
+#'
 #' obs_data <- obs_data[MDV == 0]
 #' sim_data <- sim_data[MDV == 0]
-#' 
-#' 
+#'
+#'
 #'  vpc <- observed(obs_data, y = DV, x = TIME) %>%
 #'       simulated(sim_data, y = DV) %>%
 #'       binless() %>%
 #'       vpcstats()
-#'       
+#'
 #'  # Binless example with LOESS prediction correction
-#'  
+#'
 #'  obs_data$PRED <- sim_data[REP == 1, PRED]
-#'  
+#'
 #'  vpc <- observed(obs_data, y = DV, x = TIME) %>%
 #'       simulated(sim_data, y = DV) %>%
 #'       predcorrect(pred = PRED) %>%
 #'       binless(optimize = TRUE, loess.ypc = TRUE) %>%
 #'       vpcstats()
-#'       
-#' # Binless example with user specified lambda values stratified on 
+#'
+#' # Binless example with user specified lambda values stratified on
 #' # "GENDER" with 2 levels ("M", "F"), 10%, 50%, 90% quantiles.
-#'  
+#'
 #'  lambda_strat <- data.table(
 #'  GENDER_M = c(3,5,2),
 #'  GENDER_F = c(1,3,4)
 #'  )
-#'  
+#'
 #'  vpc <- observed(obs_data, y = DV, x = TIME) %>%
 #'       simulated(sim_data, y = DV) %>%
 #'       stratify(~ GENDER) %>%
 #'       binless(optimize = FALSE, lambda = lambda_strat) %>%
 #'       vpcstats(qpred = c(0.1, 0.5, 0.9))
-#'       
+#'
 #'  # Binless example for categorical DV with optimized smoothing
 #'  vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
 #'        simulated(sim_cat_data, ysim = DV) %>%
 #'        stratify(~ Country_ID_code) %>%
 #'        binless() %>%
 #'        vpcstats(vpc.type = "cat", quantile.type = 6)
-#'        
+#'
 #'  # Binless example for categorical DV with user specified sp values
 #'  user_sp <- list(
 #'  Country1_prob0 = 100,
@@ -595,25 +594,25 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #'  Country3_prob0 = 55,
 #'  Country3_prob1 = 3,
 #'  Country3_prob2 = 200)
-#'  
+#'
 #'  vpc <- observed(obs_cat_data, x = agemonths, yobs = zlencat) %>%
 #'         simulated(sim_cat_data, ysim = DV) %>%
 #'         stratify(~ Country_ID_code) %>%
 #'         binless(optimize = FALSE, sp = user_sp) %>%
 #'         vpcstats(vpc.type = "categorical", conf.level = 0.9, quantile.type = 6)
 #' }
-#' 
-#' @export 
+#'
+#' @export
 binless <- function(o, ...) UseMethod("binless")
 
 #' @rdname binless
 #' @export
 binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7), loess.ypc = FALSE,  lambda = NULL, span = NULL, sp = NULL, ...) {
-  
+
   if(!inherits(o, "tidyvpcobj")) {
     stop("No tidyvpcobj found, observed(...) %>% simulated(...) must be called prior to binless()")
   }
-  
+
   if(!optimize){
     if(is.null(lambda) && is.null(sp)) {
     stop("Set optimize = TRUE if no lambda or sp arguments specified")
@@ -623,7 +622,7 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
     #        Note, `sp` argument is only applicable for categorical vpc.")
     # }
   }
-  
+
   if(!is.null(sp)){
     if(optimize){
     optimize <- FALSE
@@ -631,11 +630,11 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
     sp <- lapply(sp, function(x)
       x <- c(sp = x))
   }
-  
+
   if(!is.null(span) && !loess.ypc) {
     stop("Set loess.ypc = TRUE and optimize = FALSE if setting span smoothing parameter for LOESS prediction corrected")
   }
-  
+
   #if binless categorical, check that sp length = number of unique categories of y
 
   method <- list(method = "binless",
@@ -645,15 +644,14 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
                  lambda = lambda,
                  span = span,
                  sp = sp)
-  
+
   update(o, vpc.method = method)
-  
 }
 
 #' Prediction corrected Visual Predictive Check (pcVPC)
-#' 
+#'
 #' Specify prediction variable for pcVPC.
-#' 
+#'
 #' @param o A \code{tidyvpcobj}.
 #' @param pred Prediction variable in observed data.
 #' @param data Observed data supplied in \code{observed()} function.
@@ -662,34 +660,34 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
 #' @return Updates \code{tidyvpcobj} with required information to performing prediction correction, which includes the \code{predcor} logical indicating whether
 #'   prediction corrected VPC is to be performed, the \code{predcor.log} logical indicating whether the DV is on a log-scale, and the \code{pred} prediction
 #'   column from the original data.
-#' @examples 
+#' @examples
 #' require(magrittr)
-#' 
+#'
 #' obs_data <- obs_data[MDV == 0]
 #' sim_data <- sim_data[MDV == 0]
-#' 
-#'  # Add PRED variable to observed data from first replicate of 
+#'
+#'  # Add PRED variable to observed data from first replicate of
 #'  # simulated data
-#'  
+#'
 #' obs_data$PRED <- sim_data[REP == 1, PRED]
-#' 
+#'
 #'   vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'        simulated(sim_data, y=DV) %>%
 #'        binning(bin = NTIME) %>%
 #'        predcorrect(pred=PRED) %>%
 #'        vpcstats()
-#'        
-#'  \donttest{    
-#'  # For binless loess prediction corrected, use predcorrect() before 
+#'
+#'  \donttest{
+#'  # For binless loess prediction corrected, use predcorrect() before
 #'  # binless() and set loess.ypc = TRUE
-#'  
+#'
 #'   vpc <- observed(obs_data, x=TIME, y=DV) %>%
 #'        simulated(sim_data, y=DV) %>%
 #'        predcorrect(pred=PRED) %>%
 #'        binless(loess.ypc = TRUE) %>%
 #'        vpcstats()
 #'        }
-#'        
+#'
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{stratify}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
 
 #' @export
@@ -697,10 +695,10 @@ predcorrect <- function(o, ...) UseMethod("predcorrect")
 
 #' @rdname predcorrect
 #' @export
-predcorrect.tidyvpcobj <- function(o, pred, data=o$data, ..., log=FALSE) { 
-  
+predcorrect.tidyvpcobj <- function(o, pred, data=o$data, ..., log=FALSE) {
+
   ypc <- y <- NULL
-  
+
   if (missing(pred)) {
     pred <- o$pred
   } else {
@@ -709,16 +707,16 @@ predcorrect.tidyvpcobj <- function(o, pred, data=o$data, ..., log=FALSE) {
   if (is.null(pred)) {
     stop("No pred specified")
   }
-  
+
   stratbin <- o$.stratbin #create loess predcorrect argument in function if want to use below stop because binless comes after predcorrect
   # if (is.null(stratbin)) {
   #     stop("Need to specify binning before pred correction. For binless method set argument loess.ypc = TRUE.")
   # }
-  
+
   mpred <- data.table(stratbin, pred)
   mpred <- mpred[, mpred := median(pred), by=stratbin]
   mpred <- mpred$mpred
-  
+
   if (log) {
     o$obs[, ypc := (mpred - pred) + y]
     o$sim[, ypc := (mpred - pred) + y]
@@ -726,15 +724,14 @@ predcorrect.tidyvpcobj <- function(o, pred, data=o$data, ..., log=FALSE) {
     o$obs[, ypc := (mpred/pred)*y]
     o$sim[, ypc := (mpred/pred)*y]
   }
-  
-  
+
   update(o, predcor=TRUE, predcor.log=log, pred=pred )
 }
 
 #' Remove prediction correction for Visual Predictive Check (VPC)
-#' 
-#' Optional function to use indicating no pred correction for VPC. 
-#' 
+#'
+#' Optional function to use indicating no pred correction for VPC.
+#'
 #' @param o A \code{tidyvpcobj}.
 #' @param ... Other arguments to include.
 #' @export
@@ -747,9 +744,9 @@ nopredcorrect.tidyvpcobj <- function(o, ...) {
 }
 
 #' Compute VPC statistics
-#' 
+#'
 #' Compute prediction interval statistics for VPC.
-#' 
+#'
 #' @param o A \code{tidyvpcobj}.
 #' @param vpc.type Character specifying type of VPC (e.g., \code{"continuous"} (Default) or \code{"categorical"}).
 #' @param qpred Numeric vector of length 3 specifying quantile prediction interval. Only applicable for \code{vpc.type = "continuous"}.
@@ -769,22 +766,23 @@ nopredcorrect.tidyvpcobj <- function(o, ...) {
 #' }
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{stratify}} \code{\link{binning}} \code{\link{binless}} \code{\link{predcorrect}}
 #' @export
-vpcstats <- function(o, ...) UseMethod("vpcstats")
+vpcstats <- function(o, ...) {
+  UseMethod("vpcstats")
+}
 
 #' @rdname vpcstats
 #' @export
-vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7) {
-  
+vpcstats.tidyvpcobj <- function(o, vpc.type=c("continuous", "categorical"), qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7) {
+  browser()
   type <- match.arg(vpc.type)
   method <- o$vpc.method
-  
+
   stopifnot(method$method %in% c("binless", "binning"))
   stopifnot(length(qpred) == 3)
-  
+
   repl <- ypc <- y <- x <- blq <- lloq <- alq <- uloq <- NULL
   . <- list
   qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
-  
 
   obs      <- o$obs
   sim      <- o$sim
@@ -792,19 +790,17 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
   stratbin <- o$.stratbin
   xbin     <- o$xbin
   strat    <- o$strat
-  
-  
-  
-  if(method$method == "binless" && type == "continuous"){  
+
+  if(method$method == "binless" && type == "continuous"){
     o <- binlessaugment(o, qpred = qpred, interval =  method$optimization.interval, loess.ypc = method$loess.ypc)
     o <- binlessfit(o, conf.level = conf.level, llam.quant = method$lambda, span = method$span)
-    }
-  
+  }
+
   if(type == "categorical"){
     if(.isCensored(obs)){
       stop("Censoring not supported for categorical vpc")
     }
-    
+
     ylvls <-  sort(unique(obs$y))
 
     #categorical binless vpcstats() ----
@@ -812,37 +808,37 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       xobs     <- obs$x
       xsim <- sim$x
       sp <- method$sp
-      
+
       .stratrepl <- data.table(strat, sim[, .(repl)])
 
       # obs ----
       obs <- obs[, fastDummies::dummy_columns(obs, select_columns = "y")]
-      
+
       setnames(obs, paste0("y_", ylvls), paste0("prob", ylvls))
       pobs <- melt(obs, id.vars = c(names(strat), "x"),
                    measure.vars = paste0("prob", ylvls),
                    variable.name = "pname", value.name = "y")
-      
+
       pobs.split <- split(pobs, by = c(names(strat),"pname"), sorted = TRUE)
 
       pobs.split <- pobs.split[lapply(pobs.split, nrow)>1]
-      
-    
+
+
 # Get optimized sp values, only if optimize = TRUE, else, skip this step and directly fit gam with user sp values
     if(method$optimize){
       sp_opt <- list()
-      
+
       for(i in seq_along(pobs.split)){
-        sp_opt[[i]] <- pobs.split[[i]][, .(sp = optimize(.gam_optimize, 
-                                                         y = y, 
-                                                         x = x, 
-                                                         data = pobs.split[[i]], 
+        sp_opt[[i]] <- pobs.split[[i]][, .(sp = optimize(.gam_optimize,
+                                                         y = y,
+                                                         x = x,
+                                                         data = pobs.split[[i]],
                                                          interval = method$optimization.interval)$minimum)]
         }
-     
+
       names(sp_opt) <- names(pobs.split)
       method$sp <- sp_opt
-      
+
       for(i in seq_along(pobs.split)){
         pobs.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]]$sp)]
       }
@@ -859,28 +855,28 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       }
     }
       pobs <- rbindlist(pobs.split)
-  
+
       # sim ----
       if(!is.null(strat)){
         sim <- sim[, c(names(strat)) := rep(strat, len = .N), by = .(repl)]
       }
-      
+
       sim <- sim[, fastDummies::dummy_columns(sim, select_columns = "y")]
-      
+
       setnames(sim, paste0("y_", ylvls), paste0("prob", ylvls))
-      
+
       psim <- melt(sim, id.vars = c(names(.stratrepl), "x"),
                    measure.vars = paste0("prob", ylvls),
                    variable.name = "pname", value.name = "y")
-      
+
       #Coerce y to double, or else data.table will attempt to coerce to integer and precision is lost
       psim$y <- as.double(psim$y)
-      
+
       psim.split <- split(psim, by = c(names(strat),"pname"), sorted = TRUE)
-      
+
       psim.split <- psim.split[lapply(psim.split, nrow)>1]
-      
-      
+
+
       if(method$optimize){
       for(i in seq_along(psim.split)){
         psim.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]]$sp), by = list(repl)]
@@ -890,7 +886,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
           psim.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]]), by = repl]
         }
       }
-      
+
       psim <- rbindlist(psim.split)
 
       .stratbinquant <- psim[, !c("repl", "y")]
@@ -898,10 +894,10 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       ppsim <- psim[, .(lo=quantile(y,probs=qconf[[1]], type=quantile.type),
                           md=median(y),
                           hi=quantile(y,probs=qconf[[3]], type=quantile.type)), by = .stratbinquant]
-        
+
         stats <- unique(pobs[ppsim, on=names(.stratbinquant)])
         setkeyv(stats, c(names(strat), "x"))
-        
+
     } else {
     #categorical binning vpcstats() ----
       if (is.null(stratbin)) {
@@ -912,26 +908,26 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       }
 
     .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
-  
+
     obs <- obs[, fastDummies::dummy_columns(obs, select_columns = "y")]
-    pobs <- obs[, lapply(.SD, mean, na.rm=TRUE), by=stratbin, .SDcols=paste0("y_", ylvls)] 
+    pobs <- obs[, lapply(.SD, mean, na.rm=TRUE), by=stratbin, .SDcols=paste0("y_", ylvls)]
     setnames(pobs, paste0("y_", ylvls), paste0("prob", ylvls))
     pobs <- melt(pobs, id.vars = names(stratbin),
                  measure.vars = paste0("prob", ylvls),
                  variable.name = "pname", value.name = "y")
- 
+
     sim <- sim[, fastDummies::dummy_columns(sim, select_columns = "y")]
 
-    psim <- sim[, lapply(.SD, mean, na.rm=TRUE), by=.stratbinrepl, .SDcols=paste0("y_", ylvls)] 
-    
+    psim <- sim[, lapply(.SD, mean, na.rm=TRUE), by=.stratbinrepl, .SDcols=paste0("y_", ylvls)]
+
     setnames(psim, paste0("y_", ylvls), paste0("prob", ylvls))
     psim <- melt(psim, id.vars = names(.stratbinrepl),
                  measure.vars = paste0("prob", ylvls),
                  variable.name = "pname", value.name = "y")
-   
+
     .stratbinquant <- psim[, !c("repl", "y")]
     qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
-    
+
     ppsim <- psim[, .(lo=quantile(y,probs=qconf[[1]], type=quantile.type),
                       md=median(y),
                       hi=quantile(y,probs=qconf[[3]], type=quantile.type)), by = .stratbinquant]
@@ -945,18 +941,18 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
 # continuous vpcstats ----
 } else {
   if(method$method == "binless") {
-    .binlessvpcstats(o, qpred=qpred, conf.level=conf.level, quantile.type=quantile.type, vpc.type = type, vpc.method = method) 
+    .binlessvpcstats(o, qpred=qpred, conf.level=conf.level, quantile.type=quantile.type, vpc.type = type, vpc.method = method)
   } else {
-    
+
     if (is.null(stratbin)) {
       stop("Need to specify binning before calling vpcstats.")
     }
     if (any(is.na(stratbin$bin))) {
       warning("There are bins missing. Has binning been specified for all strata?", call.=F)
     }
-    
+
     .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
-    
+
     myquant1 <- function(y, probs, qname=paste0("q", probs), type=quantile.type, blq=FALSE, alq=FALSE) {
       if (is.null(blq)) blq <- FALSE
       if (is.null(alq)) alq <- FALSE
@@ -969,12 +965,12 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       qname <- factor(qname, levels=unique(qname))
       data.frame(qname, y)
     }
-    
+
     myquant2 <- function(y, probs, qname=paste0("q", probs), type=quantile.type) {
       y <- quantile(y, probs=probs, type=type, names=FALSE, na.rm=TRUE)
       setNames(as.list(y), qname)
     }
-    
+
     if (isTRUE(predcor)) {
       qobs <- obs[, myquant1(ypc, probs=qpred, blq=blq,   alq=alq),   by=stratbin]
       qsim <- sim[, myquant1(ypc, probs=qpred, blq=FALSE, alq=FALSE), by=.stratbinrepl]
@@ -982,14 +978,14 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       qobs <- obs[, myquant1(y, probs=qpred, blq=blq,   alq=alq),   by=stratbin]
       qsim <- sim[, myquant1(y, probs=qpred, blq=FALSE, alq=FALSE), by=.stratbinrepl]
     }
-    
+
     .stratbinquant <- qsim[, !c("repl", "y")]
     qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
     qqsim <- qsim[, myquant2(y, probs=qconf, qname=c("lo", "md", "hi")), by=.stratbinquant]
     stats <- qobs[qqsim, on=names(.stratbinquant)]
     stats <- xbin[stats, on=names(stratbin)]
     setkeyv(stats, c(names(o$strat), "xbin"))
-    
+
     if (!is.null(obs$blq) && any(obs$blq)) {
       sim[, lloq := rep(obs$lloq, len=.N)]
       sim[, blq := (y < lloq)]
@@ -1003,7 +999,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
     } else {
       pctblq <- NULL
     }
-    
+
     if (!is.null(obs$alq) && any(obs$alq)) {
       sim[, uloq := rep(obs$uloq, len=.N)]
       sim[, alq := (y > uloq)]
@@ -1017,9 +1013,8 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
     } else {
       pctalq <- NULL
     }
-    
+
     update(o, stats=stats, pctblq=pctblq, pctalq=pctalq, conf.level=conf.level, vpc.type = type)
-    
    }
   }
 }
@@ -1034,9 +1029,9 @@ update.tidyvpcobj <- function(object, ...) {
 }
 
 #' Print a \code{tidyvpcobj}
-#' 
+#'
 #' Print generic used to return information about VPC.
-#' 
+#'
 #' @param x An \code{tidyvpcobj}.
 #' @param ... Further arguments can be specified but are ignored.
 #' @return Returns \code{x} invisibly.
@@ -1058,88 +1053,88 @@ print.tidyvpcobj <- function(x, ...) {
 
 .binlessvpcstats <-  function(o, qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7, vpc.type){
   y <- x <- blq <- fit <- . <- repl <- cprop <- rqssmed <- llam.med <- c.rqssmed <-  NULL
-  
+
   obs.fits <- o$rqss.obs.fits
   sim.fits <- o$rqss.sim.fits
   obs      <- o$obs
   sim      <- o$sim
   predcor  <- o$predcor
   xbinless <- o$obs$x
-  
+
   if(!is.null(o$strat)) {
     stratx <- obs.fits[, list(x, o$strat)]
     x.binless <-  c("x", "qname", names(o$strat))
   } else {
     x.binless <- c("x", "qname")
   }
-  
+
   qpred <- o$qpred
   conf.level <- o$conf.level
   qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
-  
+
   if(!is.null(obs$blq) && any(obs$blq)) {
     if(!is.null(o$strat)) {
       stratlloq <- c(names(o$strat), "lloq")
-      lloq <- obs[, stratlloq, with = FALSE] 
+      lloq <- obs[, stratlloq, with = FALSE]
       lloq <- unique(lloq)
       obs.fits <- obs.fits[lloq, on = names(o$strat)]
     } else {
-      obs.fits[, lloq := rep(obs$lloq, len=.N)]    
+      obs.fits[, lloq := rep(obs$lloq, len=.N)]
     }
     obs.fits[, blq := ifelse(fit < lloq, TRUE, FALSE)]
   }
-  
+
   obs.fits <- setnames(obs.fits[, lapply(.SD, median), by = x.binless], "fit", "y")
   sim.fits <- setnames(sim.fits, c("fit", "fit.lb", "fit.ub"), c("md", "lo", "hi"))
-  
+
   if(!is.null(obs$blq) && any(obs$blq)) {
     obs.fits[, blq := ifelse(y < lloq, TRUE, FALSE)]
     obs.fits[, y := ifelse(blq == TRUE, NA, y)]
   }
-  
+
   if (!is.null(o$strat)) {
     stats <- obs.fits[sim.fits, on = c("x", "qname", names(o$strat))]
   } else {
     stats <- obs.fits[sim.fits, on = c("x", "qname")]
   }
-  
+
   if (!is.null(obs$blq) && any(obs$blq)) {
     if(is.null(o$strat)) {
     sim[, lloq := rep(obs$lloq, len=.N)]
     sim[, blq := (y < lloq)]
     setorder(obs, cols = x)
     cprop.obs <- obs[, cprop := cumsum(blq) / 1:length(blq)]
-    
+
     sic.cprop <- function(llam) {
       a <- AIC(
         rqss(
-          cprop ~ 
-            qss(x, lambda=exp(llam)), 
+          cprop ~
+            qss(x, lambda=exp(llam)),
           tau=0.5, na.action=na.exclude, data = cprop.obs
         ),
         k=-1
       )
     }
     llam.med.cprop <- optimize(sic.cprop, interval=c(0, 7))$min
-    
+
     med.obs.cprop <- rqss(
-      cprop ~ qss(x, lambda=exp(llam.med.cprop)), 
+      cprop ~ qss(x, lambda=exp(llam.med.cprop)),
       tau=0.50, data = cprop.obs
     )
     cprop.obs$med <- fitted(med.obs.cprop)
-    
+
     setorder(sim, repl, x)[, cprop := cumsum(blq) / 1:length(blq), by=list(repl)]
-    
+
     suppressWarnings(sim[, rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.med.cprop)),
-                                                      tau = 0.5, na.action = na.exclude, .SD)), by = .(repl)])  
-    
+                                                      tau = 0.5, na.action = na.exclude, .SD)), by = .(repl)])
+
     u.x <- unique(cprop.obs$x) #%#
     med.obs.cprop <- tapply(cprop.obs$med, cprop.obs$x, median)
     med.sims.blq    <- tapply(sim$rqssmed, sim$x, median)
     med.sims.blq.lb <- tapply(sim$rqssmed, sim$x, quantile, probs=c(qconf[[1]]))
     med.sims.blq.ub <- tapply(sim$rqssmed, sim$x, quantile, probs=c(qconf[[3]]))
     pctblq <- data.table(cbind(u.x,med.obs.cprop, med.sims.blq.lb, med.sims.blq, med.sims.blq.ub))
-    
+
     setnames(pctblq, c("x", "y", "lo", "md", "hi"))
     } else {
         strat <- o$strat
@@ -1150,8 +1145,8 @@ print.tidyvpcobj <- function(x, ...) {
         sim[, blq := (y < lloq)]
         stratx.binless <- obs[, list(x, o$strat)]
         stratxrepl <- data.table(stratx.binless, sim[, .(repl)])
-        strat.split.sim <- split(sim, strat) 
-        strat.split.sim <- strat.split.sim[lapply(strat.split.sim,NROW)>0] 
+        strat.split.sim <- split(sim, strat)
+        strat.split.sim <- strat.split.sim[lapply(X = strat.split.sim, FUN = NROW)>0]
         sic.strat.cprop <- function(llam){
           a <- AIC(
             rqss(
@@ -1169,21 +1164,21 @@ print.tidyvpcobj <- function(x, ...) {
           llam.strat.med.cprop[[i]]   <- strat.split[[i]][, .(llam.med = optimize(sic.strat.cprop,  interval=c(0, 7))$min)][,.(med = unlist(llam.med))]
           strat.split[[i]][, c.rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.strat.med.cprop[[i]][[1]])),tau= .5, na.action = na.exclude, data = strat.split[[i]]))]
         }
-        
+
         obs.cprop <- rbindlist(strat.split)
         obs.cprop <- setnames(obs.cprop[, lapply(.SD, median, na.rm = TRUE), by = x.strat, .SDcols = "c.rqssmed"], "c.rqssmed", "y")
-       
+
         for (i in seq_along(strat.split.sim)) {
           setorder(strat.split.sim[[i]], cols = repl, x)
           strat.split.sim[[i]] <- strat.split.sim[[i]][, cprop := cumsum(blq) / 1:length(blq), by = .(repl)]
           strat.split.sim[[i]][, c.rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.strat.med.cprop[[i]][[1]])),tau= .5, na.action = na.exclude, .SD)), by = .(repl)]
         }
-        
+
         sim.cprop <- rbindlist(strat.split.sim)
         sim.med <- setnames(sim.cprop[, lapply(.SD, median, na.rm = TRUE), by = x.strat, .SDcols = "c.rqssmed"], "c.rqssmed", "md")
         sim.lb <- setnames(sim.cprop[, lapply(.SD, quantile, probs = qconf[[1]]), by = x.strat, .SDcols = "c.rqssmed"], "c.rqssmed", "lo")
         sim.ub <- setnames(sim.cprop[, lapply(.SD, quantile, probs = qconf[[3]]), by = x.strat, .SDcols = "c.rqssmed"], "c.rqssmed", "hi")
-        
+
         pctblq <- obs.cprop[sim.med, on = x.strat]
         pctblq <- pctblq[sim.lb, on = x.strat]
         pctblq <- pctblq[sim.ub, on = x.strat]
@@ -1191,7 +1186,7 @@ print.tidyvpcobj <- function(x, ...) {
   } else {
     pctblq <- NULL
   }
-  
+
   update(o, stats = stats, pctblq = pctblq, vpc.type = vpc.type)
 }
 
@@ -1226,9 +1221,9 @@ bininfo <- function(o, ...) UseMethod("bininfo")
 #'  was specified when the binning was done.
 #' @export
 bininfo.tidyvpcobj <- function(o, by.strata=o$bin.by.strata, ...) {
-  
+
   x <- xmin <- xmax <- bin <- NULL
-  
+
   f1 <- function(x) {
     nobs    <- sum(!is.na(x))
     xmedian <- median(x, na.rm=TRUE)
@@ -1238,7 +1233,7 @@ bininfo.tidyvpcobj <- function(o, by.strata=o$bin.by.strata, ...) {
     xmid    <- 0.5*(xmin + xmax)
     data.table(nobs, xmedian, xmean, xmin, xmax, xmid)
   }
-  
+
   # Compute xleft and xright
   f2 <- function(xmin, xmax) {
     xmin    <- c(xmin, xmax[length(xmax)])
@@ -1328,7 +1323,7 @@ bin_by_ntile <- function(nbins) {
   nbins <- .check_nbins(nbins)
   function(x, ...) {
     nbins <- .resolve_nbins(nbins, ...)
-    
+
     # Mimic the function from dplyr
     len <- sum(!is.na(x))
     r <- rank(x, ties.method="first", na.last="keep")
@@ -1342,7 +1337,7 @@ bin_by_eqcut <- function(nbins) {
   nbins <- .check_nbins(nbins)
   function(x, ..., quantile.type=7) {
     nbins <- .resolve_nbins(nbins, ...)
-    
+
     # Mimic the function from table1
     breaks <- quantile(x, probs=seq.int(nbins - 1)/nbins, na.rm=TRUE, type=quantile.type)
     cut_at(breaks)(x)
@@ -1359,7 +1354,7 @@ bin_by_pam <- function(nbins) {
   nbins <- .check_nbins(nbins)
   function(x, ...) {
     nbins <- .resolve_nbins(nbins, ...)
-    
+
     centers <- sort(cluster::pam(x, nbins)$medoids)
     nearest(centers)(x)
   }
@@ -1412,7 +1407,7 @@ bin_by_classInt <- function(style, nbins=NULL) {
 }
 
 #' Perform a consistency check on observed and simulated data
-#' 
+#'
 #' This function performs a simple consistency check on an observed and
 #' simulated dataset to make sure they are consistent with respect to ordering
 #' as required by the other functions used in the VPC calculation.
@@ -1428,9 +1423,8 @@ bin_by_classInt <- function(style, nbins=NULL) {
 #' @examples
 #'
 #' \donttest{
-#' 
-#'  require(data.table)
-#'  
+#' require(data.table)
+#'
 #' check_order(obs_data[, .(ID, TIME)], sim_data[, .(ID, TIME)])
 #' }
 #' @export
@@ -1444,10 +1438,10 @@ check_order <- function(obs, sim, tol=1e-5) {
   if (is.factor(sim[[1]])) sim[[1]] <- as.character(sim[[1]])
   if (!identical(rep(obs[[1]], len=nrow(sim)), sim[[1]])) {
     stop("ID columns are not identical")
-  } 
+  }
   if (!all(abs(rep(obs[[2]], len=nrow(sim)) - sim[[2]]) < tol)) {
     stop("Time columns are not equal")
-  } 
+  }
   nrow(sim) / nrow(obs)
 }
 
@@ -1558,20 +1552,20 @@ check_order <- function(obs, sim, tol=1e-5) {
 }
 
 
-binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), loess.ypc = FALSE, ...) { 
-
+binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), loess.ypc = FALSE, ...) {
+  browser()
   l.ypc <- strat.split <- y <- NULL
-  
+
   qpred <- sort(qpred)
   obs <- o$obs
   log <- o$predcor.log
-  
+
   if(!is.null(o$strat.split)){
     strat.split <- o$strat.split
   }
-  
+
   environment(.autoloess) <- environment()
-  
+
   if (loess.ypc) {  #Split data on strata to optimize loess
     if (is.null(o$predcor)) {
       stop("Must use predcorrect() if binless(loess.ypc=TRUE)")
@@ -1584,16 +1578,12 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
       strat.split <- strat.split[lapply(strat.split,NROW)>0] #added
       loess.mod.strat <- vector("list", length(strat.split))
       names(loess.mod.strat) <- names(strat.split)
-      if(isTRUE(o$predcor.log)) {
-        for (i in seq_along(strat.split)) {
-          loess.mod.strat[[i]] <-  .autoloess(loess(pred ~ x, span = .5, data = strat.split[[i]]))
-          strat.split[[i]][, lpred := fitted(loess(pred ~ x, span = loess.mod.strat[[i]]$span, na.action = na.exclude))]
+      for (i in seq_along(strat.split)) {
+        loess.mod.strat[[i]] <-  .autoloess(loess(pred ~ x, span = .5, data = strat.split[[i]]))
+        strat.split[[i]][, lpred := fitted(loess(pred ~ x, span = loess.mod.strat[[i]]$span, na.action = na.exclude))]
+        if(isTRUE(o$predcor.log)) {
           strat.split[[i]][, l.ypc := (lpred - pred) + y]
-        }
-      } else {
-        for (i in seq_along(strat.split)) {
-          loess.mod.strat[[i]] <-  .autoloess(loess(pred ~ x, span = .5, data = strat.split[[i]]))
-          strat.split[[i]][, lpred := fitted(loess(pred ~ x, span = loess.mod.strat[[i]]$span, na.action = na.exclude))]
+        } else {
           strat.split[[i]][, l.ypc := (lpred/pred) * y]
         }
       }
@@ -1611,13 +1601,13 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
       }
     }
   }
-  
+
   if(!loess.ypc && !is.null(o$strat)) {
     strat <- o$strat
     strat.split <- split(obs, strat)
-    strat.split <- strat.split[lapply(strat.split,NROW)>0]
+    strat.split <- strat.split[lapply(X = strat.split, FUN = NROW) > 0]
   }
-  
+
   # Internal Function
   .sic.strat.ypc <- function(llam, quant) {
     a <- AIC(
@@ -1639,7 +1629,7 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
       k=-1
     )
   }
-  
+
   .sic.ypc <- function(llam, quant){
     a <- AIC(
       rqss(
@@ -1650,7 +1640,7 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
       k=-1
     )
   }
-  
+
   .sic <- function(llam, quant){
     a <- AIC(
       rqss(
@@ -1661,16 +1651,14 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
       k=-1
     )
   }
-  
+
   if(loess.ypc) {
     if(!is.null(o$strat)){
       llamoptimize <- .sic.strat.ypc
     } else {
       llamoptimize  <- .sic.ypc
     }
-  }
-  
-  if(!loess.ypc) {
+  } else {
     span <- NULL
     if(!is.null(o$strat)) {
       llamoptimize <- .sic.strat
@@ -1678,60 +1666,61 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
       llamoptimize <- .sic
     }
   }
-  
+
   environment(llamoptimize) <- environment()
   . <- list
   if(!is.null(o$strat.split)) {
     llam.strat.lo  <- vector("list", length(strat.split))
     llam.strat.med <- vector("list", length(strat.split))
     llam.strat.hi  <- vector("list", length(strat.split))
-    
+
     for (i in seq_along(strat.split)) {
       llam.strat.lo[[i]]    <- strat.split[[i]][, .(llam.lo  = optimize(llamoptimize, quant = qpred[1], interval = interval)$min)][,.(lo = unlist(llam.lo))]
-      names(llam.strat.lo)  <- names(strat.split)
-      setnames(llam.strat.lo[[i]], paste0("q", qpred[1]))
       llam.strat.med[[i]]   <- strat.split[[i]][, .(llam.med = optimize(llamoptimize, quant = qpred[2], interval = interval)$min)][,.(med = unlist(llam.med))]
-      names(llam.strat.med) <- names(strat.split)
-      setnames(llam.strat.med[[i]], paste0("q", qpred[2]))
       llam.strat.hi[[i]]    <- strat.split[[i]][, .(llam.hi  = optimize(llamoptimize, quant = qpred[3], interval = interval)$min)][,.(hi = unlist(llam.hi))]
-      names(llam.strat.hi)  <- names(strat.split)
-      setnames(llam.strat.hi[[i]], paste0("q", qpred[3]))
+      setnames(llam.strat.lo[[i]],  paste0("q", qpred[1]))
+      setnames(llam.strat.med[[i]], paste0("q", qpred[2]))
+      setnames(llam.strat.hi[[i]],  paste0("q", qpred[3]))
     }
-    
+    names(llam.strat.lo)  <- names(strat.split)
+    names(llam.strat.med) <- names(strat.split)
+    names(llam.strat.hi)  <- names(strat.split)
+
     llam.qpred <- cbind(list(llam.strat.lo, llam.strat.med, llam.strat.hi))
     names(llam.qpred) <- paste0("q", qpred)
   } else {
     llam.lo  <- obs[, .(llam.lo = optimize(llamoptimize, quant = qpred[1], interval = interval)$min)]
     llam.med <- obs[, .(llam.med = optimize(llamoptimize, quant = qpred[2], interval = interval)$min)]
     llam.hi  <- obs[, .(llam.hi = optimize(llamoptimize, quant = qpred[3], interval = interval)$min)]
-    
+
     llam.qpred <- c(llam.lo, llam.med, llam.hi)
     names(llam.qpred) <- paste0("q", qpred)
     llam.qpred <- unlist(llam.qpred)
   }
-  
+
   update(o, llam.qpred = llam.qpred, span = span, qpred = qpred, loess.ypc = loess.ypc)
 }
 
-
 binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...){
-  y <- l.ypc <- repl <- NULL  
+  browser()
+  y <- l.ypc <- repl <- NULL
   . <- list
   qpred <- o$qpred
   qnames <- paste0("q", as.character(qpred))
   qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
-  
+
   obs <- o$obs
   sim <- o$sim
-  
+
   if(isTRUE(o$loess.ypc)) {
     pred <- o$pred
     obs <- cbind(obs, pred)
     sim[, pred := rep(pred, len=.N), by = .(repl)]
     if(is.null(span)) {
-      span <- o$span  
+      span <- o$span
     }
   }
+
   getllam <- function(qnames, userllam, stratlev) {
     userllam <- as.data.frame(userllam)
     userllam <- userllam[, order(names(userllam))]
@@ -1760,9 +1749,9 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     names(llam.list[[1]]) <- names(o$strat.split)
     names(llam.list[[2]]) <- names(o$strat.split)
     names(llam.list[[3]]) <- names(o$strat.split)
-    return(llam.list)
+    llam.list
   }
-  
+
   if(is.null(llam.quant)) {
     if(is.null(o$llam.qpred)) {
       stop("Must specify llambda for binlessfit. Include binlessaugment() before running binlessfit() for optimized llambda values using AIC.")
@@ -1770,21 +1759,21 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
       llam.qpred <- o$llam.qpred
     }
   } else if(!is.null(llam.quant) && !is.null(o$strat)) {
-    stratlev <- lapply(o$strat, unique) 
+    stratlev <- lapply(o$strat, unique)
     stratlev <- length(stratlev[[1]])
     llam.qpred <- getllam(qnames, llam.quant, stratlev)
-  } else { 
+  } else {
     llam.qpred <- llam.quant
-  } 
-  
+  }
+
   if(is.null(span)) {
     if(!is.null(o$span) && isTRUE(o$loess.ypc)) {
       span <- o$span
     } else {
       span <- o$span
     }
-  } 
-  
+  }
+
   if(!is.null(o$strat)) {
     strat <- o$strat
     strat.split <- split(obs, strat)
@@ -1792,9 +1781,9 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     x.strat <- c("x", names(strat))
     sim.strat <- sim[, c(names(strat)) := rep(strat, len = .N), by = .(repl)]
     strat.split.sim <- split(sim, strat)
-    strat.split.sim <- strat.split.sim[lapply(strat.split.sim,NROW)>0] 
+    strat.split.sim <- strat.split.sim[lapply(X = strat.split.sim,FUN = NROW) > 0]
   }
-  
+
   if(isTRUE(o$loess.ypc) && !is.null(o$strat)) {
     if(isTRUE(o$predcor.log)) {
       for(i in seq_along(strat.split)) {
@@ -1803,12 +1792,12 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     } else {
       for(i in seq_along(strat.split)) {
         strat.split[[i]][, l.ypc := y * (fitted(loess(pred ~ x, span = span[[i]], na.action = na.exclude, .SD)) / pred)]
-      } 
+      }
     }
     obs <- rbindlist(strat.split)
     o <- update(o, obs = obs)
   }
-  
+
   if(isTRUE(o$loess.ypc) && is.null(o$strat)) {
     if(isTRUE(o$predcor.log)) {
       obs[, l.ypc := y + (fitted(loess(pred ~ x, span = span, na.action = na.exclude, .SD)) - pred)]
@@ -1817,7 +1806,7 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     }
     o <- update(o, obs = obs)
   }
-  
+
   if (is.null(o$strat)) {
     if (isTRUE(o$loess.ypc)) {
       rqss.obs.fits <- .fitobs(obs, llam.qpred, qpred, l.ypc = TRUE)
@@ -1830,16 +1819,15 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
       rqss.obs.fits <- .fitobs(obs, llam.qpred, qpred)
       rqss.sim.fits <- .fitsim(sim, llam.qpred, qpred = qpred, qconf= qconf)
     }
-  } 
-  
-  
+  }
+
+
   if(!is.null(o$strat)){
     if(isTRUE(o$loess.ypc)){
+      rqss.obs.fits <- .fitobs.strat(strat.split = strat.split, x.strat = x.strat, llam.qpred = llam.qpred, qpred = qpred, l.ypc = TRUE)
       if(isTRUE(o$predcor.log)) {
-        rqss.obs.fits <- .fitobs.strat(strat.split = strat.split, x.strat = x.strat, llam.qpred = llam.qpred, qpred = qpred, l.ypc = TRUE)
         rqss.sim.fits <- .fitsim.strat(strat.split.sim = strat.split.sim, x.strat = x.strat, llam.qpred = llam.qpred, span = span, qpred = qpred, qconf = qconf, l.ypc = TRUE, log = TRUE)
       } else {
-        rqss.obs.fits <- .fitobs.strat(strat.split = strat.split, x.strat = x.strat, llam.qpred = llam.qpred, qpred = qpred, l.ypc = TRUE)
         rqss.sim.fits <- .fitsim.strat(strat.split.sim = strat.split.sim, x.strat = x.strat, llam.qpred = llam.qpred, span = span, qpred = qpred, qconf = qconf, l.ypc = TRUE)
       }
     } else {
@@ -1847,14 +1835,13 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
       rqss.sim.fits <- .fitsim.strat(strat.split.sim = strat.split.sim, x.strat = x.strat, llam.qpred = llam.qpred, qpred = qpred, qconf = qconf)
     }
   }
-  
+
   update(o, rqss.obs.fits = rqss.obs.fits, rqss.sim.fits = rqss.sim.fits, llam.qpred = llam.qpred, span = span, conf.level = conf.level)
-  
 }
 
 # Internal Functions ----
 
-# Dispatches AIC.gam method
+## Internal functions Dispatches AIC.gam method ----
 .gam_optimize <- function(sp, y, x, data){
   suppressWarnings(
   AIC(gam(y ~ s(x, k = 1), sp = sp, family = "binomial", data = data))
@@ -1867,34 +1854,31 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   )
 }
 
-#Below function used for fitting rqss
+## Internal functions Below function used for fitting rqss ----
 .fitobs <- function(obs, llam.qpred, qpred, l.ypc = FALSE) {
   rqsslo <- rqssmed <- rqsshi <- NULL
   qnames <- paste0("q", as.character(qpred))
-  
+
   if(l.ypc) {
     obs[, rqsslo := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[1]])), tau = qpred[1], na.action = na.exclude, data = obs))]
     obs[, rqssmed := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[2]])), tau = qpred[2], na.action = na.exclude, data = obs))]
     obs[, rqsshi := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[3]])), tau = qpred[3], na.action = na.exclude, data = obs))]
-    setnames(obs, c("rqsslo", "rqssmed", "rqsshi"), qnames)
-    obs.fits <- melt(obs, id.vars = "x", measure.vars = qnames)
-    obs.fits <- setnames(obs.fits, c("variable", "value"), c("qname", "fit"))
   } else {
     obs[, rqsslo := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[1]])), tau = qpred[1], na.action = na.exclude, data = obs))]
     obs[, rqssmed := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[2]])), tau = qpred[2], na.action = na.exclude, data = obs))]
     obs[, rqsshi := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[3]])), tau = qpred[3], na.action = na.exclude, data = obs))]
-    setnames(obs, c("rqsslo", "rqssmed", "rqsshi"), qnames)
-    obs.fits <- melt(obs, id.vars = "x", measure.vars = qnames)
-    obs.fits <- setnames(obs.fits, c("variable", "value"), c("qname", "fit"))
   }
-  return(obs.fits)
+  setnames(obs, c("rqsslo", "rqssmed", "rqsshi"), qnames)
+  obs.fits <- melt(obs, id.vars = "x", measure.vars = qnames)
+  obs.fits <- setnames(obs.fits, c("variable", "value"), c("qname", "fit"))
+  obs.fits
 }
 
-# Internal Function
+## Internal Function for other functions ----
 .fitobs.strat <- function(strat.split, x.strat, llam.qpred, qpred, l.ypc = FALSE) {
   rqsslo <- rqssmed <- rqsshi <- NULL
   qnames <- paste0("q", as.character(qpred))
-  
+  browser()
   if(l.ypc) {
     for (i in seq_along(strat.split)) {
       strat.split[[i]][, rqsslo  := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[1]][[i]][[1]])),tau= qpred[1], na.action = na.exclude, data = strat.split[[i]]))]
@@ -1912,14 +1896,14 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   strat.obs.fits <- setnames(strat.obs.fits, c("rqsslo", "rqssmed", "rqsshi"), qnames)
   strat.obs.fits <- melt(strat.obs.fits, id.vars = x.strat, measure.vars = qnames)
   strat.obs.fits <- setnames(strat.obs.fits, c("variable", "value"), c("qname", "fit"))
+  strat.obs.fits
 }
 
-# Internal Function
 .fitsim <- function(sim, llam.qpred, span = NULL, qpred, qconf, l.ypc = FALSE, log = FALSE) {
   . <- list
   rqsslo <- rqssmed <- rqsshi <- y <- pred <- repl <- NULL
   qnames <- paste0("q", as.character(qpred))
-  
+
   if(l.ypc) {
     if(log) {
       sim[, l.ypc := y + (fitted(loess(pred ~ x, span = span, na.action = na.exclude, .SD)) - pred), by = .(repl)]
@@ -1927,145 +1911,141 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
       sim[, l.ypc := y * (fitted(loess(pred ~ x, span = span, na.action = na.exclude, .SD)) / pred), by = .(repl)]
     }
     suppressWarnings(sim[, rqsslo := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[1]])),
-                                                 tau  = qpred[1], na.action = na.exclude, .SD)), by = .(repl)]) 
+                                                 tau  = qpred[1], na.action = na.exclude, .SD)), by = .(repl)])
     suppressWarnings(sim[, rqssmed := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[2]])),
-                                                  tau = qpred[2], na.action = na.exclude, .SD)), by = .(repl)]) 
+                                                  tau = qpred[2], na.action = na.exclude, .SD)), by = .(repl)])
     suppressWarnings(sim[, rqsshi := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[3]])),
                                                  tau  = qpred[3], na.action = na.exclude, .SD)), by = .(repl)])
     setnames(sim, c("rqsslo", "rqssmed", "rqsshi"), qnames)
   } else {
     suppressWarnings(sim[, rqsslo := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[1]])),
-                                                 tau  = qpred[1], na.action = na.exclude, .SD)), by = .(repl)]) 
+                                                 tau  = qpred[1], na.action = na.exclude, .SD)), by = .(repl)])
     suppressWarnings(sim[, rqssmed := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[2]])),
-                                                  tau = qpred[2], na.action = na.exclude, .SD)), by = .(repl)]) 
+                                                  tau = qpred[2], na.action = na.exclude, .SD)), by = .(repl)])
     suppressWarnings(sim[, rqsshi := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[3]])),
                                                  tau  = qpred[3], na.action = na.exclude, .SD)), by = .(repl)])
     setnames(sim, c("rqsslo", "rqssmed", "rqsshi"), qnames)
   }
-  
+
   sim.lb <- sim[, lapply(.SD, quantile, probs = qconf[[1]]), by = "x"] #CI lb
   sim.lb <- setnames(melt(sim.lb, id.vars = "x", measure.vars = qnames), c("x", "qname", "fit.lb"))  #Wide to long
-  
+
   sim.ub <- sim[, lapply(.SD, quantile, probs = qconf[[3]]), by = "x"] #CI ub
   sim.ub <- setnames(melt(sim.ub, id.vars = "x", measure.vars = qnames), c("x", "qname", "fit.ub"))   #Wide to long
-  
+
   sim <-  sim[, lapply(.SD, median, na.rm = TRUE), by = "x"] #Med fits
   sim <- setnames(melt(sim, id.vars = "x", measure.vars = qnames), c("x", "qname", "fit")) #wide to long
-  
+
   sim <- sim[sim.lb, on = c("x", "qname")]
   sim <- sim[sim.ub, on = c("x", "qname")]
+  sim
 }
 
-# Internal Function
 .fitsim.strat <- function(strat.split.sim, x.strat, llam.qpred, span = NULL, qpred, qconf, l.ypc = FALSE, log = FALSE) {
   . <- list
   rqsslo <- rqssmed <- rqsshi <- y <- pred <- repl <- NULL
   qnames <- paste0("q", as.character(qpred))
-  
+
   if(l.ypc) {
     if(log) {
       for (i in seq_along(strat.split.sim)) {
         strat.split.sim[[i]][, l.ypc := y + (fitted(loess(pred ~ x, span = span[[i]], na.action = na.exclude, .SD)) - pred), by = .(repl)]
-        
+
         suppressWarnings(strat.split.sim[[i]][, rqsslo := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[1]][[i]][[1]])),
                                                                       tau  = qpred[1], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.lo = unlist(rqsslo))])
-        
+
         suppressWarnings(strat.split.sim[[i]][, rqssmed := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[2]][[i]][[1]])),
                                                                        tau = qpred[2], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.med = unlist(rqssmed))])
-        
+
         suppressWarnings(strat.split.sim[[i]][, rqsshi := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[3]][[i]][[1]])),
                                                                       tau  = qpred[3], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.hi = unlist(rqsshi))])
       }
     } else {
       for (i in seq_along(strat.split.sim)) {
         strat.split.sim[[i]][, l.ypc := y * (fitted(loess(pred ~ x, span = span[[i]], na.action = na.exclude, .SD)) / pred), by = .(repl)]
-        
+
         suppressWarnings(strat.split.sim[[i]][, rqsslo := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[1]][[i]][[1]])),
                                                                       tau  = qpred[1], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.lo = unlist(rqsslo))])
-        
+
         suppressWarnings(strat.split.sim[[i]][, rqssmed := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[2]][[i]][[1]])),
                                                                        tau = qpred[2], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.med = unlist(rqssmed))])
-        
+
         suppressWarnings(strat.split.sim[[i]][, rqsshi := fitted(rqss(l.ypc ~ qss(x, lambda = exp(llam.qpred[[3]][[i]][[1]])),
                                                                       tau  = qpred[3], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.hi = unlist(rqsshi))])
       }
     }
-  } else {  
+  } else {
     for (i in seq_along(strat.split.sim)) {
       suppressWarnings(strat.split.sim[[i]][, rqsslo := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[1]][[i]][[1]])),
                                                                     tau  = qpred[1], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.lo = unlist(rqsslo))])
-      
+
       suppressWarnings(strat.split.sim[[i]][, rqssmed := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[2]][[i]][[1]])),
                                                                      tau = qpred[2], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.med = unlist(rqssmed))])
-      
+
       suppressWarnings(strat.split.sim[[i]][, rqsshi := fitted(rqss(y ~ qss(x, lambda = exp(llam.qpred[[3]][[i]][[1]])),
                                                                     tau  = qpred[3], na.action = na.exclude, .SD)), by = .(repl)][,.(fit.hi = unlist(rqsshi))])
     }
   }
-  
+
   sim <- rbindlist(strat.split.sim)
   setnames(sim, c("rqsslo", "rqssmed", "rqsshi"), qnames)
-  
+
   sim.lb <- sim[, lapply(.SD, quantile, probs = qconf[[1]]), by = x.strat, .SDcols = qnames]
   sim.lb <- setnames(melt(sim.lb, id.vars = x.strat, measure.vars = qnames), c("variable", "value"), c("qname", "fit.lb"))
-  
+
   sim.ub <- sim[, lapply(.SD, quantile, probs = qconf[[3]]), by = x.strat, .SDcols = qnames]
   sim.ub <- setnames(melt(sim.ub, id.vars = x.strat, measure.vars = qnames), c("variable", "value"), c("qname", "fit.ub"))
-  
+
   sim <- sim[, lapply(.SD, median, na.rm = TRUE), by = x.strat, .SDcols = qnames]
   sim <- setnames(melt(sim, id.vars = x.strat, measure.vars = qnames), c("variable", "value"), c("qname", "fit"))
-  
+
   sim <- sim[sim.lb, on = c(x.strat, "qname")]
   sim <- sim[sim.ub, on = c(x.strat, "qname")]
 }
 
-
-
-# Internal function for optimizing loess fit
+## Internal function for optimizing loess fit ----
 .aicc.loess <- function(fit){
   #compute AIC_C for a LOESS fit, from:
   #Hurvich, C.M., Simonoff, J.S., and Tsai, C. L. 1998. Smoothing
   #parameter selection in nonparametric regression using an improved
   #Akaike Information Criterion. Journal of the Royal Statistical
   #Society B 60: 271–293.
-  
+
   stopifnot(inherits(fit, 'loess'))
   n <- fit$n
   trace <- fit$trace.hat
   sigma2 <- sum(resid(fit) ^ 2) / (n - 1)
-  return(log(sigma2) + 1 + (2 * (trace + 1)) / (n - trace - 2))
+  log(sigma2) + 1 + (2 * (trace + 1)) / (n - trace - 2)
 }
 
-# Internal function for optimizing loess fit
 .autoloess <- function(fit, span=c(.1, .9), ...){
   #compute loess fit which has span minimizes AIC_C
   #fit = loess fit; span parameter value doesn't matter
   #span = a two-value vector representing the minimum and maximum span values
   #Returns LOESS fit with span minimizing the AIC_C function
-  
+
   stopifnot(inherits(fit, 'loess')) #, length(span) == 2)
-  
+
   #loss function in form to be used by optimize
   f <- function(span) .aicc.loess(update(fit, span=span))
-  
+
   #find best loess according to loss function
   opt.fit  <- update(fit, span=optimize(f, span)$minimum)
   opt.span <- optimize(f, span)$minimum
-  return(list(fit=opt.fit, span=opt.span))
-  
+  list(fit=opt.fit, span=opt.span)
 }
 
-# Internal function for returning optimized span by strata
+## Internal function for returning optimized span by strata ----
 .getspan <- function(x) {
   span <- vector("list", length(x))
   for (i in seq_along(x)) {
     span[[i]] <- x[[i]]$span
   }
   names(span) <- names(x)
-  return(span)
+  span
 }
 
-# Internal function for returning l.ypc fits by strata
+## Internal function for returning l.ypc fits by strata ----
 .getfitted <- function(x) {
   fits <- vector("list", length(x))
   for (i in seq_along(x)) {
@@ -2073,9 +2053,8 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     fits[[i]] <- setnames(fits[[i]], "fitted")
   }
   names(fits) <- names(x)
-  return(fits)
+  fits
 }
-
 
 .getfit <- function(x) {
   fit <- vector("list", length(x))
@@ -2083,7 +2062,7 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     fit[[i]] <- x[[i]]$loess[[1]]$fit
   }
   names(fit) <- names(x)
-  return(fit)
+  fit
 }
 
 .isCensored <- function(obs) {
@@ -2094,9 +2073,8 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   } else {
     ret <- FALSE
   }
-  
+
   ret
-  
 }
 
 .onAttach <- function(libname, pkgname) {
