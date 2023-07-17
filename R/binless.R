@@ -470,50 +470,6 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
     strat.split <- strat.split[lapply(strat.split,NROW)>0]
   }
 
-  # Internal Function
-  .sic.strat.ypc <- function(llam, quant) {
-    a <- AIC(
-      rqss(
-        l.ypc ~
-          qss(x, lambda=exp(llam)),
-        tau=quant, na.action=na.exclude, data = strat.split[[i]]
-      ),
-      k=-1
-    )
-  }
-  .sic.strat <- function(llam, quant){
-    a <- AIC(
-      rqss(
-        y ~
-          qss(x, lambda=exp(llam)),
-        tau=quant, na.action=na.exclude, data = strat.split[[i]]
-      ),
-      k=-1
-    )
-  }
-
-  .sic.ypc <- function(llam, quant){
-    a <- AIC(
-      rqss(
-        l.ypc ~
-          qss(x, lambda=exp(llam)),
-        tau=quant, na.action=na.exclude, data = obs
-      ),
-      k=-1
-    )
-  }
-
-  .sic <- function(llam, quant){
-    a <- AIC(
-      rqss(
-        y ~
-          qss(x, lambda=exp(llam)),
-        tau=quant, na.action=na.exclude, data = obs
-      ),
-      k=-1
-    )
-  }
-
   if(loess.ypc) {
     if(!is.null(o$strat)){
       llamoptimize <- .sic.strat.ypc
@@ -531,7 +487,6 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
     }
   }
 
-  environment(llamoptimize) <- environment()
   . <- list
   if(!is.null(o$strat.split)) {
     llam.strat.lo  <- vector("list", length(strat.split))
@@ -539,13 +494,14 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
     llam.strat.hi  <- vector("list", length(strat.split))
 
     for (i in seq_along(strat.split)) {
-      llam.strat.lo[[i]]    <- strat.split[[i]][, .(llam.lo  = optimize(llamoptimize, quant = qpred[1], interval = interval)$min)][,.(lo = unlist(llam.lo))]
+      data_fit <- strat.split[[i]]
+      llam.strat.lo[[i]]    <- strat.split[[i]][, .(llam.lo  = optimize(llamoptimize, quant = qpred[1], data = data_fit, interval = interval)$min)][,.(lo = unlist(llam.lo))]
       names(llam.strat.lo)  <- names(strat.split)
       setnames(llam.strat.lo[[i]], paste0("q", qpred[1]))
-      llam.strat.med[[i]]   <- strat.split[[i]][, .(llam.med = optimize(llamoptimize, quant = qpred[2], interval = interval)$min)][,.(med = unlist(llam.med))]
+      llam.strat.med[[i]]   <- strat.split[[i]][, .(llam.med = optimize(llamoptimize, quant = qpred[2], data = data_fit, interval = interval)$min)][,.(med = unlist(llam.med))]
       names(llam.strat.med) <- names(strat.split)
       setnames(llam.strat.med[[i]], paste0("q", qpred[2]))
-      llam.strat.hi[[i]]    <- strat.split[[i]][, .(llam.hi  = optimize(llamoptimize, quant = qpred[3], interval = interval)$min)][,.(hi = unlist(llam.hi))]
+      llam.strat.hi[[i]]    <- strat.split[[i]][, .(llam.hi  = optimize(llamoptimize, quant = qpred[3], data = data_fit, interval = interval)$min)][,.(hi = unlist(llam.hi))]
       names(llam.strat.hi)  <- names(strat.split)
       setnames(llam.strat.hi[[i]], paste0("q", qpred[3]))
     }
@@ -553,9 +509,9 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
     llam.qpred <- cbind(list(llam.strat.lo, llam.strat.med, llam.strat.hi))
     names(llam.qpred) <- paste0("q", qpred)
   } else {
-    llam.lo  <- obs[, .(llam.lo = optimize(llamoptimize, quant = qpred[1], interval = interval)$min)]
-    llam.med <- obs[, .(llam.med = optimize(llamoptimize, quant = qpred[2], interval = interval)$min)]
-    llam.hi  <- obs[, .(llam.hi = optimize(llamoptimize, quant = qpred[3], interval = interval)$min)]
+    llam.lo  <- obs[, .(llam.lo = optimize(llamoptimize, quant = qpred[1], data = obs, interval = interval)$min)]
+    llam.med <- obs[, .(llam.med = optimize(llamoptimize, quant = qpred[2], data = obs, interval = interval)$min)]
+    llam.hi  <- obs[, .(llam.hi = optimize(llamoptimize, quant = qpred[3], data = obs, interval = interval)$min)]
 
     llam.qpred <- c(llam.lo, llam.med, llam.hi)
     names(llam.qpred) <- paste0("q", qpred)
@@ -565,3 +521,46 @@ binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), lo
   update(o, llam.qpred = llam.qpred, span = span, qpred = qpred, loess.ypc = loess.ypc)
 }
 
+# Internal Functions for binlessaugment ####
+.sic.strat.ypc <- function(llam, quant, data) {
+  a <- AIC(
+    rqss(
+      l.ypc ~
+        qss(x, lambda=exp(llam)),
+      tau=quant, na.action=na.exclude, data = data
+    ),
+    k=-1
+  )
+}
+.sic.strat <- function(llam, quant, data){
+  a <- AIC(
+    rqss(
+      y ~
+        qss(x, lambda=exp(llam)),
+      tau=quant, na.action=na.exclude, data = data
+    ),
+    k=-1
+  )
+}
+
+.sic.ypc <- function(llam, quant, data){
+  a <- AIC(
+    rqss(
+      l.ypc ~
+        qss(x, lambda=exp(llam)),
+      tau=quant, na.action=na.exclude, data = data
+    ),
+    k=-1
+  )
+}
+
+.sic <- function(llam, quant, data){
+  a <- AIC(
+    rqss(
+      y ~
+        qss(x, lambda=exp(llam)),
+      tau=quant, na.action=na.exclude, data = data
+    ),
+    k=-1
+  )
+}
