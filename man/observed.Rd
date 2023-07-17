@@ -51,7 +51,7 @@ data must not contain missing DV and may require filtering \code{MDV == 0} befor
 obs_data <- obs_data[MDV == 0]
 sim_data <- sim_data[MDV == 0]
 
-vpc <- observed(obs_data, x=TIME, y=DV) 
+vpc <- observed(obs_data, x=TIME, y=DV)
 
 }
 \seealso{
