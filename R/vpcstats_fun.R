@@ -48,7 +48,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
     o <- binlessfit(o, conf.level = conf.level, llam.quant = method$lambda, span = method$span)
   }
 
-  if(type == "categorical"){
+  if (type == "categorical") {
     if(.isCensored(obs)){
       stop("Censoring not supported for categorical vpc")
     }
@@ -191,7 +191,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
         stop("Need to specify binning before calling vpcstats.")
       }
       if (any(is.na(stratbin$bin))) {
-        warning("There are bins missing. Has binning been specified for all strata?", call.=F)
+        warning("There are bins missing. Has binning been specified for all strata?", call.=FALSE)
       }
 
       .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
