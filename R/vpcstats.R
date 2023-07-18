@@ -95,7 +95,10 @@ simulated.tidyvpcobj <- function(o, data, ysim, ...) {
   obs  <- o$obs
   x    <- obs$x
   nrep <- length(ysim)/nrow(obs)
-  repl <- rep(1:nrep, each=nrow(obs))
+  if (nrep != as.integer(nrep)) {
+    stop("The number of simulated rows is not a multiple of the number of observed rows.  Ensure that you filtered your observed data to remove MDV rows.")
+  }
+  repl <- rep(seq_len(nrep), each=nrow(obs))
 
   sim <- data.table(x, y=ysim, repl)
   update(o, sim=sim)

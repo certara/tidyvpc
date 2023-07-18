@@ -4,6 +4,7 @@
 * Support `headtails`, `maximum`, and `box` binning methods [#23](https://github.com/certara/tidyvpc/pull/23)
 * Usage of `predcorrect()` may now occur either before or after call to `binless(loess.ypc=TRUE)`
 * Additional unit tests
+* `simulated.tidyvpcobj()` detects if the number of simulated rows is not an integer multiple of the number of observed rows suggesting that MDV filtering may not have occurred [#35](https://github.com/certara/tidyvpc/issues/35).
 
 # tidyvpc 1.3.0
 * Additional arguments in `plot()` function now include:

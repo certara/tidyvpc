@@ -1,3 +1,15 @@
+test_that("simulated.tidyvpcobj detects row count mismatches", {
+  vpcobj_o <- observed(o = data.frame(x = 0:1, y = c(0, 2), pred = c(0, 2.5)), x = x, yobs = y)
+  expect_silent(
+    simulated(vpcobj_o, data = data.frame(x = 0:1, y = c(0, 3)), x = x, y = y)
+  )
+  expect_error(
+    simulated(vpcobj_o, data = data.frame(x = 0:2, y = c(0, 3, 4)), x = x, y = y),
+    regexp = "The number of simulated rows is not a multiple of the number of observed rows.  Ensure that you filtered your observed data to remove MDV rows.",
+    fixed = TRUE
+  )
+})
+
 test_that("predcorrect.tidyvpcobj", {
   # Prevent division by zero for prediction correction
   vpcobj_o <- observed(o = data.frame(x = 0:1, y = c(0, 2), pred = c(0, 2.5)), x = x, yobs = y)
