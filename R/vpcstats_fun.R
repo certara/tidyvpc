@@ -197,16 +197,16 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
 
       if (isTRUE(predcor)) {
-        qobs <- obs[, quant_loq(ypc, probs=qpred, blq=blq,   alq=alq),   by=stratbin]
-        qsim <- sim[, quant_loq(ypc, probs=qpred, blq=FALSE, alq=FALSE), by=.stratbinrepl]
+        qobs <- obs[, quant_loq(ypc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type),   by=stratbin]
+        qsim <- sim[, quant_loq(ypc, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
       } else {
-        qobs <- obs[, quant_loq(y, probs=qpred, blq=blq,   alq=alq),   by=stratbin]
-        qsim <- sim[, quant_loq(y, probs=qpred, blq=FALSE, alq=FALSE), by=.stratbinrepl]
+        qobs <- obs[, quant_loq(y, probs=qpred, blq=blq,   alq=alq  , type = quantile.type),   by=stratbin]
+        qsim <- sim[, quant_loq(y, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
       }
 
       .stratbinquant <- qsim[, !c("repl", "y")]
       qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
-      qqsim <- qsim[, quant_noloq(y, probs=qconf, qname=c("lo", "md", "hi")), by=.stratbinquant]
+      qqsim <- qsim[, quant_noloq(y, probs=qconf, qname=c("lo", "md", "hi"), type = quantile.type), by=.stratbinquant]
       stats <- qobs[qqsim, on=names(.stratbinquant)]
       stats <- xbin[stats, on=names(stratbin)]
       setkeyv(stats, c(names(o$strat), "xbin"))
@@ -217,7 +217,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
         pctblqobs <- obs[, .(y=100*mean(blq)), by=stratbin]
         pctblqsim <- sim[, .(y=100*mean(blq)), by=.stratbinrepl]
         .stratbinpctblq <- pctblqsim[, !c("repl", "y")]
-        qpctblqsim <- pctblqsim[, quant_noloq(y, probs=qconf, qname=c("lo", "md", "hi")), by=.stratbinpctblq]
+        qpctblqsim <- pctblqsim[, quant_noloq(y, probs=qconf, qname=c("lo", "md", "hi"), type = quantile.type), by=.stratbinpctblq]
         pctblq <- pctblqobs[qpctblqsim, on=names(.stratbinpctblq)]
         pctblq <- xbin[pctblq, on=names(stratbin)]
         setkeyv(pctblq, c(names(o$strat), "xbin"))
@@ -231,7 +231,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
         pctalqobs <- obs[, .(y=100*mean(alq)), by=stratbin]
         pctalqsim <- sim[, .(y=100*mean(alq)), by=.stratbinrepl]
         .stratbinpctalq <- pctalqsim[, !c("repl", "y")]
-        qpctalqsim <- pctalqsim[, quant_noloq(y, probs=qconf, qname=c("lo", "md", "hi")), by=.stratbinpctalq]
+        qpctalqsim <- pctalqsim[, quant_noloq(y, probs=qconf, qname=c("lo", "md", "hi"), type = quantile.type), by=.stratbinpctalq]
         pctalq <- pctalqobs[qpctalqsim, on=names(.stratbinpctalq)]
         pctalq <- xbin[pctalq, on=names(stratbin)]
         setkeyv(pctalq, c(names(o$strat), "xbin"))
@@ -244,7 +244,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
   }
 }
 
-quant_loq <- function(y, probs, qname=paste0("q", probs), type=quantile.type, blq=FALSE, alq=FALSE) {
+quant_loq <- function(y, probs, qname=paste0("q", probs), type, blq=FALSE, alq=FALSE) {
   if (is.null(blq)) blq <- FALSE
   if (is.null(alq)) alq <- FALSE
   blq <- rep(blq, len=length(y))
@@ -257,7 +257,7 @@ quant_loq <- function(y, probs, qname=paste0("q", probs), type=quantile.type, bl
   data.frame(qname, y)
 }
 
-quant_noloq <- function(y, probs, qname=paste0("q", probs), type=quantile.type) {
+quant_noloq <- function(y, probs, qname=paste0("q", probs), type) {
   y <- quantile(y, probs=probs, type=type, names=FALSE, na.rm=TRUE)
   setNames(as.list(y), qname)
 }
