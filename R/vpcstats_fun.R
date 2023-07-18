@@ -26,7 +26,6 @@ vpcstats <- function(o, ...) UseMethod("vpcstats")
 #' @rdname vpcstats
 #' @export
 vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7) {
-
   type <- match.arg(vpc.type)
   method <- o$vpc.method
 
@@ -37,15 +36,12 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
   . <- list
   qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
 
-
   obs      <- o$obs
   sim      <- o$sim
   predcor  <- o$predcor
   stratbin <- o$.stratbin
   xbin     <- o$xbin
   strat    <- o$strat
-
-
 
   if(method$method == "binless" && type == "continuous"){
     o <- binlessaugment(o, qpred = qpred, interval =  method$optimization.interval, loess.ypc = method$loess.ypc)
@@ -59,7 +55,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
 
     ylvls <-  sort(unique(obs$y))
 
-    #categorical binless vpcstats() ----
+    # categorical binless vpcstats() ----
     if(method$method == "binless"){
       xobs     <- obs$x
       xsim <- sim$x
@@ -74,17 +70,14 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       pobs <- melt(obs, id.vars = c(names(strat), "x"),
                    measure.vars = paste0("prob", ylvls),
                    variable.name = "pname", value.name = "y")
-
       pobs.split <- split(pobs, by = c(names(strat),"pname"), sorted = TRUE)
-
       pobs.split <- pobs.split[lapply(pobs.split, nrow)>1]
-
 
       # Get optimized sp values, only if optimize = TRUE, else, skip this step and directly fit gam with user sp values
       if(method$optimize){
         sp_opt <- list()
 
-        for(i in seq_along(pobs.split)){
+        for (i in seq_along(pobs.split)) {
           sp_opt[[i]] <- pobs.split[[i]][, .(sp = optimize(.gam_optimize,
                                                            y = y,
                                                            x = x,
@@ -98,15 +91,14 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
         for(i in seq_along(pobs.split)){
           pobs.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]]$sp)]
         }
-
       } else {
         sp_opt <- method$sp
-        if(length(sp_opt) != length(pobs.split)){
+        if (length(sp_opt) != length(pobs.split)) {
           stop(paste0("`incorrect number of elements specified to `sp` argument in `binless()` function, specify a list of length ", length(pobs.split), " in the following order: \n",
                       paste0(names(pobs.split), collapse = "\n"), "\n",
                       "Note: Do not specify a value for strata where not data is available."))
         }
-        for(i in seq_along(pobs.split)){
+        for (i in seq_along(pobs.split)) {
           pobs.split[[i]][, y := .fitcatgam(y, x, sp = sp_opt[[i]])]
         }
       }
@@ -116,7 +108,6 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       if(!is.null(strat)){
         sim <- sim[, c(names(strat)) := rep(strat, len = .N), by = .(repl)]
       }
-
       sim <- sim[, fastDummies::dummy_columns(sim, select_columns = "y")]
 
       setnames(sim, paste0("y_", ylvls), paste0("prob", ylvls))
@@ -127,11 +118,8 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
 
       #Coerce y to double, or else data.table will attempt to coerce to integer and precision is lost
       psim$y <- as.double(psim$y)
-
       psim.split <- split(psim, by = c(names(strat),"pname"), sorted = TRUE)
-
       psim.split <- psim.split[lapply(psim.split, nrow)>1]
-
 
       if(method$optimize){
         for(i in seq_along(psim.split)){
@@ -153,9 +141,8 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
 
       stats <- unique(pobs[ppsim, on=names(.stratbinquant)])
       setkeyv(stats, c(names(strat), "x"))
-
     } else {
-      #categorical binning vpcstats() ----
+      # categorical binning vpcstats() ----
       if (is.null(stratbin)) {
         stop("Need to specify binning before calling vpcstats.")
       }
@@ -192,7 +179,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       stats <- xbin[stats, on=names(stratbin)]
       setkeyv(stats, c(names(o$strat), "xbin"))
     }
-    #update vpc
+    # update vpc
     update(o, stats=stats, conf.level=conf.level, vpc.type = type, vpc.method = method)
     # continuous vpcstats ----
   } else {
@@ -253,7 +240,6 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       }
 
       update(o, stats=stats, pctblq=pctblq, pctalq=pctalq, conf.level=conf.level, vpc.type = type)
-
     }
   }
 }
