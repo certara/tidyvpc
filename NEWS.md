@@ -4,6 +4,7 @@
 * Support `headtails`, `maximum`, and `box` binning methods [#23](https://github.com/certara/tidyvpc/pull/23)
 * Usage of `predcorrect()` may now occur either before or after call to `binless(loess.ypc=TRUE)`
 * Additional unit tests
+* A vignette for use with `nlmixr2` was added (#27)
 
 # tidyvpc 1.3.0
 * Additional arguments in `plot()` function now include:
