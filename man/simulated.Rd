@@ -7,7 +7,7 @@
 \usage{
 simulated(o, ...)
 
-\method{simulated}{tidyvpcobj}(o, data, ysim, ...)
+\method{simulated}{tidyvpcobj}(o, data, ysim, ..., xsim)
 }
 \arguments{
 \item{o}{A \code{tidyvpcobj}.}
@@ -17,22 +17,24 @@ simulated(o, ...)
 \item{data}{A \code{data.frame} of simulated data.}
 
 \item{ysim}{Numeric y-variable, typically named DV.}
+
+\item{xsim}{Numeric x-variable, typically named TIME.}
 }
 \value{
 A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with columns \code{x}, \code{y}, and \code{repl}, which indicates the replicate number.
  The column \code{x} is used from the \code{observed()} function. Resulting dataset is of class \code{data.frame} and \code{data.table}.
 }
 \description{
-The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not 
-contain missing DV and may require filtering \code{MDV == 0} before generating VPC. The ordering of observed and simulated 
+The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not
+contain missing DV and may require filtering \code{MDV == 0} before generating VPC. The ordering of observed and simulated
 data must also be consistent, with replicates in simulated data stacked on top of each other.
 }
 \examples{
 require(magrittr)
 
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
-    simulated(sim_data, y=DV) 
-    
+    simulated(sim_data, y=DV)
+
 }
 \seealso{
 \code{\link{observed}} \code{\link{censoring}} \code{\link{stratify}} \code{\link{predcorrect}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}

@@ -43,6 +43,6 @@ Obtain information about the bins from a \code{tidyvpcobj}
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{tidyvpcobj}: Method for \code{tidyvpcobj}.
-}}
+\item \code{bininfo(tidyvpcobj)}: Method for \code{tidyvpcobj}.
 
+}}
