@@ -10,6 +10,18 @@ test_that("simulated.tidyvpcobj detects row count mismatches", {
   )
 })
 
+test_that("simulated.tidyvpcobj detects x-variable mismatches", {
+  vpcobj_o <- observed(o = data.frame(x = 0:1, y = c(0, 2), pred = c(0, 2.5)), x = x, yobs = y)
+  expect_silent(
+    simulated(vpcobj_o, data = data.frame(x = c(0:1, 0:1), y = c(0, 3, 0, 4)), xsim = x, y = y)
+  )
+  expect_error(
+    simulated(vpcobj_o, data = data.frame(x = c(0:2, 1), y = c(0, 3, 0, 4)), xsim = x, y = y),
+    regexp = "Values of `xsim` do not match observed data x-values.  Ensure that you filtered your observed data to remove MDV rows.",
+    fixed = TRUE
+  )
+})
+
 test_that("predcorrect.tidyvpcobj", {
   # Prevent division by zero for prediction correction
   vpcobj_o <- observed(o = data.frame(x = 0:1, y = c(0, 2), pred = c(0, 2.5)), x = x, yobs = y)
