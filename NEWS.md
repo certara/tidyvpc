@@ -4,6 +4,7 @@
 * Support `headtails`, `maximum`, and `box` binning methods [#23](https://github.com/certara/tidyvpc/pull/23)
 * Usage of `predcorrect()` may now occur either before or after call to `binless(loess.ypc=TRUE)`
 * Additional unit tests
+* Plotting updates were made for ggplot2 version 3.4.0 to use `linewidth` instead of `size` for lines.
 
 # tidyvpc 1.3.0
 * Additional arguments in `plot()` function now include:
