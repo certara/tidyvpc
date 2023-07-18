@@ -60,19 +60,19 @@ vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) \%>\%
     binning(bin = NTIME) \%>\%
     vpcstats()
-    
+
  # Binning using ntile and xmean for midpoint
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) \%>\%
     binning(bin = "ntile", nbins = 8, xbin = "xmean") \%>\%
     vpcstats()
-    
+
  # Binning using centers
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) \%>\%
     binning(bin = "centers", centers = c(1,3,5,7)) \%>\%
     vpcstats()
-        
+
  # Different Binning for each level of Strata
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) \%>\%
@@ -80,9 +80,9 @@ vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     binning(stratum = list(GENDER = "M"), bin = "jenks", nbins = 5, by.strata = TRUE) \%>\%
     binning(stratum = list(GENDER = "F"), bin = "pam", nbins = 4, by.strata = TRUE) \%>\%
     vpcstats()
-    
+
  # Binning Categorical DV using rounded time variable
-  
+
   vpc <- observed(obs_cat_data, x = agemonths, y = zlencat ) \%>\%
       simulated(sim_cat_data, y = DV) \%>\%
       binning(bin = round(agemonths, 0)) \%>\%

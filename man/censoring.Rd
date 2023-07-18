@@ -25,8 +25,8 @@ censoring(o, ...)
 \item{data}{Observed data supplied in \code{observed()} function.}
 }
 \value{
-Updates \code{obs} \code{data.frame} in \code{tidypcobj} with censored values for observed data which includes \code{lloq} and \code{uloq} specified 
- values for lower/upper limit of quantification. Logicals for \code{blq} and \code{alq} are returned that indicate whether the DV value lies below/above limit 
+Updates \code{obs} \code{data.frame} in \code{tidypcobj} with censored values for observed data which includes \code{lloq} and \code{uloq} specified
+ values for lower/upper limit of quantification. Logicals for \code{blq} and \code{alq} are returned that indicate whether the DV value lies below/above limit
  of quantification.
 }
 \description{
@@ -52,7 +52,7 @@ vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     binning(bin = "kmeans", nbins = 4) \%>\%
     vpcstats()
 
- 
+
 }
 \seealso{
 \code{\link{observed}} \code{\link{simulated}} \code{\link{stratify}} \code{\link{predcorrect}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
