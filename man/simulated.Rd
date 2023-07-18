@@ -7,7 +7,7 @@
 \usage{
 simulated(o, ...)
 
-\method{simulated}{tidyvpcobj}(o, data, ysim, ...)
+\method{simulated}{tidyvpcobj}(o, data, ysim, ..., xsim)
 }
 \arguments{
 \item{o}{A \code{tidyvpcobj}.}
@@ -17,6 +17,8 @@ simulated(o, ...)
 \item{data}{A \code{data.frame} of simulated data.}
 
 \item{ysim}{Numeric y-variable, typically named DV.}
+
+\item{xsim}{Numeric x-variable, typically named TIME.}
 }
 \value{
 A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with columns \code{x}, \code{y}, and \code{repl}, which indicates the replicate number.

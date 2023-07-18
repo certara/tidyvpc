@@ -74,6 +74,7 @@ observed.data.frame <- function(o, x, yobs, pred=NULL, blq=NULL, lloq=-Inf, alq=
 #' @param o A \code{tidyvpcobj}.
 #' @param data A \code{data.frame} of simulated data.
 #' @param ysim Numeric y-variable, typically named DV.
+#' @param xsim Numeric x-variable, typically named TIME.
 #' @param ... Other arguments.
 #' @return A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with columns \code{x}, \code{y}, and \code{repl}, which indicates the replicate number.
 #'  The column \code{x} is used from the \code{observed()} function. Resulting dataset is of class \code{data.frame} and \code{data.table}.
@@ -90,14 +91,26 @@ simulated <- function(o, ...) UseMethod("simulated")
 
 #' @rdname simulated
 #' @export
-simulated.tidyvpcobj <- function(o, data, ysim, ...) {
+simulated.tidyvpcobj <- function(o, data, ysim, ..., xsim) {
   ysim <- rlang::eval_tidy(rlang::enquo(ysim), data)
   obs  <- o$obs
-  x    <- obs$x
   nrep <- length(ysim)/nrow(obs)
-  repl <- rep(1:nrep, each=nrow(obs))
+  if (nrep != as.integer(nrep)) {
+    stop("The number of simulated rows is not a multiple of the number of observed rows.  Ensure that you filtered your observed data to remove MDV rows.")
+  }
+  repl <- rep(seq_len(nrep), each=nrow(obs))
+  if (!missing(xsim)) {
+    xsim <- rlang::eval_tidy(rlang::enquo(xsim), data)
+    # generate a replication vector to confirm time matching
+    xrep_vec <- rep(seq_along(obs$x), nrep)
+    if (!all(xsim == obs$x[xrep_vec])) {
+      stop("Values of `xsim` do not match observed data x-values.  Ensure that you filtered your observed data to remove MDV rows.")
+    }
+  } else {
+    xsim <- obs$x
+  }
 
-  sim <- data.table(x, y=ysim, repl)
+  sim <- data.table(x=xsim, y=ysim, repl)
   update(o, sim=sim)
 }
 
