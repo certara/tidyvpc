@@ -1,3 +1,8 @@
+# tidyvpc 1.5.0
+* Plotting updates were made for ggplot2 version 3.4.0 to use `linewidth` instead of `size` for lines[#39](https://github.com/certara/tidyvpc/issues/39).
+* `simulated.tidyvpcobj()` detects if the number of simulated rows is not an integer multiple of the number of observed rows and adds the new `xsim` argument to test that x values match between replicated simulations.  It will suggest that MDV filtering may not have occurred if either of these fails [#35](https://github.com/certara/tidyvpc/issues/35).
+* Prevent division by zero in `predcorrect()` transformation [#31](https://github.com/certara/tidyvpc/issues/31).
+
 # tidyvpc 1.4.0
 * Fix for npde calculation fix npde calc [#16](https://github.com/certara/tidyvpc/pull/16)
 * Added R CMD check and test coverage workflows [#18](https://github.com/certara/tidyvpc/pull/18)

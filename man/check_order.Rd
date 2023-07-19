@@ -29,7 +29,7 @@ those in positions 1 and 2, respectively.
 \donttest{
 
  require(data.table)
- 
+
 check_order(obs_data[, .(ID, TIME)], sim_data[, .(ID, TIME)])
 }
 }
