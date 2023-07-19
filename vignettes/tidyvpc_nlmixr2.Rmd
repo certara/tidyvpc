@@ -29,6 +29,7 @@ First, you must load both libraries.
 ```{r setup}
 suppressPackageStartupMessages(library(tidyvpc, quietly = TRUE))
 library(nlmixr2, quietly = TRUE)
+suppressPackageStartupMessages(library(tidyverse, quietly = TRUE))
 ```
 
 ## Model fitting
@@ -86,7 +87,7 @@ dataset.  The `x` and `y` arguments to `simulated()` will almost always be
 
 ```{r vpc-std-setup}
 vpc <-
-  observed(data_model, x=TIME, y=DV) %>%
+  observed(data_model %>% filter(EVID == 0), x=TIME, y=DV) %>%
   simulated(fit_vpcsim, x=time, y=sim) %>%
   stratify(~ WTSTRATA) %>%
   binning(bin = "jenks") %>%
@@ -109,7 +110,7 @@ data_pred <- data_model %>% filter(EVID == 0)
 data_pred$PRED <- fit$PRED
 
 vpc_predcorr <-
-  observed(data_pred, x=TIME, y=DV, pred = PRED) %>%
+  observed(fit$dataMergeLeft %>% filter(EVID == 0), x=TIME, y=DV) %>%
   simulated(fit_vpcsim, x=time, y=sim) %>%
   stratify(~ WTSTRATA) %>%
   predcorrect(pred=PRED) %>%
