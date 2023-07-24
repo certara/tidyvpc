@@ -113,8 +113,8 @@ vpc_predcorr <-
   observed(fit$dataMergeLeft %>% filter(EVID == 0), x=TIME, y=DV) %>%
   simulated(fit_vpcsim, x=time, y=sim) %>%
   stratify(~ WTSTRATA) %>%
-  predcorrect(pred=PRED) %>%
   binning(bin = "jenks") %>%
+  predcorrect(pred=PRED) %>%
   vpcstats()
 ```
 
