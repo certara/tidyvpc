@@ -375,6 +375,10 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
   keep <- i <- NULL
   . <- list
 
+  # check if user supplied predcorrect() before binning
+  if (!is.null(o$predcor) && o$predcor) {
+    stop("`Must specify `predcorrect()` before calling `binning()` method.")
+  }
   # If xbin is numeric, then that is the bin
   xbin <- rlang::eval_tidy(rlang::enquo(xbin), data)
   if (is.numeric(xbin)) {
@@ -588,25 +592,27 @@ predcorrect.tidyvpcobj <- function(o, pred, data=o$data, ..., log=FALSE) {
     stop("No pred specified")
   }
 
-  stratbin <- o$.stratbin #create loess predcorrect argument in function if want to use below stop because binless comes after predcorrect
-  # if (is.null(stratbin)) {
-  #     stop("Need to specify binning before pred correction. For binless method set argument loess.ypc = TRUE.")
-  # }
-
-  mpred <- data.table(stratbin, pred)
-  mpred <- mpred[, mpred := median(pred), by=stratbin]
-  mpred <- mpred$mpred
-
-  if (log) {
-    o$obs[, ypc := (mpred - pred) + y]
-    o$sim[, ypc := (mpred - pred) + y]
+  stratbin <- o$.stratbin
+  # binless may be called before predcorrect() if vpc.method='binless', automatically set loess.ypc = TRUE
+  if (!is.null(o$vpc.method) && o$vpc.method$method == "binless") {
+    o$vpc.method$loess.ypc <- TRUE
+  } else if (is.null(stratbin)) {
+    warning("`predcorrect()` has been called before selecting `binning()`/`binless()` method, in such case only `binless()` method is supported. Specify `binning()`/`binless()` before `precorrect()` to remove this warning.")
   } else {
-    o$obs[, ypc := ifelse(pred == 0, 0, (mpred/pred)*y)]
-    o$sim[, ypc := ifelse(rep(pred, times = nrow(o$sim)/nrow(o$obs)) == 0, 0, (mpred/pred)*y)]
+    mpred <- data.table(stratbin, pred)
+    mpred <- mpred[, mpred := median(pred), by = stratbin]
+    mpred <- mpred$mpred
+    
+    if (log) {
+      o$obs[, ypc := (mpred - pred) + y]
+      o$sim[, ypc := (mpred - pred) + y]
+    } else {
+      o$obs[, ypc := ifelse(pred == 0, 0, (mpred / pred) * y)]
+      o$sim[, ypc := ifelse(rep(pred, times = nrow(o$sim) / nrow(o$obs)) == 0, 0, (mpred / pred) * y)]
+    }
   }
 
-
-  update(o, predcor=TRUE, predcor.log=log, pred=pred )
+  update(o, predcor=TRUE, predcor.log=log, pred=pred)
 }
 
 #' Remove prediction correction for Visual Predictive Check (VPC)
