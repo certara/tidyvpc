@@ -33,7 +33,7 @@ test_that("cat obs vpcstats is correct", {
   vpc <- binning(vpc, bin = round(agemonths, 0))
   vpc <- vpcstats(vpc, vpc.type = "categorical")
   
-  location=system.file("extdata/Binning","cat_stats.csv",package="tidyvpc")
+  location <- system.file("extdata/Binning","cat_stats.csv",package="tidyvpc")
   
   stats <- fread(location, colClasses = c(pname = "factor"))
   stats$bin <- as.factor(stats$bin)
@@ -58,7 +58,7 @@ test_that("cat obs strat vpcstats is correct", {
   vpc <- binning(vpc, bin = round(agemonths, 0))
   vpc <- vpcstats(vpc, vpc.type = "categorical")
   
-  location=system.file("extdata/Binning","cat_strat_stats.csv",package="tidyvpc")
+  location <- system.file("extdata/Binning","cat_strat_stats.csv",package="tidyvpc")
   
   stats <- fread(location, colClasses = c(pname = "factor"))
   stats$bin <- as.factor(stats$bin)
@@ -134,6 +134,22 @@ test_that("binning errors are valid", {
   vpc <- simulated(vpc, sim, y = DV)
   expect_true(inherits(binning(vpc, xbin = NTIME), "tidyvpcobj"))
   expect_error(binning(vpc, xbin = c(1:5)))
+  
+})
+
+test_that("binning cannot be used after predcorrect", {
+  obs_data <- obs_data[MDV == 0]
+  sim_data <- sim_data[MDV == 0]
+  obs_data$PRED <- sim_data[REP == 1, PRED]
+  
+  vpc <- observed(obs_data, x = TIME, y = DV )
+  vpc <- simulated(vpc, sim_data, y = DV)
+  vpc <- suppressWarnings(predcorrect(vpc, pred = PRED))
+  expect_error(
+    binning(vpc, bin = NTIME),
+    regexp = "Must specify `predcorrect()` before calling `binning()` method.",
+    fixed = TRUE
+  )
   
 })
   
