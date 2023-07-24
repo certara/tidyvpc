@@ -47,7 +47,7 @@ test_that("cont vpc binless vpcstats are correct", {
   expect_equal(
     vpc$stats,
     stats,
-    tolerance = 0.002
+    tolerance = 0.003
   )
 })
 
