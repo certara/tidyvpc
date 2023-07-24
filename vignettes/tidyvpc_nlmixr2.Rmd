@@ -29,7 +29,7 @@ First, you must load both libraries.
 ```{r setup}
 suppressPackageStartupMessages(library(tidyvpc, quietly = TRUE))
 library(nlmixr2, quietly = TRUE)
-suppressPackageStartupMessages(library(tidyverse, quietly = TRUE))
+library(magrittr)
 ```
 
 ## Model fitting
@@ -86,8 +86,10 @@ dataset.  The `x` and `y` arguments to `simulated()` will almost always be
 `time` and `sim` based on the outut from `vpcSim()`.
 
 ```{r vpc-std-setup}
+obs_data <- data_model[data_model$EVID == 0,]
+
 vpc <-
-  observed(data_model %>% filter(EVID == 0), x=TIME, y=DV) %>%
+  observed(obs_data, x=TIME, y=DV) %>%
   simulated(fit_vpcsim, x=time, y=sim) %>%
   stratify(~ WTSTRATA) %>%
   binning(bin = "jenks") %>%
@@ -106,11 +108,11 @@ predictions to all rows with `EVID == 0`.
 
 ```{r vpc-predcorr-setup}
 # Add PRED to observed data
-data_pred <- data_model %>% filter(EVID == 0)
+data_pred <- data_model[data_model$EVID == 0, ]
 data_pred$PRED <- fit$PRED
 
 vpc_predcorr <-
-  observed(fit$dataMergeLeft %>% filter(EVID == 0), x=TIME, y=DV) %>%
+  observed(data_pred, x=TIME, y=DV) %>%
   simulated(fit_vpcsim, x=time, y=sim) %>%
   stratify(~ WTSTRATA) %>%
   binning(bin = "jenks") %>%
