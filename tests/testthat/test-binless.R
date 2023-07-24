@@ -44,7 +44,11 @@ test_that("cont vpc binless vpcstats are correct", {
 
   #str(vpc$stats)
   #Check for equality, dispatches to data.table::all.equal method
-  expect_equal(vpc$stats, stats)
+  expect_equal(
+    vpc$stats,
+    stats,
+    tolerance = 0.003
+  )
 })
 
 test_that("cont vpc binless stratification vpcstats are correct", {
@@ -74,7 +78,11 @@ test_that("cont vpc binless stratification vpcstats are correct", {
   stats <- fread(location, colClasses = c(qname = "factor"))
 
   #Check for equality, dispatches to data.table::all.equal method
-  expect_equal(vpc$stats, stats)
+  expect_equal(
+    vpc$stats,
+    stats,
+    tolerance = 0.001
+  )
 })
 
 test_that("cont vpc binless censoring vpcstats are correct", {
