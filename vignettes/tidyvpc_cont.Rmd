@@ -271,7 +271,11 @@ plot(vpc)
 
 *Note: The `predcorrect()` function is only applicable for continuous VPC.*
 
-To derive a prediction corrected VPC (pcVPC), use the `predcorrect()` function. The `predcorrect()` function takes one required argument, `pred`, which should be the unquoted variable name of the population prediction variable in the data. If using binning methods, the `predcorrect()` function should be called *after* `binning()`. If performing LOESS pcVPC for `binless()` methods, use `predcorrect()` *before* calling `binless()` and set `binless(loess.ypc = TRUE)`.  Note: If the model was fit using log scale of DV, make sure to include the argument `log = TRUE` in `predcorrect()` to perform the appropriate prediction correction calculation.
+To derive a prediction corrected VPC (pcVPC), use the `predcorrect()` function. The `predcorrect()` function takes one required argument, `pred`, which should be the unquoted variable name of the population prediction variable in the data. If using traditional binning methods, the `predcorrect()` function should be called *after* `binning()`, since the `median(pred)` by bin is used for the prediction corrected transformation of a traditional pcVPC.
+
+If performing LOESS pcVPC when using the `binless()` method, you may supply `predcorrect()` *either* before or after using `binless()`. However, if using `predcorrect()` before `binless()`, you will receive a warning stating that only the `binless()` method is subsequently supported. If you attempt to use `binning()` after using `predcorrect()`, you will receive an error. 
+
+*Note: If the model was fit using log scale of DV, make sure to include the argument `log = TRUE` in `predcorrect()` to perform the appropriate prediction correction calculation.*
 
 
 Prediction corrected using binning methods.
@@ -287,26 +291,27 @@ plot(vpc)
 ```
 
 
-LOESS prediction corrected using binless method for 10%, 50%, 90% quantiles. If `optimize = TRUE`, the LOESS smoothing parameter, span, will be automatically optimized using AIC. Note: `predcorrect()` must be called before `binless()` if setting `loess.ypc = TRUE`.
+LOESS prediction corrected using binless method for 10%, 50%, 90% quantiles. If `optimize = TRUE`, the LOESS smoothing parameter, span, will be automatically optimized using AIC. Note: `predcorrect()` should be called after `binless()`, otherwise you will receive a warning.
+
 ```{r warning=FALSE, fig.width = 9, fig.height = 6, out.width=640}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     stratify(~GENDER) %>%
+    binless(qpred = c(0.1, 0.5, 0.9), optimize = TRUE) %>%
     predcorrect(pred=PRED) %>%
-    binless(qpred = c(0.1, 0.5, 0.9), optimize = TRUE, loess.ypc = TRUE) %>%
     vpcstats()
 
 plot(vpc)
 ```
 
 
-To specify your own span value LOESS pcVPC instead of optimizing with AIC, use the `span` argument in the `binless` function. Span should be a numeric value between [0,1], with higher values providing a smoother fit. Remember, to also include the smoothing parameters for AQR by using the `lambda` argument and set `optimize = FALSE`.
+To specify your own smoothing value for LOESS pcVPC instead of optimizing with AIC, use the `span` argument in the `binless` function. Span should be a numeric value between [0,1], with higher values providing a smoother fit. Remember, to also include the smoothing parameters for AQR by using the `lambda` argument and set `optimize = FALSE`.
 
 ```{r  fig.width = 9, fig.height = 6, out.width=640, warning = FALSE}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
+    binless(optimize = FALSE, lambda = c(.95,3,1.2), span = .6) %>%
     predcorrect(pred=PRED) %>%
-    binless(optimize = FALSE, lambda = c(.95,3,1.2), loess.ypc = TRUE, span = .6) %>%
     vpcstats()
 
 plot(vpc)
@@ -345,8 +350,8 @@ user_lambda <- data.frame(GENDER_F = c(2,4,2), GENDER_M = c(1.9,3,2.25) )
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     stratify(~ GENDER) %>%
+    binless(optimize = FALSE, lambda = user_lambda, span = c(.6, .85)) %>%
     predcorrect(pred=PRED) %>%
-    binless(optimize = FALSE, lambda = user_lambda, loess.ypc = TRUE, span = c(.6, .85)) %>%
     vpcstats(qpred = c(0.1, 0.5, 0.9))
 
 plot(vpc)
