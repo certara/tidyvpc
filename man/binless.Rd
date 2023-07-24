@@ -11,7 +11,7 @@ binless(o, ...)
   o,
   optimize = TRUE,
   optimization.interval = c(0, 7),
-  loess.ypc = FALSE,
+  loess.ypc = NULL,
   lambda = NULL,
   span = NULL,
   sp = NULL,
@@ -27,12 +27,12 @@ binless(o, ...)
 
 \item{optimization.interval}{Numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if \code{optimize = TRUE}.}
 
-\item{loess.ypc}{Logical indicating LOESS prediction corrected VPC. Must first use \code{\link{predcorrect}}, if specifying \code{loess.ypc = TRUE}. Only applicable to continuous VPC.}
+\item{loess.ypc}{(Deprecated) Argument is ignored. For a LOESS pcVPC using the `binless` method, usage of \code{\link{predcorrect}} will automatically perform LOESS prediction correction.}
 
 \item{lambda}{Numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a \code{data.frame} with given strata represented the column name, and value specified as a numeric vector of length 3.
 See below examples. Only applicable to continuous VPC with \code{optimize = FALSE}.}
 
-\item{span}{Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with \code{loess.ypc = TRUE} and \code{optimize = FALSE}.}
+\item{span}{Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with \code{optimize = FALSE} and usage of \code{\link{predcorrect}}.}
 
 \item{sp}{List of smoothing parameters applied to \code{mgcv::gam()}. Elements of list must be in the same order as unique values of DV. If one or more stratification variables present, the order of sp
 should be specified as unique combination of strata + DV, in ascending order. See below examples. Only applicable for categorical VPC, if \code{optimize = FALSE}.}
@@ -70,8 +70,8 @@ sim_data <- sim_data[MDV == 0]
 
  vpc <- observed(obs_data, y = DV, x = TIME) \%>\%
       simulated(sim_data, y = DV) \%>\%
-      predcorrect(pred = PRED) \%>\%
-      binless(optimize = TRUE, loess.ypc = TRUE) \%>\%
+      binless(optimize = TRUE) \%>\%
+      predcorrect(pred = PRED) \%>\% 
       vpcstats()
 
 # Binless example with user specified lambda values stratified on

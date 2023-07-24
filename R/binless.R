@@ -7,10 +7,10 @@
 #' @param o A \code{tidyvpcobj}.
 #' @param optimize Logical indicating whether smoothing parameters should be optimized using AIC.
 #' @param optimization.interval Numeric vector of length 2 specifying the min/max range of smoothing parameter for optimization. Only applicable if \code{optimize = TRUE}.
-#' @param loess.ypc Logical indicating LOESS prediction corrected VPC. Must first use \code{\link{predcorrect}}, if specifying \code{loess.ypc = TRUE}. Only applicable to continuous VPC.
+#' @param loess.ypc (Deprecated) Argument is ignored. For a LOESS pcVPC using the `binless` method, usage of \code{\link{predcorrect}} will automatically perform LOESS prediction correction.
 #' @param lambda Numeric vector of length 3 specifying lambda values for each quantile. If stratified, specify a \code{data.frame} with given strata represented the column name, and value specified as a numeric vector of length 3.
 #' See below examples. Only applicable to continuous VPC with \code{optimize = FALSE}.
-#' @param span Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with \code{loess.ypc = TRUE} and \code{optimize = FALSE}.
+#' @param span Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with \code{optimize = FALSE} and usage of \code{\link{predcorrect}}.
 #' @param sp List of smoothing parameters applied to \code{mgcv::gam()}. Elements of list must be in the same order as unique values of DV. If one or more stratification variables present, the order of sp
 #' should be specified as unique combination of strata + DV, in ascending order. See below examples. Only applicable for categorical VPC, if \code{optimize = FALSE}.
 #' @param ... Other arguments to include will be ignored.
@@ -42,8 +42,8 @@
 #'
 #'  vpc <- observed(obs_data, y = DV, x = TIME) %>%
 #'       simulated(sim_data, y = DV) %>%
-#'       predcorrect(pred = PRED) %>%
-#'       binless(optimize = TRUE, loess.ypc = TRUE) %>%
+#'       binless(optimize = TRUE) %>%
+#'       predcorrect(pred = PRED) %>% 
 #'       vpcstats()
 #'
 #' # Binless example with user specified lambda values stratified on
@@ -91,7 +91,7 @@ binless <- function(o, ...) UseMethod("binless")
 
 #' @rdname binless
 #' @export
-binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7), loess.ypc = FALSE,  lambda = NULL, span = NULL, sp = NULL, ...) {
+binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7), loess.ypc = NULL, lambda = NULL, span = NULL, sp = NULL, ...) {
 
   if(!inherits(o, "tidyvpcobj")) {
     stop("No tidyvpcobj found, observed(...) %>% simulated(...) must be called prior to binless()")
@@ -99,7 +99,7 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
 
   if(!optimize){
     if(is.null(lambda) && is.null(sp)) {
-      stop("Set optimize = TRUE if no lambda or sp arguments specified")
+      stop("Set optimize = TRUE if no lambda or sp arguments specified.")
     }
     # if(!is.null(sp) && length(sp) != length(unique(o$obs$y))){
     #   stop("Argument `sp` must be a vector of length equal to the number of unique values of DV. \n
@@ -115,8 +115,12 @@ binless.tidyvpcobj <- function(o, optimize = TRUE, optimization.interval = c(0,7
       x <- c(sp = x))
   }
 
-  if(!is.null(span) && !loess.ypc) {
-    stop("Set loess.ypc = TRUE and optimize = FALSE if setting span smoothing parameter for LOESS prediction corrected")
+  if (!is.null(loess.ypc)) {
+    warning('The loess.ypc argument is deprecated and will be ignored. Usage of `binless()` with `predcorrect()` will now perform LOESS prediction corrected VPC by default.')
+  }
+  loess.ypc <- o$predcor
+  if (is.null(loess.ypc)) {
+    loess.ypc <- FALSE
   }
 
   #if binless categorical, check that sp length = number of unique categories of y
