@@ -46,6 +46,7 @@ Suggests:
     dplyr,
     KernSmooth,
     knitr,
+    nlmixr2,
     shiny,
     remotes,
     vpc,
