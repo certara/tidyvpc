@@ -137,19 +137,43 @@ test_that("binning errors are valid", {
   
 })
 
-test_that("binning cannot be used after predcorrect", {
+test_that("binning can be used after predcorrect", {
   obs_data <- obs_data[MDV == 0]
   sim_data <- sim_data[MDV == 0]
   obs_data$PRED <- sim_data[REP == 1, PRED]
   
   vpc <- observed(obs_data, x = TIME, y = DV )
   vpc <- simulated(vpc, sim_data, y = DV)
-  vpc <- suppressWarnings(predcorrect(vpc, pred = PRED))
-  expect_error(
-    binning(vpc, bin = NTIME),
-    regexp = "Must specify `predcorrect()` before calling `binning()` method.",
-    fixed = TRUE
-  )
+  vpc <- stratify(vpc, ~ GENDER)
+  vpc <- predcorrect(vpc, pred = PRED)
+  vpc <- binning(vpc, bin = NTIME)
+  vpc <- vpcstats(vpc)
   
+  location <- system.file("extdata/Binning","predcor_strat_stats.csv",package="tidyvpc")
+  stats <- fread(location, colClasses = c(qname = "factor"))
+  stats[, bin := factor(bin, levels = levels(vpc$stats$bin))]
+  setkeyv(stats, c(names(vpc$strat), "xbin"))
+  
+  expect_equal(vpc$stats, stats)
+})
+
+test_that("binning can be used before predcorrect", {
+  obs_data <- obs_data[MDV == 0]
+  sim_data <- sim_data[MDV == 0]
+  obs_data$PRED <- sim_data[REP == 1, PRED]
+  
+  vpc <- observed(obs_data, x = TIME, y = DV )
+  vpc <- simulated(vpc, sim_data, y = DV)
+  vpc <- stratify(vpc, ~ GENDER)
+  vpc <- binning(vpc, bin = NTIME)
+  vpc <- predcorrect(vpc, pred = PRED)
+  vpc <- vpcstats(vpc)
+  
+  location <- system.file("extdata/Binning","predcor_strat_stats.csv",package="tidyvpc")
+  stats <- fread(location, colClasses = c(qname = "factor"))
+  stats[, bin := factor(bin, levels = levels(vpc$stats$bin))]
+  setkeyv(stats, c(names(vpc$strat), "xbin"))
+  
+  expect_equal(vpc$stats, stats)
 })
   

@@ -160,11 +160,6 @@ test_that("binless.tidyvpcobj returns correct errors and warnings", {
                  regexp = "The loess.ypc argument is deprecated and will be ignored. Usage of `binless()` with `predcorrect()` will now perform LOESS prediction corrected VPC by default.",
                  fixed = TRUE)
   
-  #usage of predcorrect before binless
-  expect_warning(predcorrect(vpc, pred = PRED),
-                 regexp = "`predcorrect()` has been called before selecting `binning()`/`binless()` method, in such case only `binless()` method is supported. Specify `binning()`/`binless()` before `precorrect()` to remove this warning.",
-                 fixed = TRUE)
-  
 })
 
 test_that("binless.tidyvpcobj uses supplied lambda and span if optimize = FALSE", {
