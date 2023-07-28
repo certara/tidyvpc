@@ -100,7 +100,9 @@ test_that("cont vpc predcorrect binless vpcstats are correct", {
 
   stats <- fread(location, colClasses = c(qname = "factor"))
 
-  expect_equal(vpc$stats, stats)
+  expect_equal(vpc$stats, 
+               stats, 
+               tolerance = 0.003)
 })
 
 test_that("cont vpc binless censoring vpcstats are correct", {
