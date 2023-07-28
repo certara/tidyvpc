@@ -77,6 +77,32 @@ test_that("cont vpc binless stratification vpcstats are correct", {
   expect_equal(vpc$stats, stats)
 })
 
+test_that("cont vpc predcorrect binless vpcstats are correct", {
+  skip_on_cran()
+
+  obs_data <- obs_data[MDV == 0]
+  sim_data <- sim_data[MDV == 0 ]
+  sim_data <- sim_data[REP %% 2 == 1]
+  obs_data$PRED <- sim_data[REP == 1, PRED]
+  vpc <- observed(obs_data, x=TIME, y=DV)
+  vpc <- simulated(vpc, sim_data, y=DV)
+  vpc <- predcorrect(vpc, pred = PRED)
+  vpc <- binless(vpc)
+  vpc <- suppressWarnings(vpcstats(vpc))
+
+  os <- get_os()
+
+  if(os == "windows"){
+    location <-system.file("extdata/Binless","predcor_stats.csv",package="tidyvpc")
+  } else {
+    location <-system.file("extdata/Binless","predcor_stats_l.csv",package="tidyvpc")
+  }
+
+  stats <- fread(location, colClasses = c(qname = "factor"))
+
+  expect_equal(vpc$stats, stats)
+})
+
 test_that("cont vpc binless censoring vpcstats are correct", {
   obs_data <- obs_data[MDV == 0]
   sim_data <- sim_data[MDV == 0]
@@ -183,3 +209,5 @@ test_that("binless.tidyvpcobj uses supplied lambda and span if optimize = FALSE"
   vpc <- suppressWarnings(vpcstats(vpc))
   expect_s3_class(vpc, "tidyvpcobj")
 })
+
+
