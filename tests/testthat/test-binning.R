@@ -33,7 +33,7 @@ test_that("cat obs vpcstats is correct", {
   vpc <- binning(vpc, bin = round(agemonths, 0))
   vpc <- vpcstats(vpc, vpc.type = "categorical")
   
-  location=system.file("extdata/Binning","cat_stats.csv",package="tidyvpc")
+  location <- system.file("extdata/Binning","cat_stats.csv",package="tidyvpc")
   
   stats <- fread(location, colClasses = c(pname = "factor"))
   stats$bin <- as.factor(stats$bin)
@@ -58,7 +58,7 @@ test_that("cat obs strat vpcstats is correct", {
   vpc <- binning(vpc, bin = round(agemonths, 0))
   vpc <- vpcstats(vpc, vpc.type = "categorical")
   
-  location=system.file("extdata/Binning","cat_strat_stats.csv",package="tidyvpc")
+  location <- system.file("extdata/Binning","cat_strat_stats.csv",package="tidyvpc")
   
   stats <- fread(location, colClasses = c(pname = "factor"))
   stats$bin <- as.factor(stats$bin)
@@ -135,5 +135,45 @@ test_that("binning errors are valid", {
   expect_true(inherits(binning(vpc, xbin = NTIME), "tidyvpcobj"))
   expect_error(binning(vpc, xbin = c(1:5)))
   
+})
+
+test_that("binning can be used after predcorrect", {
+  obs_data <- obs_data[MDV == 0]
+  sim_data <- sim_data[MDV == 0]
+  obs_data$PRED <- sim_data[REP == 1, PRED]
+  
+  vpc <- observed(obs_data, x = TIME, y = DV )
+  vpc <- simulated(vpc, sim_data, y = DV)
+  vpc <- stratify(vpc, ~ GENDER)
+  vpc <- predcorrect(vpc, pred = PRED)
+  vpc <- binning(vpc, bin = NTIME)
+  vpc <- vpcstats(vpc)
+  
+  location <- system.file("extdata/Binning","predcor_strat_stats.csv",package="tidyvpc")
+  stats <- fread(location, colClasses = c(qname = "factor"))
+  stats[, bin := factor(bin, levels = levels(vpc$stats$bin))]
+  setkeyv(stats, c(names(vpc$strat), "xbin"))
+  
+  expect_equal(vpc$stats, stats)
+})
+
+test_that("binning can be used before predcorrect", {
+  obs_data <- obs_data[MDV == 0]
+  sim_data <- sim_data[MDV == 0]
+  obs_data$PRED <- sim_data[REP == 1, PRED]
+  
+  vpc <- observed(obs_data, x = TIME, y = DV )
+  vpc <- simulated(vpc, sim_data, y = DV)
+  vpc <- stratify(vpc, ~ GENDER)
+  vpc <- binning(vpc, bin = NTIME)
+  vpc <- predcorrect(vpc, pred = PRED)
+  vpc <- vpcstats(vpc)
+  
+  location <- system.file("extdata/Binning","predcor_strat_stats.csv",package="tidyvpc")
+  stats <- fread(location, colClasses = c(qname = "factor"))
+  stats[, bin := factor(bin, levels = levels(vpc$stats$bin))]
+  setkeyv(stats, c(names(vpc$strat), "xbin"))
+  
+  expect_equal(vpc$stats, stats)
 })
   
