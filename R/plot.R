@@ -24,7 +24,12 @@
 #' @param facet.scales A character string specifying the \code{scales} argument to use for faceting. Options
 #' are \code{"free", "fixed"}.
 #' @param custom.theme A character string specifying theme from ggplot2 package.
-#' @param ... Further arguments can be specified but are ignored.
+#' @param censoring.type A character string specifying additional blq/alq plots to include. Only applicable if
+#'  \code{\link{censoring}} was performed. 
+#' @param censoring.output A character string specifying whether to return percentage of blq/alq plots as an
+#' arranged \code{"grid"} or as elements in a \code{"list"}. Only applicable if \code{censoring.type != "none"}.
+#' @param ... Additional arguments for \code{\link{egg::ggarrange}} e.g., \code{ncol} and \code{nrow}.
+#' Only used if \code{censoring.type != "none"} and \code{censoring.output == "grid"}.
 #' @return A \code{ggplot} object.
 #' @seealso
 #' \code{ggplot}
@@ -45,7 +50,9 @@ plot.tidyvpcobj <- function(x,
                             ribbon.alpha = 0.1,
                             legend.position="top",
                             facet.scales="free",
-                            custom.theme = "ggplot2::theme_bw", #support function
+                            custom.theme = "ggplot2::theme_bw", 
+                            censoring.type = c("none", "both", "blq", "alq"),
+                            censoring.output = c("grid", "list"),
                             ...) {
 
   xbin <- lo <- hi <- qname <- md <- y <- xleft <- xright <- ypc <- l.ypc <- bin <- blq <- alq <- pname <-  NULL
@@ -135,13 +142,6 @@ plot.tidyvpcobj <- function(x,
     g <- ggplot2::ggplot(vpc$strat)
   }
 
-
-  g <- g + eval(parse(text = paste0(custom.theme, "()"))) +
-    ggplot2::theme(
-      legend.key.width=ggplot2::unit(2, "lines"),
-      legend.position=legend.position) +
-    ggplot2::labs(x=xlab, y=ylab)
-
   if (show.points) {
     points.dat <- copy(vpc$obs)
     if (isTRUE(vpc$predcor)) {
@@ -212,15 +212,7 @@ plot.tidyvpcobj <- function(x,
         scale_colour_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level) , breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
         scale_fill_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level), breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
         scale_linetype_manual(name = "Observed \nMedian (lines)", breaks = levels(vpc$stats$pname), values = .get_lines(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
-        guides(fill = guide_legend(order = 2), colour = guide_legend(order = 2), linetype = guide_legend(order = 1)) +
-        eval(parse(text = paste0(custom.theme, "()"))) +
-        ggplot2::theme(
-          legend.text = element_text(size = 8),
-          legend.position=legend.position,
-          legend.spacing=unit(.1, "cm"),
-          legend.direction = "horizontal",
-          legend.key.size = unit(.55, "cm"))
-
+        guides(fill = guide_legend(order = 2), colour = guide_legend(order = 2), linetype = guide_legend(order = 1))
     } else {
     g <- ggplot(vpc$stats, aes(x = xbin)) +
       geom_ribbon(aes(ymin = lo, ymax = hi, fill = pname, col = pname, group = pname), alpha = ribbon.alpha, col = NA) +
@@ -232,14 +224,7 @@ plot.tidyvpcobj <- function(x,
       scale_colour_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level), breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
       scale_fill_manual(name = sprintf("Simulated \nMedian (lines) %s%% CI (areas)",100*vpc$conf.level), breaks = levels(vpc$stats$pname), values = .get_colors(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
       scale_linetype_manual(name = "Observed \nMedian (lines)", breaks = levels(vpc$stats$pname), values = .get_lines(length(levels(vpc$stats$pname))), labels = levels(vpc$stats$pname)) +
-      guides(fill = guide_legend(order = 2), colour = guide_legend(order = 2), linetype = guide_legend(order = 1)) +
-      eval(parse(text = paste0(custom.theme, "()"))) +
-      ggplot2::theme(
-        legend.text = element_text(size = 8),
-        legend.position=legend.position,
-        legend.spacing=unit(.1, "cm"),
-        legend.direction = "horizontal",
-        legend.key.size = unit(.55, "cm"))
+      guides(fill = guide_legend(order = 2), colour = guide_legend(order = 2), linetype = guide_legend(order = 1))
     }
 
     if(facet){
@@ -256,9 +241,100 @@ plot.tidyvpcobj <- function(x,
 
 
   }
+  
+  # add theme
+  g <- g + eval(parse(text = paste0(custom.theme, "()"))) +
+    tidyvpc_theme(legend.position = legend.position)
+  
+  # blq/alq plot
+  censoring.type <- match.arg(censoring.type)
+  censoring.output <- match.arg(censoring.output)
+  grid_args <- as.list(substitute(list(...)))
+
+  if (vpc.type == "continuous" && censoring.type != "none") {
+    g_blq <- g_alq <- NULL
+    
+    if (censoring.type %in% c("both", "blq")) {
+      g_blq <- plot_censored(vpc, type = "blq", facet.scales) +
+        eval(parse(text = paste0(custom.theme, "()"))) +
+        tidyvpc_theme(legend.position = legend.position)
+    }
+    
+    if (censoring.type %in% c("both", "alq")) {
+      g_alq <- plot_censored(vpc, type = "alq", facet.scales) +
+        eval(parse(text = paste0(custom.theme, "()"))) +
+        tidyvpc_theme(legend.position = legend.position)
+    }
+    
+    grid_list <-
+      c(list(g, g_blq,g_alq),
+      grid_args)
+    grid_list <-
+      grid_list[!sapply(grid_list, function(x)
+        is.null(x) || is.symbol(x))]
+    
+    if (censoring.output == "grid") {
+      g <- do.call(egg::ggarrange, grid_list)
+    } else {
+      g <- setdiff(grid_list, grid_args)
+    }
+  }
 
   g
 }
+
+
+plot_censored <-
+  function(x,
+           type = c("blq", "alq"),
+           facet.scales = c("free", "fixed"),
+           ...) {
+    stopifnot(inherits(x, "tidyvpcobj"))
+    hi <- lo <- md <- xbin <- y <- NULL
+    
+    type <- match.arg(type)
+
+    df_name <- paste0("pct", type)
+    df <- x[[df_name]]
+    if (is.null(df)) {
+      stop(
+        df_name,
+        " data.frame was not found in tidyvpcobj. Use `censoring()` to create censored data for plotting ",
+        type,
+        "data."
+      )
+    }
+    
+    g <- ggplot(df)
+    
+    if (!is.null(x$strat)) {
+      if (length(as.list(x$strat.formula)) == 3) {
+        g <- g + ggplot2::facet_grid(x$strat.formula, scales = facet.scales)
+      } else {
+        g <- g + ggplot2::facet_wrap(names(x$strat), scales = facet.scales)
+      }
+    }
+    
+    g <- g +
+      geom_ribbon(aes(x = xbin, ymin = lo, ymax = hi),
+                  fill = "red",
+                  alpha = .2) +
+      geom_line(aes(x = xbin, y = md, color = "simulated")) +
+      geom_line(aes(x = xbin, y = y, color = "observed")) +
+      ggplot2::scale_colour_manual(
+        name = paste0(
+          "Percentage of ",
+          toupper(type),
+          sprintf("\nMedian (lines) %s%% CI (areas)",
+                  100 * vpc$conf.level)
+        ),
+        values = c(simulated = "red",
+                   observed = "black")
+      ) +
+      labs(x = "TIME", y = paste0("% ", toupper(type)))
+    
+    return(g)
+  }
 
 
 .get_colors <- function(n){
@@ -280,4 +356,14 @@ plot.tidyvpcobj <- function(x,
                "twodash", "solid", "dashed", "dotted", "dotdash")
 
   lines[1:n]
+}
+
+tidyvpc_theme <-  function(legend.position) {
+  ggplot2::theme(
+    legend.text = ggplot2::element_text(size = 6),
+    legend.position = legend.position,
+    legend.spacing = unit(.1, "cm"),
+    legend.direction = "horizontal",
+    legend.key.size = unit(.5, "cm")
+  )
 }
