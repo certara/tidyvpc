@@ -28,7 +28,7 @@
 #'  \code{\link{censoring}} was performed. 
 #' @param censoring.output A character string specifying whether to return percentage of blq/alq plots as an
 #' arranged \code{"grid"} or as elements in a \code{"list"}. Only applicable if \code{censoring.type != "none"}.
-#' @param ... Additional arguments for \code{\link{egg::ggarrange}} e.g., \code{ncol} and \code{nrow}.
+#' @param ... Additional arguments for \code{\link[egg]{ggarrange}} e.g., \code{ncol} and \code{nrow}.
 #' Only used if \code{censoring.type != "none"} and \code{censoring.output == "grid"}.
 #' @return A \code{ggplot} object.
 #' @seealso

@@ -75,7 +75,7 @@ are \code{"free", "fixed"}.}
 \item{censoring.output}{A character string specifying whether to return percentage of blq/alq plots as an
 arranged \code{"grid"} or as elements in a \code{"list"}. Only applicable if \code{censoring.type != "none"}.}
 
-\item{...}{Additional arguments for \code{\link{egg::ggarrange}} e.g., \code{ncol} and \code{nrow}.
+\item{...}{Additional arguments for \code{\link[egg]{ggarrange}} e.g., \code{ncol} and \code{nrow}.
 Only used if \code{censoring.type != "none"} and \code{censoring.output == "grid"}.}
 }
 \value{
