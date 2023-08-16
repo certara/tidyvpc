@@ -22,7 +22,7 @@
   ribbon.alpha = 0.1,
   legend.position = "top",
   facet.scales = "free",
-  custom.theme = "ggplot2::theme_bw",
+  custom.theme = NULL,
   censoring.type = c("none", "both", "blq", "alq"),
   censoring.output = c("grid", "list"),
   ...
@@ -67,7 +67,7 @@ category (categorical VPC).}
 \item{facet.scales}{A character string specifying the \code{scales} argument to use for faceting. Options
 are \code{"free", "fixed"}.}
 
-\item{custom.theme}{A character string specifying theme from ggplot2 package.}
+\item{custom.theme}{A custom ggplot2 theme supplied either as a character string, function, or object of class \code{"theme"}.}
 
 \item{censoring.type}{A character string specifying additional blq/alq plots to include. Only applicable if
 \code{\link{censoring}} was performed.}

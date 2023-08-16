@@ -23,7 +23,7 @@
 #' \code{"top", "bottom", "left", "right"}.
 #' @param facet.scales A character string specifying the \code{scales} argument to use for faceting. Options
 #' are \code{"free", "fixed"}.
-#' @param custom.theme A character string specifying theme from ggplot2 package.
+#' @param custom.theme A custom ggplot2 theme supplied either as a character string, function, or object of class \code{"theme"}.
 #' @param censoring.type A character string specifying additional blq/alq plots to include. Only applicable if
 #'  \code{\link{censoring}} was performed. 
 #' @param censoring.output A character string specifying whether to return percentage of blq/alq plots as an
@@ -50,7 +50,7 @@ plot.tidyvpcobj <- function(x,
                             ribbon.alpha = 0.1,
                             legend.position="top",
                             facet.scales="free",
-                            custom.theme = "ggplot2::theme_bw", 
+                            custom.theme = NULL, 
                             censoring.type = c("none", "both", "blq", "alq"),
                             censoring.output = c("grid", "list"),
                             ...) {
@@ -94,22 +94,31 @@ plot.tidyvpcobj <- function(x,
     
 
   }
-  
-  # add theme
-  g <- g + eval(parse(text = paste0(custom.theme, "()"))) +
-    tidyvpc_theme(legend.position = legend.position)
+
+    # add theme
+  if (is.null(custom.theme)) {
+    g <- g + ggplot2::theme_bw() + tidyvpc_theme(legend.position = legend.position)
+  } else if (is.character(custom.theme)) {
+    g <- g + eval(parse(text = paste0(custom.theme, "()")))
+  } else if (is.function(custom.theme)) {
+    g <- g + custom.theme()
+  } else if (inherits(custom.theme, "theme")) {
+    g <- g + custom.theme
+  }
   
   # add labels
   if (is.null(xlab)) {
     xlab <- "TIME"
   }
-  
+
   if (is.null(ylab)) {
     ylab <-
       sprintf("Observed/Simulated probabilities and associated %s%% CI",
               100 * vpc$conf.level)
     if (isTRUE(vpc$predcor)) {
-      ylab <- paste0(ylab, "\nPrediction Corrected")
+      ylab <- ifelse(length(ylab) == 0,
+                     "Prediction Corrected",
+                     paste0(ylab, "\nPrediction Corrected"))
     }
   }
   
@@ -126,15 +135,13 @@ plot.tidyvpcobj <- function(x,
     g_blq <- g_alq <- NULL
     
     if (censoring.type %in% c("both", "blq")) {
-      g_blq <- plot_censored(vpc, type = "blq", facet.scales) +
-        eval(parse(text = paste0(custom.theme, "()"))) +
-        tidyvpc_theme(legend.position = legend.position)
+      g_blq <-
+        plot_censored(vpc, type = "blq", facet.scales, custom.theme, legend.position)
     }
     
     if (censoring.type %in% c("both", "alq")) {
-      g_alq <- plot_censored(vpc, type = "alq", facet.scales) +
-        eval(parse(text = paste0(custom.theme, "()"))) +
-        tidyvpc_theme(legend.position = legend.position)
+      g_alq <-
+        plot_censored(vpc, type = "alq", facet.scales, custom.theme, legend.position)
     }
     
     grid_list <-
@@ -441,6 +448,8 @@ plot_censored <-
   function(vpc,
            type = c("blq", "alq"),
            facet.scales = c("free", "fixed"),
+           custom.theme,
+           legend.position,
            ...) {
     
     stopifnot(inherits(vpc, "tidyvpcobj"))
@@ -493,6 +502,17 @@ plot_censored <-
                    observed = "black")
       ) +
       labs(x = "TIME", y = paste0("% ", toupper(type)))
+    
+    # add theme
+    if (is.null(custom.theme)) {
+      g <- g + ggplot2::theme_bw() + tidyvpc_theme(legend.position = legend.position)
+    } else if (is.character(custom.theme)) {
+      g <- g + eval(parse(text = paste0(custom.theme, "()")))
+    } else if (is.function(custom.theme)) {
+      g <- g + custom.theme()
+    } else if (inherits(custom.theme, "theme")) {
+      g <- g + custom.theme
+    }
     
     return(g)
   }
