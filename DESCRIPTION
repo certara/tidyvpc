@@ -52,7 +52,8 @@ Suggests:
     remotes,
     vpc,
     rmarkdown,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    vdiffr (>= 1.0.0)
 License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8
