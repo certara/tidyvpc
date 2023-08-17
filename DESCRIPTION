@@ -40,7 +40,8 @@ Imports:
     ggplot2,
     stats,
     fastDummies,
-    utils
+    utils,
+    egg
 Suggests:
     cluster,
     dplyr,

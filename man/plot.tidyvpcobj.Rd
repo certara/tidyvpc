@@ -23,13 +23,15 @@
   legend.position = "top",
   facet.scales = "free",
   custom.theme = "ggplot2::theme_bw",
+  censoring.type = c("none", "both", "blq", "alq"),
+  censoring.output = c("grid", "list"),
   ...
 )
 }
 \arguments{
 \item{x}{A \code{tidyvpcobj}.}
 
-\item{facet}{Set to \code{TRUE} to facet plot by quantile (continuous VPC) or 
+\item{facet}{Set to \code{TRUE} to facet plot by quantile (continuous VPC) or
 category (categorical VPC).}
 
 \item{show.points}{Should the observed data points be plotted?}
@@ -59,15 +61,22 @@ category (categorical VPC).}
 
 \item{ribbon.alpha}{Numeric value specifying transparency of ribbon.}
 
-\item{legend.position}{A character string specifying the position of the legend. Options are 
+\item{legend.position}{A character string specifying the position of the legend. Options are
 \code{"top", "bottom", "left", "right"}.}
 
-\item{facet.scales}{A character string specifying the \code{scales} argument to use for faceting. Options 
+\item{facet.scales}{A character string specifying the \code{scales} argument to use for faceting. Options
 are \code{"free", "fixed"}.}
 
 \item{custom.theme}{A character string specifying theme from ggplot2 package.}
 
-\item{...}{Further arguments can be specified but are ignored.}
+\item{censoring.type}{A character string specifying additional blq/alq plots to include. Only applicable if
+\code{\link{censoring}} was performed.}
+
+\item{censoring.output}{A character string specifying whether to return percentage of blq/alq plots as an
+arranged \code{"grid"} or as elements in a \code{"list"}. Only applicable if \code{censoring.type != "none"}.}
+
+\item{...}{Additional arguments for \code{\link[egg]{ggarrange}} e.g., \code{ncol} and \code{nrow}.
+Only used if \code{censoring.type != "none"} and \code{censoring.output == "grid"}.}
 }
 \value{
 A \code{ggplot} object.
