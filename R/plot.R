@@ -529,12 +529,23 @@ plot_censored <-
     if (method == "binning" &&
         any(show.binning, show.boundaries, show.points)) {
       if (any(show.binning, show.boundaries)) {
-        xlim_df <-
-          bininfo(vpc)[, .(x = sort(unique(c(xleft, xright)))), by = names(vpc$strat)]
+        if (!is.null(vpc$strat)) {
+          xlim_df <-
+            bininfo(vpc)[, .(x = sort(unique(c(xleft, xright)))), by = names(vpc$strat)]
+        } else {
+          xlim_df <-
+            bininfo(vpc)[, .(x = sort(unique(c(xleft, xright))))]
+        }
       } else {
-        xlim_df <-
-          copy(vpc$obs)[!(blq |
-                            alq)][, .(x = max(x)), by = names(vpc$strat)]
+        if (!is.null(vpc$strat)) {
+          xlim_df <-
+            copy(vpc$obs)[!(blq |
+                              alq)][, .(x = max(x)), by = names(vpc$strat)]
+        } else {
+          xlim_df <-
+            copy(vpc$obs)[!(blq |
+                              alq)][, .(x = max(x))]
+        }
       }
       g <- g + ggplot2::geom_rug(
         data = xlim_df,
