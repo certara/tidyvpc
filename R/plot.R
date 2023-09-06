@@ -136,12 +136,30 @@ plot.tidyvpcobj <- function(x,
     
     if (censoring.type %in% c("both", "blq")) {
       g_blq <-
-        plot_censored(vpc, type = "blq", facet.scales, custom.theme, legend.position)
+        plot_censored(
+          vpc,
+          type = "blq",
+          facet.scales,
+          custom.theme,
+          legend.position,
+          show.points,
+          show.boundaries,
+          show.binning
+        )
     }
     
     if (censoring.type %in% c("both", "alq")) {
       g_alq <-
-        plot_censored(vpc, type = "alq", facet.scales, custom.theme, legend.position)
+        plot_censored(
+          vpc,
+          type = "alq",
+          facet.scales,
+          custom.theme,
+          legend.position,
+          show.points,
+          show.boundaries,
+          show.binning
+        )
     }
     
     grid_list <-
@@ -450,12 +468,16 @@ plot_censored <-
            facet.scales = c("free", "fixed"),
            custom.theme,
            legend.position,
-           ...) {
+           show.points,
+           show.boundaries,
+           show.binning) {
     
     stopifnot(inherits(vpc, "tidyvpcobj"))
     hi <- lo <- md <- xbin <- y <- NULL
+    . <- list
     
     method <- vpc$vpc.method$method
+
     if(method == "binning") {
       xvar <- "xbin"
     } else {
@@ -502,6 +524,36 @@ plot_censored <-
                    observed = "black")
       ) +
       labs(x = "TIME", y = paste0("% ", toupper(type)))
+    
+    # ensure x axis is same scale given options in vpc plot that can affect xmax
+    if (method == "binning" &&
+        any(show.binning, show.boundaries, show.points)) {
+      if (any(show.binning, show.boundaries)) {
+        if (!is.null(vpc$strat)) {
+          xlim_df <-
+            bininfo(vpc)[, .(x = sort(unique(c(xleft, xright)))), by = names(vpc$strat)]
+        } else {
+          xlim_df <-
+            bininfo(vpc)[, .(x = sort(unique(c(xleft, xright))))]
+        }
+      } else {
+        if (!is.null(vpc$strat)) {
+          xlim_df <-
+            copy(vpc$obs)[!(blq |
+                              alq)][, .(x = max(x)), by = names(vpc$strat)]
+        } else {
+          xlim_df <-
+            copy(vpc$obs)[!(blq |
+                              alq)][, .(x = max(x))]
+        }
+      }
+      g <- g + ggplot2::geom_rug(
+        data = xlim_df,
+        ggplot2::aes(x = x),
+        sides = "t",
+        alpha = 0
+      )
+    }
     
     # add theme
     if (is.null(custom.theme)) {
