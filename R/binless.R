@@ -275,7 +275,7 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
 
 }
 
-.binlessvpcstats <-  function(o, qpred=c(0.05, 0.5, 0.95), ..., conf.level=0.95, quantile.type=7, vpc.type){
+.binlessvpcstats <-  function(o, qpred=c(0.05, 0.5, 0.95), conf.level=0.95, quantile.type=7, vpc.type, ...){
   y <- x <- blq <- fit <- . <- repl <- cprop <- rqssmed <- llam.med <- c.rqssmed <-  NULL
 
   obs.fits <- o$rqss.obs.fits
@@ -295,17 +295,34 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   qpred <- o$qpred
   conf.level <- o$conf.level
   qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
-
-  if(!is.null(obs$blq) && any(obs$blq)) {
-    if(!is.null(o$strat)) {
-      stratlloq <- c(names(o$strat), "lloq")
-      lloq <- obs[, stratlloq, with = FALSE]
-      lloq <- unique(lloq)
-      obs.fits <- obs.fits[lloq, on = names(o$strat)]
-    } else {
-      obs.fits[, lloq := rep(obs$lloq, len=.N)]
+  
+  censor_vars <- c()
+  if (!is.null(obs$blq) && any(obs$blq)) {
+    censor_vars <- c(censor_vars, lloq = "blq")
+  }
+  if (!is.null(obs$alq) && any(obs$alq)) {
+    censor_vars <- c(censor_vars, uloq = "alq")
+  }
+  
+  
+  for (i in seq_along(censor_vars)) {
+    censor_var <- censor_vars[[i]]
+    censor_var_name <- names(censor_vars)[[i]]
+    if (!is.null(obs[[censor_var]]) && any(obs[[censor_var]])) {
+      if (!is.null(o$strat)) {
+        stratloq <- c(names(o$strat), censor_var_name)
+        loq <- obs[, stratloq, with = FALSE]
+        loq <- unique(loq)
+        obs.fits <- obs.fits[loq, on = names(o$strat)]
+      } else {
+        obs.fits[, (censor_var_name) := rep(obs[[censor_var_name]], len = .N)]
+      }
+      if(censor_var == "blq") {
+        obs.fits[, (censor_var) := ifelse(fit < lloq, TRUE, FALSE)]
+      } else {
+        obs.fits[, (censor_var) := ifelse(fit > uloq, TRUE, FALSE)]
+      }
     }
-    obs.fits[, blq := ifelse(fit < lloq, TRUE, FALSE)]
   }
 
   obs.fits <- setnames(obs.fits[, lapply(.SD, median), by = x.binless], "fit", "y")
@@ -315,6 +332,10 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     obs.fits[, blq := ifelse(y < lloq, TRUE, FALSE)]
     obs.fits[, y := ifelse(blq == TRUE, NA, y)]
   }
+  if(!is.null(obs$alq) && any(obs$alq)) {
+    obs.fits[, alq := ifelse(y > uloq, TRUE, FALSE)]
+    obs.fits[, y := ifelse(alq == TRUE, NA, y)]
+  }
 
   if (!is.null(o$strat)) {
     stats <- obs.fits[sim.fits, on = c("x", "qname", names(o$strat))]
@@ -322,12 +343,22 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     stats <- obs.fits[sim.fits, on = c("x", "qname")]
   }
 
-  if (!is.null(obs$blq) && any(obs$blq)) {
-    if(is.null(o$strat)) {
-      sim[, lloq := rep(obs$lloq, len=.N)]
-      sim[, blq := (y < lloq)]
+  pctblq <- pctalq <- NULL
+  
+  if (length(censor_vars) > 0) {
+    for (i in seq_along(censor_vars)) {
+      censor_var <- censor_vars[[i]]
+      censor_var_name <- names(censor_vars)[[i]]
+      if(is.null(o$strat)) {
+      sim[, (censor_var_name) := rep(obs[[censor_var_name]], len=.N)]
+      
+      if (censor_var == "blq") {
+        sim[, (censor_var) := (y < lloq)]
+      } else {
+        sim[, (censor_var) := (y > uloq)]
+      }
       setorder(obs, cols = x)
-      cprop.obs <- obs[, cprop := cumsum(blq) / 1:length(blq)]
+      cprop.obs <- obs[, cprop := cumsum(get(censor_var)) / 1:length(get(censor_var))]
 
       sic.cprop <- function(llam) {
         a <- AIC(
@@ -347,26 +378,41 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
       )
       cprop.obs$med <- fitted(med.obs.cprop)
 
-      setorder(sim, repl, x)[, cprop := cumsum(blq) / 1:length(blq), by=list(repl)]
+      setorder(sim, repl, x)[, cprop := cumsum(get(censor_var)) / 1:length(get(censor_var)), by=list(repl)]
 
       suppressWarnings(sim[, rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.med.cprop)),
                                                     tau = 0.5, na.action = na.exclude, .SD)), by = .(repl)])
 
-      u.x <- unique(cprop.obs$x) #%#
+      u.x <- unique(cprop.obs$x)
       med.obs.cprop <- tapply(cprop.obs$med, cprop.obs$x, median)
       med.sims.blq    <- tapply(sim$rqssmed, sim$x, median)
       med.sims.blq.lb <- tapply(sim$rqssmed, sim$x, quantile, probs=c(qconf[[1]]))
       med.sims.blq.ub <- tapply(sim$rqssmed, sim$x, quantile, probs=c(qconf[[3]]))
-      pctblq <- data.table(cbind(u.x,med.obs.cprop, med.sims.blq.lb, med.sims.blq, med.sims.blq.ub))
+      
+      if (censor_var == "blq") {
+        pctblq <- data.table(cbind(u.x,med.obs.cprop, med.sims.blq.lb, med.sims.blq, med.sims.blq.ub))
+        setnames(pctblq, c("x", "y", "lo", "md", "hi"))
+        pctblq[, (setdiff(names(pctblq), "x")) := lapply(.SD, function(col) col * 100), .SDcols = -"x"]
+      } 
+      
+      if (censor_var == "alq") {
+        pctalq <- data.table(cbind(u.x,med.obs.cprop, med.sims.blq.lb, med.sims.blq, med.sims.blq.ub))
+        setnames(pctalq, c("x", "y", "lo", "md", "hi"))
+        pctalq[, (setdiff(names(pctalq), "x")) := lapply(.SD, function(col) col * 100), .SDcols = -"x"]
+      }
 
-      setnames(pctblq, c("x", "y", "lo", "md", "hi"))
     } else {
       strat <- o$strat
       strat.split <- split(obs, strat)
       strat.split <- strat.split[lapply(strat.split,NROW)>0]
       x.strat <- c("x", names(strat))
-      sim[, lloq := rep(obs$lloq, len=.N), by = names(strat)]
-      sim[, blq := (y < lloq)]
+      
+      sim[, (censor_var_name ) := rep(obs[[censor_var_name]], len=.N), by = names(strat)]
+      if (censor_var == "blq") {
+        sim[, blq := (y < lloq)]
+      } else {
+        sim[, alq := (y > uloq)]
+      }
       stratx.binless <- obs[, list(x, o$strat)]
       stratxrepl <- data.table(stratx.binless, sim[, .(repl)])
       strat.split.sim <- split(sim, strat)
@@ -376,26 +422,26 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
           rqss(
             cprop ~
               qss(x, lambda=exp(llam)),
-            tau=.5, na.action=na.exclude, data = strat.split[[i]]
+            tau=.5, na.action=na.exclude, data = strat.split[[j]]
           ),
           k=-1
         )
       }
       llam.strat.med.cprop <- vector("list", length(strat.split))
-      for (i in seq_along(strat.split)) {
-        setorder(strat.split[[i]], cols = x)
-        strat.split[[i]] <- strat.split[[i]][, cprop := cumsum(blq) / 1:length(blq)]
-        llam.strat.med.cprop[[i]]   <- strat.split[[i]][, .(llam.med = optimize(sic.strat.cprop,  interval=c(0, 7))$min)][,.(med = unlist(llam.med))]
-        strat.split[[i]][, c.rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.strat.med.cprop[[i]][[1]])),tau= .5, na.action = na.exclude, data = strat.split[[i]]))]
+      for (j in seq_along(strat.split)) {
+        setorder(strat.split[[j]], cols = x)
+        strat.split[[j]] <- strat.split[[j]][, cprop := cumsum(get(censor_var)) / 1:length(get(censor_var))]
+        llam.strat.med.cprop[[j]]   <- strat.split[[j]][, .(llam.med = optimize(sic.strat.cprop,  interval=c(0, 7))$min)][,.(med = unlist(llam.med))]
+        strat.split[[j]][, c.rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.strat.med.cprop[[j]][[1]])),tau= .5, na.action = na.exclude, data = strat.split[[j]]))]
       }
 
       obs.cprop <- rbindlist(strat.split)
       obs.cprop <- setnames(obs.cprop[, lapply(.SD, median, na.rm = TRUE), by = x.strat, .SDcols = "c.rqssmed"], "c.rqssmed", "y")
 
-      for (i in seq_along(strat.split.sim)) {
-        setorder(strat.split.sim[[i]], cols = repl, x)
-        strat.split.sim[[i]] <- strat.split.sim[[i]][, cprop := cumsum(blq) / 1:length(blq), by = .(repl)]
-        strat.split.sim[[i]][, c.rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.strat.med.cprop[[i]][[1]])),tau= .5, na.action = na.exclude, .SD)), by = .(repl)]
+      for (j in seq_along(strat.split.sim)) {
+        setorder(strat.split.sim[[j]], cols = repl, x)
+        strat.split.sim[[j]] <- strat.split.sim[[j]][, cprop := cumsum(get(censor_var)) / 1:length(get(censor_var)), by = .(repl)]
+        strat.split.sim[[j]][, c.rqssmed := fitted(rqss(cprop ~ qss(x, lambda = exp(llam.strat.med.cprop[[j]][[1]])),tau= .5, na.action = na.exclude, .SD)), by = .(repl)]
       }
 
       sim.cprop <- rbindlist(strat.split.sim)
@@ -403,15 +449,22 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
       sim.lb <- setnames(sim.cprop[, lapply(.SD, quantile, probs = qconf[[1]]), by = x.strat, .SDcols = "c.rqssmed"], "c.rqssmed", "lo")
       sim.ub <- setnames(sim.cprop[, lapply(.SD, quantile, probs = qconf[[3]]), by = x.strat, .SDcols = "c.rqssmed"], "c.rqssmed", "hi")
 
-      pctblq <- obs.cprop[sim.med, on = x.strat]
-      pctblq <- pctblq[sim.lb, on = x.strat]
-      pctblq <- pctblq[sim.ub, on = x.strat]
+      pctlq <- obs.cprop[sim.med, on = x.strat]
+      pctlq <- pctlq[sim.lb, on = x.strat]
+      pctlq <- pctlq[sim.ub, on = x.strat]
+      pctlq[, (setdiff(names(pctlq), x.strat)) := lapply(.SD, function(col) col * 100), .SDcols = -x.strat]
+      
+      if (censor_var == "blq") {
+        pctblq <- pctlq
+      }
+      if (censor_var == "alq") {
+        pctalq <- pctlq
+      }
     }
-  } else {
-    pctblq <- NULL
+  }
   }
 
-  update(o, stats = stats, pctblq = pctblq, vpc.type = vpc.type)
+  update(o, stats = stats, pctblq = pctblq, pctalq = pctalq, vpc.type = vpc.type)
 }
 
 binlessaugment <- function(o, qpred = c(0.05, 0.50, 0.95), interval = c(0,7), loess.ypc = FALSE, ...) {
