@@ -25,7 +25,7 @@
 #' are \code{"free", "fixed"}.
 #' @param custom.theme A custom ggplot2 theme supplied either as a character string, function, or object of class \code{"theme"}.
 #' @param censoring.type A character string specifying additional blq/alq plots to include. Only applicable if
-#'  \code{\link{censoring}} was performed. 
+#'  \code{\link{censoring}} was performed.
 #' @param censoring.output A character string specifying whether to return percentage of blq/alq plots as an
 #' arranged \code{"grid"} or as elements in a \code{"list"}. Only applicable if \code{censoring.type != "none"}.
 #' @param ... Additional arguments for \code{\link[egg]{ggarrange}} e.g., \code{ncol} and \code{nrow}.
@@ -50,7 +50,7 @@ plot.tidyvpcobj <- function(x,
                             ribbon.alpha = 0.1,
                             legend.position="top",
                             facet.scales="free",
-                            custom.theme = NULL, 
+                            custom.theme = NULL,
                             censoring.type = c("none", "both", "blq", "alq"),
                             censoring.output = c("grid", "list"),
                             ...) {
@@ -91,7 +91,7 @@ plot.tidyvpcobj <- function(x,
         point.stroke,
         point.alpha
       )
-    
+
 
   }
 
@@ -105,7 +105,7 @@ plot.tidyvpcobj <- function(x,
   } else if (inherits(custom.theme, "theme")) {
     g <- g + custom.theme
   }
-  
+
   # add labels
   if (is.null(xlab)) {
     xlab <- "TIME"
@@ -121,11 +121,11 @@ plot.tidyvpcobj <- function(x,
                      paste0(ylab, "\nPrediction Corrected"))
     }
   }
-  
+
   g <- g + ggplot2::xlab(xlab)
   g <- g + ggplot2::ylab(ylab)
-  
-  
+
+
   # blq/alq plot
   censoring.type <- match.arg(censoring.type)
   censoring.output <- match.arg(censoring.output)
@@ -133,7 +133,7 @@ plot.tidyvpcobj <- function(x,
 
   if (vpc_type == "continuous" && censoring.type != "none") {
     g_blq <- g_alq <- NULL
-    
+
     if (censoring.type %in% c("both", "blq")) {
       g_blq <-
         plot_censored(
@@ -147,7 +147,7 @@ plot.tidyvpcobj <- function(x,
           show.binning
         )
     }
-    
+
     if (censoring.type %in% c("both", "alq")) {
       g_alq <-
         plot_censored(
@@ -161,14 +161,14 @@ plot.tidyvpcobj <- function(x,
           show.binning
         )
     }
-    
+
     grid_list <-
       c(list(g, g_blq,g_alq),
       grid_args)
     grid_list <-
       grid_list[!sapply(grid_list, function(x)
         is.null(x) || is.symbol(x))]
-    
+
     if (censoring.output == "grid") {
       #Return egg
       g <- do.call(egg::ggarrange, grid_list)
@@ -181,6 +181,37 @@ plot.tidyvpcobj <- function(x,
   g
 }
 
+#' Expand single-value vpc groups to a finite width so that they show up with `geom_ribbon()`
+#'
+#' @param vpc The vpc object
+#' @return A data frame of the vpc$strat possibly with additional rows for
+#'   single-value groups
+#' @noRd
+expand_vpc_stats_single_value <- function(vpc, xvar, width = 0.0001) {
+  d_vpc_stats <- vpc$strat
+  if (!is.null(vpc$strat)) {
+    d_vpc_stats <-
+      dplyr::grouped_df(vpc$stats, vars = names(vpc$strat)) %>%
+      dplyr::mutate(
+        n_xvar = length(unique(!!sym(xvar)))
+      )
+    mask_n1 <- d_vpc_stats$n_xvar == 1
+    if (any(mask_n1)) {
+      d_vpc_stats_single <- d_vpc_stats[mask_n1, ]
+      d_vpc_stats_single_low <- d_vpc_stats_single_high <- d_vpc_stats_single
+      d_vpc_stats_single_low[[xvar]] <- d_vpc_stats_single_low[[xvar]] - width/2
+      d_vpc_stats_single_high[[xvar]] <- d_vpc_stats_single_high[[xvar]] + width/2
+
+      d_vpc_stats <-
+        dplyr::bind_rows(
+          d_vpc_stats[!mask_n1, ],
+          d_vpc_stats_single_low,
+          d_vpc_stats_single_high
+        )
+    }
+  }
+  d_vpc_stats
+}
 
 plot_continuous <-
   function(vpc,
@@ -207,15 +238,17 @@ plot_continuous <-
       stop(paste0("point.shape must be one of ", paste0(names(point_shape_vec), collapse = ", ")))
     point.shape <-
       as.numeric(point_shape_vec[names(point_shape_vec) == point.shape])
-    
+
     if (method == "binning") {
       xvar <- "xbin"
     } else {
       xvar <- "x"
     }
-    
+
     if (show.stats) {
-      g <- ggplot2::ggplot(vpc$stats, ggplot2::aes(x = !!sym(xvar))) +
+      d_vpc_stats <- expand_vpc_stats_single_value(vpc = vpc, xvar = xvar)
+      g <-
+        ggplot2::ggplot(d_vpc_stats, ggplot2::aes(x = !!sym(xvar))) +
         ggplot2::geom_ribbon(
           ggplot2::aes(
             ymin = lo,
@@ -262,7 +295,7 @@ plot_continuous <-
     } else {
       g <- ggplot2::ggplot(vpc$strat)
     }
-    
+
     if (show.points) {
       points.dat <- copy(vpc$obs)
       if (isTRUE(vpc$predcor) && method == "binless") {
@@ -302,7 +335,7 @@ plot_continuous <-
           )
       }
     }
-    
+
     if (show.boundaries && method == "binning") {
       if (!is.null(vpc$strat)) {
         boundaries <-
@@ -328,7 +361,7 @@ plot_continuous <-
           linewidth = 1
         )
     }
-    
+
     if (facet) {
       if (!is.null(vpc$strat)) {
         g <-
@@ -363,22 +396,22 @@ plot_categorical <-
            point.shape,
            point.stroke,
            point.alpha) {
-    
+
     y <- md <- pname <- hi <- lo <- NULL
-    
+
     method <- vpc$vpc.method$method
     if (method == "binning") {
       xvar <- "xbin"
     } else {
       xvar <- "x"
     }
-    
+
     point_shape_vec <- .get_point_shapes()
     if (!point.shape %in% names(point_shape_vec))
       stop(paste0("point.shape must be one of ", paste0(names(point_shape_vec), collapse = ", ")))
     point.shape <-
       as.numeric(point_shape_vec[names(point_shape_vec) == point.shape])
-    
+
     g <- ggplot(vpc$stats, aes(x = !!sym(xvar))) +
       geom_ribbon(
         aes(
@@ -429,7 +462,7 @@ plot_categorical <-
         colour = guide_legend(order = 2),
         linetype = guide_legend(order = 1)
       )
-    
+
     if (facet) {
       if (!is.null(vpc$strat)) {
         g <-
@@ -456,9 +489,9 @@ plot_categorical <-
           g + ggplot2::facet_wrap(names(vpc$strat), scales = facet.scales, label = label_both)
       }
     }
-    
+
     return(g)
-    
+
   }
 
 
@@ -471,11 +504,11 @@ plot_censored <-
            show.points,
            show.boundaries,
            show.binning) {
-    
+
     stopifnot(inherits(vpc, "tidyvpcobj"))
     hi <- lo <- md <- xbin <- y <- NULL
     . <- list
-    
+
     method <- vpc$vpc.method$method
 
     if(method == "binning") {
@@ -483,7 +516,7 @@ plot_censored <-
     } else {
       xvar <- "x"
     }
-    
+
     type <- match.arg(type)
 
     df_name <- paste0("pct", type)
@@ -496,9 +529,9 @@ plot_censored <-
         "data."
       )
     }
-    
+
     g <- ggplot(df)
-    
+
     if (!is.null(vpc$strat)) {
       if (length(as.list(vpc$strat.formula)) == 3) {
         g <- g + ggplot2::facet_grid(vpc$strat.formula, scales = facet.scales)
@@ -506,7 +539,7 @@ plot_censored <-
         g <- g + ggplot2::facet_wrap(names(vpc$strat), scales = facet.scales)
       }
     }
-    
+
     g <- g +
       geom_ribbon(aes(x = !!sym(xvar), ymin = lo, ymax = hi),
                   fill = "red",
@@ -524,7 +557,7 @@ plot_censored <-
                    observed = "black")
       ) +
       labs(x = "TIME", y = paste0("% ", toupper(type)))
-    
+
     # ensure x axis is same scale given options in vpc plot that can affect xmax
     if (method == "binning" &&
         any(show.binning, show.boundaries, show.points)) {
@@ -554,7 +587,7 @@ plot_censored <-
         alpha = 0
       )
     }
-    
+
     # add theme
     if (is.null(custom.theme)) {
       g <- g + ggplot2::theme_bw() + tidyvpc_theme(legend.position = legend.position)
@@ -565,7 +598,7 @@ plot_censored <-
     } else if (inherits(custom.theme, "theme")) {
       g <- g + custom.theme
     }
-    
+
     return(g)
   }
 
