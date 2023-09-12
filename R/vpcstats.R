@@ -525,7 +525,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
     stop("Invalid xbin")
   }
   vpc.method <- list(method = "binning")
-  
+
   # check if user supplied predcorrect before binning
   if (!is.null(o$predcor) && o$predcor) {
     pred <- o$pred
@@ -540,7 +540,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
       o$sim[, ypc := ifelse(rep(pred, times = nrow(o$sim) / nrow(o$obs)) == 0, 0, (mpred / pred) * y)]
     }
   }
-  
+
   update(o, xbin=xbin, vpc.method = vpc.method)
 }
 
@@ -606,13 +606,13 @@ predcorrect.tidyvpcobj <- function(o, pred, data=o$data, ..., log=FALSE) {
 
   stratbin <- o$.stratbin
   # predcorrect after binning, check if binning/binless has already been specified
-  
+
   if (!is.null(o$vpc.method)) {
     if(o$vpc.method$method == "binless") {
       o$vpc.method$loess.ypc <- TRUE
     } else { #binning specified, perform ypc calculcation
       mpred <- data.table(stratbin, pred)[, mpred := median(pred), by = stratbin]$mpred
-      
+
       if (log) {
         o$obs[, ypc := (mpred - pred) + y]
         o$sim[, ypc := (mpred - pred) + y]
