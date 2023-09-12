@@ -858,32 +858,37 @@ bin_by_classInt <- function(style, nbins=NULL) {
     nbins <- .check_nbins(nbins)
   }
   function(x, ...) {
-    args <- list(var=x, style=style)
-    if (!is.null(nbins)) {
-      nbins <- .resolve_nbins(nbins, ...)
-      args$n <- nbins
-    }
-    args <- c(args, list(...))
-    if (style %in% c("kmeans", "hclust", "dpih")) {
-      # These don't accept '...' arguments
-      args1 <- args[intersect(names(args), methods::formalArgs(classInt::classIntervals))]
-      args2 <- if (style == "kmeans") {
-        args[intersect(names(args), methods::formalArgs(stats::kmeans))]
-      } else if (style == "hclust") {
-        args[intersect(names(args), methods::formalArgs(stats::hclust))]
-      } else if (style == "dpih") {
-        has_KernSmooth <- requireNamespace("KernSmooth", quietly=TRUE)
-        if (!has_KernSmooth) {
-          stop("Package 'KernSmooth' is required to use the binning method. Please install it.")
-        }
-        args[intersect(names(args), methods::formalArgs(KernSmooth::dpih))]
-      } else {
-        list()
+    if (length(unique(x)) > 1) {
+      args <- list(var=x, style=style)
+      if (!is.null(nbins)) {
+        nbins <- .resolve_nbins(nbins, ...)
+        args$n <- nbins
       }
-      args <- c(args1, args2)
+      args <- c(args, list(...))
+      if (style %in% c("kmeans", "hclust", "dpih")) {
+        # These don't accept '...' arguments
+        args1 <- args[intersect(names(args), methods::formalArgs(classInt::classIntervals))]
+        args2 <- if (style == "kmeans") {
+          args[intersect(names(args), methods::formalArgs(stats::kmeans))]
+        } else if (style == "hclust") {
+          args[intersect(names(args), methods::formalArgs(stats::hclust))]
+        } else if (style == "dpih") {
+          has_KernSmooth <- requireNamespace("KernSmooth", quietly=TRUE)
+          if (!has_KernSmooth) {
+            stop("Package 'KernSmooth' is required to use the binning method. Please install it.")
+          }
+          args[intersect(names(args), methods::formalArgs(KernSmooth::dpih))]
+        } else {
+          list()
+        }
+        args <- c(args1, args2)
+      }
+      args <- args[!duplicated(args)]
+      breaks <- do.call(classInt::classIntervals, args)$brks
+    } else {
+      # If a group has a single value, `classInt::classIntervals` gives an error
+      breaks <- rep(1, length(x))
     }
-    args <- args[!duplicated(args)]
-    breaks <- do.call(classInt::classIntervals, args)$brks
     cut_at(breaks)(x)
   }
 }

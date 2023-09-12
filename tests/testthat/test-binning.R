@@ -176,3 +176,22 @@ test_that("binning can be used before predcorrect", {
 
   expect_equal(vpc$stats, stats)
 })
+
+test_that("binning works with single-value groups (#51)", {
+  d_obs <-
+    data.frame(
+      group = rep(c("Patient", "Healthy"), each = 5),
+      conc = c(rep(0, 5), 1:5),
+      value = 1:10
+    )
+
+  d_sim <-
+    d_obs[rep(1:nrow(d_obs), 5), ]
+
+  value <-
+    observed(d_obs, x = conc, yobs = value) %>%
+    simulated(d_sim, xsim = conc, ysim = value) %>%
+    stratify(~group) %>%
+    binning(bin = "jenks")
+  expect_s3_class(value, "tidyvpcobj")
+})
