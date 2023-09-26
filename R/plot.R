@@ -113,8 +113,14 @@ plot.tidyvpcobj <- function(x,
 
   if (is.null(ylab)) {
     ylab <-
-      sprintf("Observed/Simulated probabilities and associated %s%% CI",
-              100 * vpc$conf.level)
+      paste0(
+        ifelse(vpc_type == "continuous", "Percentiles", "Probabilities"),
+        sprintf(" and associated %s%% CI",
+                100 * vpc$conf.level)
+      )
+    if (is.null(vpc$stats)) {
+      ylab <- NULL
+    }
     if (isTRUE(vpc$predcor)) {
       ylab <- ifelse(length(ylab) == 0,
                      "Prediction Corrected",
