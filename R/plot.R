@@ -184,17 +184,13 @@ plot.tidyvpcobj <- function(x,
 #' Expand single-value vpc groups to a finite width so that they show up with `geom_ribbon()`
 #'
 #' @param vpc The vpc object
-#' @return A data frame of the vpc$strat possibly with additional rows for
+#' @return A data frame of the vpc$stats possibly with additional rows for
 #'   single-value groups
 #' @noRd
 expand_vpc_stats_single_value <- function(vpc, xvar, width = 0.0001) {
-  d_vpc_stats <- vpc$strat
+  d_vpc_stats <- vpc$stats
   if (!is.null(vpc$strat)) {
-    d_vpc_stats <-
-      dplyr::grouped_df(vpc$stats, vars = names(vpc$strat)) %>%
-      dplyr::mutate(
-        n_xvar = length(unique(!!sym(xvar)))
-      )
+    d_vpc_stats[, n_xvar := length(unique(get(xvar))), by = names(vpc$strat)]
     mask_n1 <- d_vpc_stats$n_xvar == 1
     if (any(mask_n1)) {
       d_vpc_stats_single <- d_vpc_stats[mask_n1, ]
@@ -203,11 +199,11 @@ expand_vpc_stats_single_value <- function(vpc, xvar, width = 0.0001) {
       d_vpc_stats_single_high[[xvar]] <- d_vpc_stats_single_high[[xvar]] + width/2
 
       d_vpc_stats <-
-        dplyr::bind_rows(
+        data.table::rbindlist(list(
           d_vpc_stats[!mask_n1, ],
           d_vpc_stats_single_low,
           d_vpc_stats_single_high
-        )
+        ))
     }
   }
   d_vpc_stats
