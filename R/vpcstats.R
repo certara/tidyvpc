@@ -372,7 +372,7 @@ binning <- function(o, ...) UseMethod("binning")
 #' @rdname binning
 #' @export
 binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, breaks, nbins, altx, stratum=NULL, by.strata=TRUE,  ...) {
-  keep <- i <- NULL
+  keep <- i <- ypc <- y <- NULL
   . <- list
 
   # If xbin is numeric, then that is the bin

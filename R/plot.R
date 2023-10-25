@@ -194,6 +194,7 @@ plot.tidyvpcobj <- function(x,
 #'   single-value groups
 #' @noRd
 expand_vpc_stats_single_value <- function(vpc, xvar, width = 0.0001) {
+  n_xvar <- NULL
   d_vpc_stats <- vpc$stats
   if (!is.null(vpc$strat)) {
     d_vpc_stats[, n_xvar := length(unique(get(xvar))), by = names(vpc$strat)]
@@ -508,7 +509,7 @@ plot_censored <-
            show.binning) {
 
     stopifnot(inherits(vpc, "tidyvpcobj"))
-    hi <- lo <- md <- xbin <- y <- NULL
+    hi <- lo <- md <- xbin <- y <- x <- xleft <- xright <- blq <- alq <- NULL
     . <- list
 
     method <- vpc$vpc.method$method
