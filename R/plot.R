@@ -178,13 +178,15 @@ plot.tidyvpcobj <- function(x,
     if (censoring.output == "grid") {
       #Return egg
       g <- do.call(egg::ggarrange, grid_list)
+      return(invisible(g))
     } else {
       #Return list
       g <- setdiff(grid_list, grid_args)
+      return(g)
     }
   }
 
-  g
+  return(g)
 }
 
 #' Expand single-value vpc groups to a finite width so that they show up with `geom_ribbon()`
