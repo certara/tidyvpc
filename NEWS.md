@@ -1,8 +1,10 @@
 # tidyvpc 1.5.0
+* Support for generating percentage blq/alq plots using `plot.tidyvpcobj`. For VPC with `censoring()`, users can supply arguments `censoring.type` (options are `'none'`, `'blq'`, `'alq'`, or `'both'`, defaults to 'none') and `censoring.output` (options are `'grid'` or `'list'`, defaults to `'grid'`).[#21](https://github.com/certara/issues/21)
 * Plotting updates were made for ggplot2 version 3.4.0 to use `linewidth` instead of `size` for lines[#39](https://github.com/certara/tidyvpc/issues/39).
 * `simulated.tidyvpcobj()` detects if the number of simulated rows is not an integer multiple of the number of observed rows and adds the new `xsim` argument to test that x values match between replicated simulations.  It will suggest that MDV filtering may not have occurred if either of these fails [#35](https://github.com/certara/tidyvpc/issues/35).
 * Prevent division by zero in `predcorrect()` transformation [#31](https://github.com/certara/tidyvpc/issues/31).
 * Usability enhancements for prediction corrected VPC (pcVPC), which include support for `binning.tidyvpcobj()` either before or after usage of `predcorrect.tidyvpcobj()`, and automatically performing LOESS pcVPC when `binless.tidyvpcobj()` is used. As a result, the `loess.ypc` argument is no longer required[#43](https://github.com/certara/tidyvpc/issues/43).
+* The `binless.tidyvpcobj` function is now compatible with usage of `censoring.tidyvpcobj` with ALQ data, in addition to BLQ data.[#49](https://github.com/certara/tidyvpc/issues/49)
 * VPC can work with a single value in a group [#51](https://github.com/certara/tidyvpc/issues/51)
 
 # tidyvpc 1.4.0

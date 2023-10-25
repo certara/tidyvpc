@@ -1,11 +1,13 @@
 ## Release summary
 
-This is a minor release that provides support for the following additional binning methods available in `classInt v0.4.8`: `headtails`, `maximum`, and `box`. In addition, a [fix](https://github.com/certara/tidyvpc/pull/16) has been made for an issue found inside the `npde()` function.
+This is a minor release `1.5.0` that provides misc usability enhancements, including the ability to plot percentage of BLQ and/or ALQ in `plot.tidyvpcobj` if `censoring()` is used, support for `binning()` either before or after usage of `predcorrect()`, and additional validation checks within `predcorrect()` and `simulated()` functions to identify potential issues within data.
 
 ## Test environments
 
 * Windows 10 Enterprise, R 4.2.1
-* Ubuntu 20.04.5, R 4.2.1
+* Windows Server 2022, R 4.3.1
+* macOS 12.6.9, R 4.3.1
+* Ubuntu 22.04.3, R 4.3.1
 
 ## R CMD check results
 
