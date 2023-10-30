@@ -33,6 +33,7 @@ Updates \code{obs} \code{data.frame} in \code{tidypcobj} with censored values fo
 Specify censoring variable or censoring value for VPC.
 }
 \examples{
+\donttest{
 require(magrittr)
 
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
@@ -51,7 +52,7 @@ vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     stratify(~ STUDY) \%>\%
     binning(bin = "kmeans", nbins = 4) \%>\%
     vpcstats()
-
+}
 
 }
 \seealso{

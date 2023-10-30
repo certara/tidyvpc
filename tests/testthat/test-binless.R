@@ -114,6 +114,7 @@ test_that("cont vpc predcorrect binless vpcstats are correct", {
 })
 
 test_that("cont vpc binless censoring vpcstats are correct", {
+  skip_on_cran()
   obs_data <- obs_data[MDV == 0]
   sim_data <- sim_data[MDV == 0]
 
@@ -200,6 +201,7 @@ test_that("binless.tidyvpcobj returns correct errors and warnings", {
 
 test_that("binless.tidyvpcobj uses supplied lambda and span if optimize = FALSE", {
   # continuous VPC
+  skip_on_cran()
   obs_data <- obs_data[MDV == 0]
   sim_data <- sim_data[MDV == 0]
   obs_data$PRED <- sim_data[REP == 1, PRED]

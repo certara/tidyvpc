@@ -276,7 +276,7 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
 }
 
 .binlessvpcstats <-  function(o, qpred=c(0.05, 0.5, 0.95), conf.level=0.95, quantile.type=7, vpc.type, ...){
-  y <- x <- blq <- fit <- . <- repl <- cprop <- rqssmed <- llam.med <- c.rqssmed <-  NULL
+  y <- x <- blq <- fit <- . <- repl <- cprop <- rqssmed <- llam.med <- c.rqssmed <- lloq <- uloq <- alq <- NULL
 
   obs.fits <- o$rqss.obs.fits
   sim.fits <- o$rqss.sim.fits

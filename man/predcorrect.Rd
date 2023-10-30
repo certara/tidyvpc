@@ -29,6 +29,7 @@ Updates \code{tidyvpcobj} with required information to performing prediction cor
 Specify prediction variable for pcVPC.
 }
 \examples{
+\donttest{
 require(magrittr)
 
 obs_data <- obs_data[MDV == 0]
@@ -45,7 +46,6 @@ obs_data$PRED <- sim_data[REP == 1, PRED]
        predcorrect(pred=PRED) \%>\%
        vpcstats()
 
- \donttest{
  # For binless loess prediction corrected, use predcorrect() before
  # binless() and set loess.ypc = TRUE
 
