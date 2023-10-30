@@ -18,6 +18,10 @@ library(data.table)
 set.seed(1014)
 ```
 
+```{r, echo=FALSE}
+data.table::setDTthreads(2)
+```
+
 
 ## Introduction
 

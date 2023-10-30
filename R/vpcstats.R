@@ -129,6 +129,7 @@ simulated.tidyvpcobj <- function(o, data, ysim, ..., xsim) {
 #'  values for lower/upper limit of quantification. Logicals for \code{blq} and \code{alq} are returned that indicate whether the DV value lies below/above limit
 #'  of quantification.
 #' @examples
+#' \donttest{
 #' require(magrittr)
 #'
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
@@ -147,7 +148,7 @@ simulated.tidyvpcobj <- function(o, data, ysim, ..., xsim) {
 #'     stratify(~ STUDY) %>%
 #'     binning(bin = "kmeans", nbins = 4) %>%
 #'     vpcstats()
-#'
+#' }
 #'
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{stratify}} \code{\link{predcorrect}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
 
@@ -245,6 +246,7 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 #'   is \code{obs} split by unique levels of stratification variable(s). Resulting datasets are of class object \code{data.frame}
 #'   and \code{data.table}.
 #' @examples
+#' \donttest{
 #' require(magrittr)
 #'
 #' vpc <- observed(obs_data, x=TIME, y=DV) %>%
@@ -259,6 +261,7 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 #'     stratify(~ GENDER + STUDY) %>%
 #'     binning(bin = "centers", centers = c(1,3,5,7,10)) %>%
 #'     vpcstats()
+#' }
 #'
 #' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{predcorrect}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
 
@@ -557,6 +560,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #'   prediction corrected VPC is to be performed, the \code{predcor.log} logical indicating whether the DV is on a log-scale, and the \code{pred} prediction
 #'   column from the original data.
 #' @examples
+#' \donttest{
 #' require(magrittr)
 #'
 #' obs_data <- obs_data[MDV == 0]
@@ -573,7 +577,6 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #'        predcorrect(pred=PRED) %>%
 #'        vpcstats()
 #'
-#'  \donttest{
 #'  # For binless loess prediction corrected, use predcorrect() before
 #'  # binless() and set loess.ypc = TRUE
 #'

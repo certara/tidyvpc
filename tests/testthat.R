@@ -1,4 +1,6 @@
 library(testthat)
 library(tidyvpc)
-
+registered_threads <- data.table::getDTthreads()
+data.table::setDTthreads(2)
+on.exit(data.table::setDTthreads(registered_threads))
 test_check("tidyvpc")

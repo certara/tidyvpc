@@ -27,6 +27,7 @@ Returns updated \code{tidyvpcobj} with stratification formula, stratification co
 Use to specify stratification variables for VPC.
 }
 \examples{
+\donttest{
 require(magrittr)
 
 vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
@@ -41,6 +42,7 @@ vpc <- vpc \%>\%
     stratify(~ GENDER + STUDY) \%>\%
     binning(bin = "centers", centers = c(1,3,5,7,10)) \%>\%
     vpcstats()
+}
 
 }
 \seealso{
