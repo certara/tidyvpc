@@ -15,6 +15,10 @@ navbar:
        href: articles/tidyvpc_cont.html
      - text: Categorical VPC
        href: articles/tidyvpc_cat.html
+     - text: Using tidyvpc with RsNLME
+       href: articles/tidyvpc_RsNLME.html
+     - text: Using tidyvpc with nlmixr2
+       href: articles/tidyvpc_nlmixr2.html
     CertaraR:
      text: Certara.R
      href: https://certara.github.io/R-Certara/index.html

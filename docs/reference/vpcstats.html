@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
@@ -42,6 +42,12 @@
     </li>
     <li>
       <a href="../articles/tidyvpc_cat.html">Categorical VPC</a>
+    </li>
+    <li>
+      <a href="../articles/tidyvpc_RsNLME.html">Using tidyvpc with RsNLME</a>
+    </li>
+    <li>
+      <a href="../articles/tidyvpc_nlmixr2.html">Using tidyvpc with nlmixr2</a>
     </li>
   </ul></li>
 <li>
@@ -66,7 +72,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute VPC statistics</h1>
-    <small class="dont-index">Source: <a href="https://github.com/certara/tidyvpc/blob/HEAD/R/vpcstats.R" class="external-link"><code>R/vpcstats.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/certara/tidyvpc/blob/HEAD/R/vpcstats_fun.R" class="external-link"><code>R/vpcstats_fun.R</code></a></small>
     <div class="hidden name"><code>vpcstats.Rd</code></div>
     </div>
 
@@ -75,17 +81,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vpcstats</span><span class="op">(</span><span class="va">o</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for tidyvpcobj</span>
-<span class="fu">vpcstats</span><span class="op">(</span>
-  <span class="va">o</span>,
-  vpc.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"continuous"</span>, <span class="st">"categorical"</span><span class="op">)</span>,
-  qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span><span class="op">)</span>,
-  <span class="va">...</span>,
-  conf.level <span class="op">=</span> <span class="fl">0.95</span>,
-  quantile.type <span class="op">=</span> <span class="fl">7</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vpcstats</span><span class="op">(</span><span class="va">o</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for tidyvpcobj</span></span>
+<span><span class="fu">vpcstats</span><span class="op">(</span></span>
+<span>  <span class="va">o</span>,</span>
+<span>  vpc.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"continuous"</span>, <span class="st">"categorical"</span><span class="op">)</span>,</span>
+<span>  qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  conf.level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  quantile.type <span class="op">=</span> <span class="fl">7</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -146,7 +152,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

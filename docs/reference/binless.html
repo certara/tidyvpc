@@ -25,7 +25,7 @@ VPC, this is obtained using a generalized additive model (gam(family = "binomial
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
@@ -44,6 +44,12 @@ VPC, this is obtained using a generalized additive model (gam(family = "binomial
     </li>
     <li>
       <a href="../articles/tidyvpc_cat.html">Categorical VPC</a>
+    </li>
+    <li>
+      <a href="../articles/tidyvpc_RsNLME.html">Using tidyvpc with RsNLME</a>
+    </li>
+    <li>
+      <a href="../articles/tidyvpc_nlmixr2.html">Using tidyvpc with nlmixr2</a>
     </li>
   </ul></li>
 <li>
@@ -68,7 +74,7 @@ VPC, this is obtained using a generalized additive model (gam(family = "binomial
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Perform binless Visual Predictive Check (VPC)</h1>
-    <small class="dont-index">Source: <a href="https://github.com/certara/tidyvpc/blob/HEAD/R/vpcstats.R" class="external-link"><code>R/vpcstats.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/certara/tidyvpc/blob/HEAD/R/binless.R" class="external-link"><code>R/binless.R</code></a></small>
     <div class="hidden name"><code>binless.Rd</code></div>
     </div>
 
@@ -79,19 +85,19 @@ VPC, this is obtained using a generalized additive model (<code>gam(family = "bi
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">binless</span><span class="op">(</span><span class="va">o</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for tidyvpcobj</span>
-<span class="fu">binless</span><span class="op">(</span>
-  <span class="va">o</span>,
-  optimize <span class="op">=</span> <span class="cn">TRUE</span>,
-  optimization.interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span><span class="op">)</span>,
-  loess.ypc <span class="op">=</span> <span class="cn">FALSE</span>,
-  lambda <span class="op">=</span> <span class="cn">NULL</span>,
-  span <span class="op">=</span> <span class="cn">NULL</span>,
-  sp <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">binless</span><span class="op">(</span><span class="va">o</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for tidyvpcobj</span></span>
+<span><span class="fu">binless</span><span class="op">(</span></span>
+<span>  <span class="va">o</span>,</span>
+<span>  optimize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  optimization.interval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span><span class="op">)</span>,</span>
+<span>  loess.ypc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  span <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -113,7 +119,7 @@ VPC, this is obtained using a generalized additive model (<code>gam(family = "bi
 
 
 <dt>loess.ypc</dt>
-<dd><p>Logical indicating LOESS prediction corrected VPC. Must first use <code><a href="predcorrect.html">predcorrect</a></code>, if specifying <code>loess.ypc = TRUE</code>. Only applicable to continuous VPC.</p></dd>
+<dd><p>(Deprecated) Argument is ignored. For a LOESS pcVPC using the `binless` method, usage of <code><a href="predcorrect.html">predcorrect</a></code> will automatically perform LOESS prediction correction.</p></dd>
 
 
 <dt>lambda</dt>
@@ -122,7 +128,7 @@ See below examples. Only applicable to continuous VPC with <code>optimize = FALS
 
 
 <dt>span</dt>
-<dd><p>Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with <code>loess.ypc = TRUE</code> and <code>optimize = FALSE</code>.</p></dd>
+<dd><p>Numeric between 0,1 specifying smoothing parameter for LOESS prediction correction. Only applicable for continuous VPC with <code>optimize = FALSE</code> and usage of <code><a href="predcorrect.html">predcorrect</a></code>.</p></dd>
 
 
 <dt>sp</dt>
@@ -136,7 +142,7 @@ should be specified as unique combination of strata + DV, in ascending order. Se
 
 <p>For continuous VPC, updates <code>tidyvpcobj</code> with additive quantile regression fits for observed and simulated data for quantiles specified in the <code>qpred</code> argument of <code><a href="vpcstats.html">vpcstats()</a></code>.
   If the <code>optimize = TRUE</code> argument is specified, the resulting <code>tidyvpcobj</code> will contain optimized lambda values according to AIC.  For prediction
-  corrected VPC (pcVPC), specifying <code>loess.ypc = TRUE</code> will return optimized span value for LOESS smoothing. For categorical VPC, 
+  corrected VPC (pcVPC), specifying <code>loess.ypc = TRUE</code> will return optimized span value for LOESS smoothing. For categorical VPC,
   updates <code>tidyvpcobj</code> with fits obtained by <code>gam(family="binomial")</code> for observed and simulated data for each category of DV (in each stratum if <code>stratify</code> defined).
   If <code>optimize = TRUE</code> argument is specified, the resulting <code>tidyvpcobj</code> wil contain optimized <code>sp</code> values according to AIC.</p>
     </div>
@@ -147,95 +153,95 @@ should be specified as unique combination of strata + DV, in ascending order. Se
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: magrittr</span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: data.table</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">obs_data</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">sim_data</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, y <span class="op">=</span> <span class="va">DV</span>, x <span class="op">=</span> <span class="va">TIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu">binless</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">obs_data</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">sim_data</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">MDV</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, y <span class="op">=</span> <span class="va">DV</span>, x <span class="op">=</span> <span class="va">TIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu">binless</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
-<span class="r-in">      </span>
-<span class="r-in"> <span class="co"># Binless example with LOESS prediction correction</span></span>
-<span class="r-in"> </span>
-<span class="r-in"> <span class="va">obs_data</span><span class="op">$</span><span class="va">PRED</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">REP</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">PRED</span><span class="op">]</span></span>
-<span class="r-in"> </span>
-<span class="r-in"> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, y <span class="op">=</span> <span class="va">DV</span>, x <span class="op">=</span> <span class="va">TIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="predcorrect.html">predcorrect</a></span><span class="op">(</span>pred <span class="op">=</span> <span class="va">PRED</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu">binless</span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">TRUE</span>, loess.ypc <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># Binless example with LOESS prediction correction</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">obs_data</span><span class="op">$</span><span class="va">PRED</span> <span class="op">&lt;-</span> <span class="va">sim_data</span><span class="op">[</span><span class="va">REP</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">PRED</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, y <span class="op">=</span> <span class="va">DV</span>, x <span class="op">=</span> <span class="va">TIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu">binless</span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="predcorrect.html">predcorrect</a></span><span class="op">(</span>pred <span class="op">=</span> <span class="va">PRED</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>      <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
-<span class="r-in">      </span>
-<span class="r-in"><span class="co"># Binless example with user specified lambda values stratified on </span></span>
-<span class="r-in"><span class="co"># "GENDER" with 2 levels ("M", "F"), 10%, 50%, 90% quantiles.</span></span>
-<span class="r-in"> </span>
-<span class="r-in"> <span class="va">lambda_strat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
-<span class="r-in"> GENDER_M <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in"> GENDER_F <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"> <span class="op">)</span></span>
-<span class="r-in"> </span>
-<span class="r-in"> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, y <span class="op">=</span> <span class="va">DV</span>, x <span class="op">=</span> <span class="va">TIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">GENDER</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu">binless</span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, lambda <span class="op">=</span> <span class="va">lambda_strat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">      <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span>qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
-<span class="r-in">      </span>
-<span class="r-in"> <span class="co"># Binless example for categorical DV with optimized smoothing</span></span>
-<span class="r-in"> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">       <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">       <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">       <span class="fu">binless</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">       <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"cat"</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
-<span class="r-in">       </span>
-<span class="r-in"> <span class="co"># Binless example for categorical DV with user specified sp values</span></span>
-<span class="r-in"> <span class="va">user_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in"> Country1_prob0 <span class="op">=</span> <span class="fl">100</span>,</span>
-<span class="r-in"> Country1_prob1 <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in"> Country1_prob2 <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in"> Country2_prob0 <span class="op">=</span> <span class="fl">90</span>,</span>
-<span class="r-in"> Country2_prob1 <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in"> Country2_prob2 <span class="op">=</span> <span class="fl">4</span>,</span>
-<span class="r-in"> Country3_prob0 <span class="op">=</span> <span class="fl">55</span>,</span>
-<span class="r-in"> Country3_prob1 <span class="op">=</span> <span class="fl">3</span>,</span>
-<span class="r-in"> Country3_prob2 <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span class="r-in"> </span>
-<span class="r-in"> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">        <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">        <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">        <span class="fu">binless</span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">user_sp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">        <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, conf.level <span class="op">=</span> <span class="fl">0.9</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Binless example with user specified lambda values stratified on</span></span></span>
+<span class="r-in"><span><span class="co"># "GENDER" with 2 levels ("M", "F"), 10%, 50%, 90% quantiles.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">lambda_strat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span> GENDER_M <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> GENDER_F <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, y <span class="op">=</span> <span class="va">DV</span>, x <span class="op">=</span> <span class="va">TIME</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">GENDER</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu">binless</span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, lambda <span class="op">=</span> <span class="va">lambda_strat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span>qpred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>tiny diagonals replaced with Inf when calling blkfct</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># Binless example for categorical DV with optimized smoothing</span></span></span>
+<span class="r-in"><span> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>       <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>       <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>       <span class="fu">binless</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>       <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"cat"</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># Binless example for categorical DV with user specified sp values</span></span></span>
+<span class="r-in"><span> <span class="va">user_sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span> Country1_prob0 <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span> Country1_prob1 <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span> Country1_prob2 <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span> Country2_prob0 <span class="op">=</span> <span class="fl">90</span>,</span></span>
+<span class="r-in"><span> Country2_prob1 <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span> Country2_prob2 <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span> Country3_prob0 <span class="op">=</span> <span class="fl">55</span>,</span></span>
+<span class="r-in"><span> Country3_prob1 <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span> Country3_prob2 <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_cat_data</span>, x <span class="op">=</span> <span class="va">agemonths</span>, yobs <span class="op">=</span> <span class="va">zlencat</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>        <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_cat_data</span>, ysim <span class="op">=</span> <span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>        <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Country_ID_code</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>        <span class="fu">binless</span><span class="op">(</span>optimize <span class="op">=</span> <span class="cn">FALSE</span>, sp <span class="op">=</span> <span class="va">user_sp</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>        <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span>vpc.type <span class="op">=</span> <span class="st">"categorical"</span>, conf.level <span class="op">=</span> <span class="fl">0.9</span>, quantile.type <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -250,7 +256,7 @@ should be specified as unique combination of strata + DV, in ascending order. Se
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

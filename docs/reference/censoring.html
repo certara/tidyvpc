@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
@@ -42,6 +42,12 @@
     </li>
     <li>
       <a href="../articles/tidyvpc_cat.html">Categorical VPC</a>
+    </li>
+    <li>
+      <a href="../articles/tidyvpc_RsNLME.html">Using tidyvpc with RsNLME</a>
+    </li>
+    <li>
+      <a href="../articles/tidyvpc_nlmixr2.html">Using tidyvpc with nlmixr2</a>
     </li>
   </ul></li>
 <li>
@@ -75,10 +81,10 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">censoring</span><span class="op">(</span><span class="va">o</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for tidyvpcobj</span>
-<span class="fu">censoring</span><span class="op">(</span><span class="va">o</span>, <span class="va">blq</span>, <span class="va">lloq</span>, <span class="va">alq</span>, <span class="va">uloq</span>, data <span class="op">=</span> <span class="va">o</span><span class="op">$</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">censoring</span><span class="op">(</span><span class="va">o</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for tidyvpcobj</span></span>
+<span><span class="fu">censoring</span><span class="op">(</span><span class="va">o</span>, <span class="va">blq</span>, <span class="va">lloq</span>, <span class="va">alq</span>, <span class="va">uloq</span>, data <span class="op">=</span> <span class="va">o</span><span class="op">$</span><span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -117,8 +123,8 @@
 
 <p>Updates <code>obs</code></p>
 <p></p>
-<p><code>data.frame</code> in <code>tidypcobj</code> with censored values for observed data which includes <code>lloq</code> and <code>uloq</code> specified 
- values for lower/upper limit of quantification. Logicals for <code>blq</code> and <code>alq</code> are returned that indicate whether the DV value lies below/above limit 
+<p><code>data.frame</code> in <code>tidypcobj</code> with censored values for observed data which includes <code>lloq</code> and <code>uloq</code> specified
+ values for lower/upper limit of quantification. Logicals for <code>blq</code> and <code>alq</code> are returned that indicate whether the DV value lies below/above limit
  of quantification.</p>
     </div>
     <div id="see-also">
@@ -128,26 +134,27 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu">censoring</span><span class="op">(</span>blq<span class="op">=</span><span class="op">(</span><span class="va">DV</span> <span class="op">&lt;</span> <span class="fl">50</span><span class="op">)</span>, lloq<span class="op">=</span><span class="fl">50</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="st">"pam"</span>, nbins <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#Using LLOQ variable in data with different values of LLOQ by Study:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">obs_data</span><span class="op">$</span><span class="va">LLOQ</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span>, <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">STUDY</span> <span class="op">==</span> <span class="st">"Study A"</span>, <span class="fl">50</span>, <span class="fl">25</span><span class="op">)</span><span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu">censoring</span><span class="op">(</span>blq<span class="op">=</span><span class="op">(</span><span class="va">DV</span> <span class="op">&lt;</span> <span class="va">LLOQ</span><span class="op">)</span>, lloq<span class="op">=</span><span class="va">LLOQ</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="st">"kmeans"</span>, nbins <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">    <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"> </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu">censoring</span><span class="op">(</span>blq<span class="op">=</span><span class="op">(</span><span class="va">DV</span> <span class="op">&lt;</span> <span class="fl">50</span><span class="op">)</span>, lloq<span class="op">=</span><span class="fl">50</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="st">"pam"</span>, nbins <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Using LLOQ variable in data with different values of LLOQ by Study:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">obs_data</span><span class="op">$</span><span class="va">LLOQ</span> <span class="op">&lt;-</span> <span class="va">obs_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">STUDY</span> <span class="op">==</span> <span class="st">"Study A"</span>, <span class="fl">50</span>, <span class="fl">25</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="fu"><a href="observed.html">observed</a></span><span class="op">(</span><span class="va">obs_data</span>, x<span class="op">=</span><span class="va">TIME</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="simulated.html">simulated</a></span><span class="op">(</span><span class="va">sim_data</span>, y<span class="op">=</span><span class="va">DV</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu">censoring</span><span class="op">(</span>blq<span class="op">=</span><span class="op">(</span><span class="va">DV</span> <span class="op">&lt;</span> <span class="va">LLOQ</span><span class="op">)</span>, lloq<span class="op">=</span><span class="va">LLOQ</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STUDY</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="binning.html">binning</a></span><span class="op">(</span>bin <span class="op">=</span> <span class="st">"kmeans"</span>, nbins <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="vpcstats.html">vpcstats</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -162,7 +169,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
