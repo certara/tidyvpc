@@ -852,7 +852,7 @@ bin_by_classInt <- function(style, nbins=NULL) {
   if (!has_classInt) {
     stop("Package 'classInt' is required to use the binning method. Please install it.")
   } else {
-    if (style == "box" && paste0(packageVersion("classInt")) < "0.4.8") {
+    if (style == "box" && packageVersion("classInt") < "0.4.8") {
       stop("'classInt >= 0.4-8' is required to use the 'box' binning method. Please update.")
     }
   }

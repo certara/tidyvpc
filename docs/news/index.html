@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
@@ -70,6 +70,20 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="1.5.0" id="tidyvpc-150">tidyvpc 1.5.0<small>2023-10-30</small><a class="anchor" aria-label="anchor" href="#tidyvpc-150"></a></h2>
+<ul><li>Support for generating percentage blq/alq plots using <code>plot.tidyvpcobj</code>. For VPC with <code><a href="../reference/censoring.html">censoring()</a></code>, users can supply arguments <code>censoring.type</code> (options are <code>'none'</code>, <code>'blq'</code>, <code>'alq'</code>, or <code>'both'</code>, defaults to ‘none’) and <code>censoring.output</code> (options are <code>'grid'</code> or <code>'list'</code>, defaults to <code>'grid'</code>).<a href="https://github.com/certara/tidyvpc/issues/21" class="external-link">#21</a>
+</li>
+<li>Plotting updates were made for ggplot2 version 3.4.0 to use <code>linewidth</code> instead of <code>size</code> for lines<a href="https://github.com/certara/tidyvpc/issues/39" class="external-link">#39</a>.</li>
+<li>
+<code><a href="../reference/simulated.html">simulated.tidyvpcobj()</a></code> detects if the number of simulated rows is not an integer multiple of the number of observed rows and adds the new <code>xsim</code> argument to test that x values match between replicated simulations. It will suggest that MDV filtering may not have occurred if either of these fails <a href="https://github.com/certara/tidyvpc/issues/35" class="external-link">#35</a>.</li>
+<li>Prevent division by zero in <code><a href="../reference/predcorrect.html">predcorrect()</a></code> transformation <a href="https://github.com/certara/tidyvpc/issues/31" class="external-link">#31</a>.</li>
+<li>Usability enhancements for prediction corrected VPC (pcVPC), which include support for <code><a href="../reference/binning.html">binning.tidyvpcobj()</a></code> either before or after usage of <code><a href="../reference/predcorrect.html">predcorrect.tidyvpcobj()</a></code>, and automatically performing LOESS pcVPC when <code><a href="../reference/binless.html">binless.tidyvpcobj()</a></code> is used. As a result, the <code>loess.ypc</code> argument is no longer required<a href="https://github.com/certara/tidyvpc/issues/43" class="external-link">#43</a>.</li>
+<li>The <code>binless.tidyvpcobj</code> function is now compatible with usage of <code>censoring.tidyvpcobj</code> with ALQ data, in addition to BLQ data.<a href="https://github.com/certara/tidyvpc/issues/49" class="external-link">#49</a>
+</li>
+<li>VPC can work with a single value in a group <a href="https://github.com/certara/tidyvpc/issues/51" class="external-link">#51</a>
+</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="1.4.0" id="tidyvpc-140">tidyvpc 1.4.0<small>2022-10-27</small><a class="anchor" aria-label="anchor" href="#tidyvpc-140"></a></h2>
 <ul><li>Fix for npde calculation fix npde calc <a href="https://github.com/certara/tidyvpc/pull/16" class="external-link">#16</a>
 </li>
@@ -80,6 +94,7 @@
 <li>Usage of <code><a href="../reference/predcorrect.html">predcorrect()</a></code> may now occur either before or after call to <code>binless(loess.ypc=TRUE)</code>
 </li>
 <li>Additional unit tests</li>
+<li>A vignette for use with <code>nlmixr2</code> was added (<a href="https://github.com/certara/tidyvpc/issues/27" class="external-link">#27</a>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.3.0" id="tidyvpc-130">tidyvpc 1.3.0<small>2022-03-10</small><a class="anchor" aria-label="anchor" href="#tidyvpc-130"></a></h2>
@@ -125,7 +140,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

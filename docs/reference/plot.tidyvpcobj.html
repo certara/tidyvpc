@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
@@ -75,28 +75,30 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for tidyvpcobj</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>
-  <span class="va">x</span>,
-  facet <span class="op">=</span> <span class="cn">FALSE</span>,
-  show.points <span class="op">=</span> <span class="cn">TRUE</span>,
-  show.boundaries <span class="op">=</span> <span class="cn">TRUE</span>,
-  show.stats <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span>,
-  show.binning <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isFALSE</a></span><span class="op">(</span><span class="va">show.stats</span><span class="op">)</span>,
-  xlab <span class="op">=</span> <span class="cn">NULL</span>,
-  ylab <span class="op">=</span> <span class="cn">NULL</span>,
-  color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span>,
-  linetype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dotted"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span><span class="op">)</span>,
-  point.alpha <span class="op">=</span> <span class="fl">0.4</span>,
-  point.size <span class="op">=</span> <span class="fl">1</span>,
-  point.shape <span class="op">=</span> <span class="st">"circle-fill"</span>,
-  point.stroke <span class="op">=</span> <span class="fl">1</span>,
-  ribbon.alpha <span class="op">=</span> <span class="fl">0.1</span>,
-  legend.position <span class="op">=</span> <span class="st">"top"</span>,
-  facet.scales <span class="op">=</span> <span class="st">"free"</span>,
-  custom.theme <span class="op">=</span> <span class="st">"ggplot2::theme_bw"</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for tidyvpcobj</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  facet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  show.points <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show.boundaries <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show.stats <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">stats</span><span class="op">)</span>,</span>
+<span>  show.binning <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isFALSE</a></span><span class="op">(</span><span class="va">show.stats</span><span class="op">)</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"blue"</span>, <span class="st">"red"</span><span class="op">)</span>,</span>
+<span>  linetype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dotted"</span>, <span class="st">"solid"</span>, <span class="st">"dashed"</span><span class="op">)</span>,</span>
+<span>  point.alpha <span class="op">=</span> <span class="fl">0.4</span>,</span>
+<span>  point.size <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  point.shape <span class="op">=</span> <span class="st">"circle-fill"</span>,</span>
+<span>  point.stroke <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  ribbon.alpha <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  legend.position <span class="op">=</span> <span class="st">"top"</span>,</span>
+<span>  facet.scales <span class="op">=</span> <span class="st">"free"</span>,</span>
+<span>  custom.theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  censoring.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"both"</span>, <span class="st">"blq"</span>, <span class="st">"alq"</span><span class="op">)</span>,</span>
+<span>  censoring.output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grid"</span>, <span class="st">"list"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -106,7 +108,7 @@
 
 
 <dt>facet</dt>
-<dd><p>Set to <code>TRUE</code> to facet plot by quantile (continuous VPC) or 
+<dd><p>Set to <code>TRUE</code> to facet plot by quantile (continuous VPC) or
 category (categorical VPC).</p></dd>
 
 
@@ -164,21 +166,32 @@ category (categorical VPC).</p></dd>
 
 
 <dt>legend.position</dt>
-<dd><p>A character string specifying the position of the legend. Options are 
+<dd><p>A character string specifying the position of the legend. Options are
 <code>"top", "bottom", "left", "right"</code>.</p></dd>
 
 
 <dt>facet.scales</dt>
-<dd><p>A character string specifying the <code>scales</code> argument to use for faceting. Options 
+<dd><p>A character string specifying the <code>scales</code> argument to use for faceting. Options
 are <code>"free", "fixed"</code>.</p></dd>
 
 
 <dt>custom.theme</dt>
-<dd><p>A character string specifying theme from ggplot2 package.</p></dd>
+<dd><p>A custom ggplot2 theme supplied either as a character string, function, or object of class <code>"theme"</code>.</p></dd>
+
+
+<dt>censoring.type</dt>
+<dd><p>A character string specifying additional blq/alq plots to include. Only applicable if
+<code><a href="censoring.html">censoring</a></code> was performed.</p></dd>
+
+
+<dt>censoring.output</dt>
+<dd><p>A character string specifying whether to return percentage of blq/alq plots as an
+arranged <code>"grid"</code> or as elements in a <code>"list"</code>. Only applicable if <code>censoring.type != "none"</code>.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Further arguments can be specified but are ignored.</p></dd>
+<dd><p>Additional arguments for <code><a href="https://rdrr.io/pkg/egg/man/ggarrange.html" class="external-link">ggarrange</a></code> e.g., <code>ncol</code> and <code>nrow</code>.
+Only used if <code>censoring.type != "none"</code> and <code>censoring.output == "grid"</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -204,7 +217,7 @@ are <code>"free", "fixed"</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
