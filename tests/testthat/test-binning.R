@@ -72,7 +72,6 @@ test_that("cat obs strat vpcstats is correct", {
 })
 
 test_that("binning methods are valid", {
-
   ## Subest MDV = 0
   obs <- obs_data[MDV == 0]
   sim <- sim_data[MDV == 0]
