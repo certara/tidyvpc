@@ -1,14 +1,15 @@
 Package: tidyvpc
 Type: Package
 Title: VPC Percentiles and Prediction Intervals
-Version: 1.5.0
+Version: 1.5.1
 Authors@R: c(
       person("Olivier", "Barriere", email = "olivier.barriere@gmail.com",
       role = c("aut")),
       person("Benjamin", "Rich", email = "mail@benjaminrich.net",
       role = c("aut")),
       person("James", "Craig", email = "james.craig@certara.com",
-      role = c("aut", "cre")),
+      role = c("aut", "cre"),
+      comment = c(ORCID = "0000-0003-1757-9234")),
       person("Samer", "Mouksassi", email = "samermouksassi@gmail.com",
       role = c("aut")),
       person("Bill", "Denney", email="wdenney@humanpredictions.com", 
@@ -37,13 +38,13 @@ Imports:
     methods,
     mgcv,
     classInt,
+    cluster,
     ggplot2,
     stats,
     fastDummies,
     utils,
     egg
 Suggests:
-    cluster,
     dplyr,
     KernSmooth,
     knitr,

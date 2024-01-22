@@ -78,7 +78,7 @@ vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
     simulated(sim_data, y=DV) \%>\%
     stratify(~ GENDER) \%>\%
     binning(stratum = list(GENDER = "M"), bin = "jenks", nbins = 5, by.strata = TRUE) \%>\%
-    binning(stratum = list(GENDER = "F"), bin = "pam", nbins = 4, by.strata = TRUE) \%>\%
+    binning(stratum = list(GENDER = "F"), bin = "kmeans", nbins = 4, by.strata = TRUE) \%>\%
     vpcstats()
 
  # Binning Categorical DV using rounded time variable

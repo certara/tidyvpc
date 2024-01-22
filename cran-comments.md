@@ -1,6 +1,6 @@
 ## Release summary
 
-This is a minor release `1.5.0` that provides misc usability enhancements, including the ability to plot percentage of BLQ and/or ALQ in `plot.tidyvpcobj` if `censoring()` is used, support for `binning()` either before or after usage of `predcorrect()`, and additional validation checks within `predcorrect()` and `simulated()` functions to identify potential issues within data.
+This is a patch release `1.5.1` that ensures unit tests do not fail when env var `_R_CHECK_DEPENDS_ONLY_=true` in `R CMD check`. As a result, the `cluster` dependency has been moved from `Suggests` to `Imports`.
 
 ## Test environments
 
