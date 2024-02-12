@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tidyvpc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
       </span>
     </div>
 
@@ -177,7 +177,7 @@ simulated data to successfully generate VPC.</p>
 for example <a href="https://certara.github.io/tidyvpc/#data-preprocessing" class="external-link">data
 structure</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">obs_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/obs_data.html">obs_data</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">obs_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/obs_data.html">obs_data</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">obs_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    ID      TIME   DV AMT DOSE MDV NTIME GENDER   STUDY</span></span>
 <span><span class="co">#&gt; 1:  1 0.0000000  0.0 150  150   1  0.00      M Study A</span></span>
@@ -187,7 +187,7 @@ structure</a>.</p>
 <span><span class="co">#&gt; 5:  1 1.7724895 75.1   0  150   0  1.50      M Study A</span></span>
 <span><span class="co">#&gt; 6:  1 1.7142415 58.3   0  150   0  2.00      M Study A</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/sim_data.html">sim_data</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sim_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></span><span class="op">(</span><span class="fu">tidyvpc</span><span class="fu">::</span><span class="va"><a href="../reference/sim_data.html">sim_data</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    ID REP      TIME     DV  IPRED   PRED AMT DOSE MDV NTIME</span></span>
 <span><span class="co">#&gt; 1:  1   1 0.0000000  0.000  0.000  0.000 150  150   1  0.00</span></span>

@@ -1,7 +1,7 @@
 
 # tidyvpc <a href='https://github.com/certara/tidyvpc/'><img src='https://github.com/certara/tidyvpc/blob/master/inst/img/logo_tidyvpc.png?raw=true' align="right" style = "float:right; height: 150px;" height="200" /></a>
 
-[![](https://img.shields.io/badge/devel%20version-1.5.0-green.svg)](https://github.com/certara/tidyvpc)
+[![](https://img.shields.io/badge/devel%20version-1.5.1-green.svg)](https://github.com/certara/tidyvpc)
 [![](https://www.r-pkg.org/badges/version/tidyvpc?color=green)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/tidyvpc?color=blue)](https://cran.r-project.org/package=tidyvpc)
 [![](http://cranlogs.r-pkg.org/badges/last-month/tidyvpc?color=grey)](https://cran.r-project.org/package=tidyvpc)

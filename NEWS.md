@@ -1,3 +1,6 @@
+# tidyvpc 1.5.1
+* Patch release that ensures unit tests do not fail when env var `_R_CHECK_DEPENDS_ONLY_=true` in R CMD check. As a result, the cluster dependency has been moved from Suggests to Imports.
+
 # tidyvpc 1.5.0
 * Support for generating percentage blq/alq plots using `plot.tidyvpcobj`. For VPC with `censoring()`, users can supply arguments `censoring.type` (options are `'none'`, `'blq'`, `'alq'`, or `'both'`, defaults to 'none') and `censoring.output` (options are `'grid'` or `'list'`, defaults to `'grid'`).[#21](https://github.com/certara/tidyvpc/issues/21)
 * Plotting updates were made for ggplot2 version 3.4.0 to use `linewidth` instead of `size` for lines[#39](https://github.com/certara/tidyvpc/issues/39).
@@ -6,6 +9,8 @@
 * Usability enhancements for prediction corrected VPC (pcVPC), which include support for `binning.tidyvpcobj()` either before or after usage of `predcorrect.tidyvpcobj()`, and automatically performing LOESS pcVPC when `binless.tidyvpcobj()` is used. As a result, the `loess.ypc` argument is no longer required[#43](https://github.com/certara/tidyvpc/issues/43).
 * The `binless.tidyvpcobj` function is now compatible with usage of `censoring.tidyvpcobj` with ALQ data, in addition to BLQ data.[#49](https://github.com/certara/tidyvpc/issues/49)
 * VPC can work with a single value in a group [#51](https://github.com/certara/tidyvpc/issues/51)
+* A vignette for use with `nlmixr2` was added [#27](https://github.com/certara/tidyvpc/issues/27)
+
 
 # tidyvpc 1.4.0
 * Fix for npde calculation fix npde calc [#16](https://github.com/certara/tidyvpc/pull/16)
@@ -13,7 +18,6 @@
 * Support `headtails`, `maximum`, and `box` binning methods [#23](https://github.com/certara/tidyvpc/pull/23)
 * Usage of `predcorrect()` may now occur either before or after call to `binless(loess.ypc=TRUE)`
 * Additional unit tests
-* A vignette for use with `nlmixr2` was added (#27)
 
 # tidyvpc 1.3.0
 * Additional arguments in `plot()` function now include:
