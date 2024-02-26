@@ -22,7 +22,7 @@
 #' \donttest{
 #' require(magrittr)
 #' require(ggplot2)
-#' 
+#'
 #' obs <- obs_data[MDV==0]
 #' sim <- sim_data[MDV==0]
 #'
@@ -35,17 +35,21 @@
 #'     binning("eqcut", nbins=10) %>%
 #'     vpcstats()
 #'
-#' plot(vpc) + 
+#' plot(vpc) +
 #' labs(x="Simulation-based Population Prediction", y="Normalized Prediction Distribution Error")
 #' }
 #'
 #' @export
-npde <- function(o, ...) UseMethod("npde")
+npde <- function(o, ...)
+  UseMethod("npde")
 
 #' @rdname npde
 #' @export
-npde.tidyvpcobj <- function(o, id, data=o$data, smooth=FALSE, ...) {
-
+npde.tidyvpcobj <- function(o,
+                            id,
+                            data = o$data,
+                            smooth = FALSE,
+                            ...) {
   obs <- rn <- y <- iter <- NULL
   
   if (missing(id)) {
@@ -56,89 +60,96 @@ npde.tidyvpcobj <- function(o, id, data=o$data, smooth=FALSE, ...) {
   if (is.null(id)) {
     stop("No id specified")
   }
-
-  niter <- nrow(o$sim)/nrow(o$obs)
-
-  calc.npde <- function(dv, iter, smooth=FALSE) {
-    yobs <- dv[iter==0]
+  
+  niter <- nrow(o$sim) / nrow(o$obs)
+  
+  calc.npde <- function(dv, iter, smooth = FALSE) {
+    yobs <- dv[iter == 0]
     nobs <- length(yobs)
     niter <- max(iter) # = length(dv)/nobs - 1
-    ysim <- matrix(dv[iter != 0], nrow=nobs, ncol=niter)
-
+    ysim <- matrix(dv[iter != 0], nrow = nobs, ncol = niter)
+    
     # -- Non-decorrelated --
-
+    
     pd.obs <- apply(ysim < yobs, 1, mean)
-
+    
     # Handle extremes
     if (isTRUE(smooth)) {
-      u <- runif(nobs, 0, 1/niter)
-      pd.obs[pd.obs == 1] <- rep(1 - (1/niter), len=sum(pd.obs == 1))
+      u <- runif(nobs, 0, 1 / niter)
+      pd.obs[pd.obs == 1] <-
+        rep(1 - (1 / niter), len = sum(pd.obs == 1))
       pd.obs <- pd.obs + u
     } else {
-      pd.obs[pd.obs == 0] <- 1/(2*niter)
-      pd.obs[pd.obs == 1] <- 1 - 1/(2*niter)
+      pd.obs[pd.obs == 0] <- 1 / (2 * niter)
+      pd.obs[pd.obs == 1] <- 1 - 1 / (2 * niter)
     }
-
+    
     # Normalize
     npd.obs <- qnorm(pd.obs)
-
+    
     # Compute for simulated data
     r <- apply(ysim, 1, rank)
-    pd.sim <- r/(niter + 1)   # +1 prevents Inf after normalization
+    pd.sim <- r / (niter + 1)   # +1 prevents Inf after normalization
     npd.sim <- qnorm(pd.sim)
-
+    
     # -- Decorrelated --
-
+    
     epred <- apply(ysim, 1, mean)
     ec <- cov(t(ysim))
-    ec.inv.chol <- chol(solve(ec))  # In future, should we consider different decorrelation methods?
-
+    ec.inv.chol <-
+      solve(chol(ec))  # In future, should we consider different decorrelation methods?
+    
     eres <- yobs - epred
     esres <- ysim - epred
-
-    ewres <- drop(ec.inv.chol %*% eres)
-    eswres <- ec.inv.chol %*% esres
-
+    
+    ewres <- drop(t(ec.inv.chol) %*% eres)
+    eswres <- t(ec.inv.chol) %*% esres
+    
     pde.obs <- apply(eswres < ewres, 1, mean)
-
+    
     # Handle extremes
     if (isTRUE(smooth)) {
       # Can use the same uniform as for pd, no need to call runif again
-      pde.obs[pde.obs == 1] <- rep(1 - (1/niter), len=sum(pde.obs == 1))
+      pde.obs[pde.obs == 1] <-
+        rep(1 - (1 / niter), len = sum(pde.obs == 1))
       pde.obs <- pde.obs + u
     } else {
-      pde.obs[pde.obs == 0] <- 1/(2*niter)
-      pde.obs[pde.obs == 1] <- 1 - 1/(2*niter)
+      pde.obs[pde.obs == 0] <- 1 / (2 * niter)
+      pde.obs[pde.obs == 1] <- 1 - 1 / (2 * niter)
     }
-
+    
     # Normalize
     npde.obs <- qnorm(pde.obs)
-
+    
     # Compute for simulated data
     r <- apply(eswres, 1, rank)
-    pde.sim <- r/(niter + 1)   # +1 prevents Inf after normalization
+    pde.sim <- r / (niter + 1)   # +1 prevents Inf after normalization
     npde.sim <- qnorm(pde.sim)
-
+    
     data.table(
-      iter=iter,
-      epred=epred,
-      eres=c(eres, esres),
-      ewres=c(ewres, eswres),
-      npd=c(npd.obs, npd.sim),
-      npde=c(npde.obs, npde.sim))
+      iter = iter,
+      epred = epred,
+      eres = c(eres, esres),
+      ewres = c(ewres, eswres),
+      npd = c(npd.obs, npd.sim),
+      npde = c(npde.obs, npde.sim)
+    )
   }
-
+  
   obssim <- data.table(
     y    = c(o$obs$y, o$sim$y),
-    id   = rep(id, length.out=(niter + 1)*nrow(o$obs)),
-    iter = rep(0:niter, each=nrow(o$obs)))
-
-  obssim <- obssim[, rn := (1:.N)][, cbind(rn, calc.npde(y, iter, smooth=smooth)), by=id][order(rn)][, rn := NULL]
-
-  npdeobs <- obssim[iter==0]
-  npdesim <- obssim[iter!=0]
-
-  update(o, npdeobs=npdeobs, npdesim=npdesim)
+    id   = rep(id, length.out = (niter + 1) * nrow(o$obs)),
+    iter = rep(0:niter, each = nrow(o$obs))
+  )
+  
+  obssim <-
+    obssim[, rn := (1:.N)][, cbind(rn, calc.npde(y, iter, smooth = smooth)), by =
+                             id][order(rn)][, rn := NULL]
+  
+  npdeobs <- obssim[iter == 0]
+  npdesim <- obssim[iter != 0]
+  
+  update(o, npdeobs = npdeobs, npdesim = npdesim)
 }
 
 # vim: ts=2 sw=2 et
