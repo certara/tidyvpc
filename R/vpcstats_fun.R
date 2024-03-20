@@ -29,16 +29,22 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
   type <- match.arg(vpc.type)
   method <- o$vpc.method
 
-  stopifnot(method$method %in% c("binless", "binning"))
+  if (!isTRUE(method$method %in% c("binless", "binning"))) {
+    stop(
+      "A binning method should be specified through binning() or binless() execution before vpcstats() run."
+    )
+  }
+  
   stopifnot(length(qpred) == 3)
 
-  repl <- ypc <- y <- x <- blq <- lloq <- alq <- uloq <- NULL
+  repl <- ypc <- ypcvc <- y <- x <- blq <- lloq <- alq <- uloq <- NULL
   . <- list
   qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
 
   obs      <- o$obs
   sim      <- o$sim
   predcor  <- o$predcor
+  varcorr  <- o$varcorr
   stratbin <- o$.stratbin
   xbin     <- o$xbin
   strat    <- o$strat
@@ -197,8 +203,13 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
 
       if (isTRUE(predcor)) {
-        qobs <- obs[, quant_loq(ypc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type),   by=stratbin]
-        qsim <- sim[, quant_loq(ypc, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
+        if (isTRUE(varcorr)) {
+          qobs <- obs[, quant_loq(ypcvc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type),   by=stratbin]
+          qsim <- sim[, quant_loq(ypcvc, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
+        } else {
+          qobs <- obs[, quant_loq(ypc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type),   by=stratbin]
+          qsim <- sim[, quant_loq(ypc, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
+        }
       } else {
         qobs <- obs[, quant_loq(y, probs=qpred, blq=blq,   alq=alq  , type = quantile.type),   by=stratbin]
         qsim <- sim[, quant_loq(y, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
