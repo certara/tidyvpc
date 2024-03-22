@@ -21,19 +21,25 @@ NULL
 
 #' Specify observed dataset and variables for VPC
 #'
-#' The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC. Note: Observed
-#' data must not contain missing DV and may require filtering \code{MDV == 0} before generating VPC.
+#' The observed function is the first function in the vpc piping chain and is
+#' used for specifying observed data and variables for VPC. Note: Observed data
+#' must not contain missing DV and may require filtering \code{MDV == 0} before
+#' generating VPC. Also observed data must be ordered by: Subject (ID), IVAR
+#' (Time)
 #'
 #' @param o A \code{data.frame} of observation data.
 #' @param x Numeric x-variable, typically named TIME.
 #' @param yobs Numeric y-variable, typically named DV.
 #' @param pred Population prediction variable, typically named PRED.
 #' @param blq Logical variable indicating below limit of quantification.
-#' @param lloq Number or numeric variable in data indicating the lower limit of quantification.
+#' @param lloq Number or numeric variable in data indicating the lower limit of
+#'   quantification.
 #' @param alq Logical variable indicating above limit of quantification .
-#' @param uloq Number or numeric variable in data indicating the upper limit of quantification.
+#' @param uloq Number or numeric variable in data indicating the upper limit of
+#'   quantification.
 #' @param ... Other arguments.
-#' @return A \code{tidyvpcobj} containing both original data and observed data formatted with \code{x} and \code{y} variables as specified in function.
+#' @return A \code{tidyvpcobj} containing both original data and observed data
+#'   formatted with \code{x} and \code{y} variables as specified in function.
 #'   Resulting data is of class \code{data.frame} and \code{data.table}.
 #' @examples
 #'
@@ -67,10 +73,11 @@ observed.data.frame <- function(o, x, yobs, pred=NULL, blq=NULL, lloq=-Inf, alq=
 
 #' Specify simulated dataset and variables for VPC
 #'
-#' The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not
-#' contain missing DV and may require filtering \code{MDV == 0} before generating VPC. The ordering of observed and simulated
-#' data must also be consistent, with replicates in simulated data stacked on top of each other.
-#'
+#' The simulated function is used for specifying simulated input data and
+#' variables for VPC. Note: Simulated data must not contain missing DV and may
+#' require filtering \code{MDV == 0} before generating VPC. Simulated data must
+#' be ordered by: Replicate, Subject (ID), IVAR (Time).
+#' 
 #' @param o A \code{tidyvpcobj}.
 #' @param data A \code{data.frame} of simulated data.
 #' @param ysim Numeric y-variable, typically named DV.
@@ -375,7 +382,7 @@ binning <- function(o, ...) UseMethod("binning")
 #' @rdname binning
 #' @export
 binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, breaks, nbins, altx, stratum=NULL, by.strata=TRUE,  ...) {
-  keep <- i <- ypc <- y <- NULL
+  keep <- i <- NULL
   . <- list
 
   # If xbin is numeric, then that is the bin
@@ -484,7 +491,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
   }
 
   if (is.function(bin)) {
-    xdat <- data.table(i=1:nrow(o$obs), x=x)
+    xdat <- data.table(i = 1:nrow(o$obs), x = x)
     if (any(is.na(xdat[filter]$x))) {
       warning("x contains missing values, which could affect binning")
     }
@@ -493,7 +500,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
     }
     if (by.strata && !is.null(o$strat)) {
       sdat <- copy(o$strat)
-      temp <- xdat[filter, .(i=i, j=do.call(bin, c(list(x), args, .BY))), by=sdat[filter]]
+      temp <- xdat[filter, .(i = i, j = do.call(bin, c(list(x), args, .BY))), by = sdat[filter]]
       j <- temp[order(i), j]
     } else {
       j <- xdat[filter, do.call(bin, c(list(x), args))]
@@ -527,38 +534,48 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
   } else {
     stop("Invalid xbin")
   }
+  
   vpc.method <- list(method = "binning")
 
   # check if user supplied predcorrect before binning
-  if (!is.null(o$predcor) && o$predcor) {
-    pred <- o$pred
-    log <- o$predcor.log
-    mpred <- data.table(stratbin, pred)[, mpred := median(pred), by = stratbin]$mpred
-
-    if (log) {
-      o$obs[, ypc := (mpred - pred) + y]
-      o$sim[, ypc := (mpred - pred) + y]
-    } else {
-      o$obs[, ypc := ifelse(pred == 0, 0, (mpred / pred) * y)]
-      o$sim[, ypc := ifelse(rep(pred, times = nrow(o$sim) / nrow(o$obs)) == 0, 0, (mpred / pred) * y)]
-    }
+  if (isTRUE(o$predcor)) {
+    o <-
+      get_predcorrect(
+        o,
+        stratbin,
+        pred = o$pred,
+        log = o$predcor.log,
+        varcorr = o$varcorr
+      )
+  } else if (isTRUE(o$varcorr)) {
+    warning("Cannot apply variance prediction correction when predcor flag is off.")
   }
 
-  update(o, xbin=xbin, vpc.method = vpc.method)
+  update(o, xbin = xbin, vpc.method = vpc.method)
 }
+
 
 #' Prediction corrected Visual Predictive Check (pcVPC)
 #'
 #' Specify prediction variable for pcVPC.
 #'
-#' @param o A \code{tidyvpcobj}.
+#' @param o A `tidyvpcobj`.
 #' @param pred Prediction variable in observed data.
-#' @param data Observed data supplied in \code{observed()} function.
+#' @param data Observed data supplied in `observed()` function.
 #' @param ... Other arguments to include.
 #' @param log Logical indicating whether DV was modeled in logarithmic scale.
-#' @return Updates \code{tidyvpcobj} with required information to performing prediction correction, which includes the \code{predcor} logical indicating whether
-#'   prediction corrected VPC is to be performed, the \code{predcor.log} logical indicating whether the DV is on a log-scale, and the \code{pred} prediction
-#'   column from the original data.
+#' @param varcorr Logical indicating whether variability correction should be
+#'   applied for prediction corrected dependent variable
+#' @return Updates `tidyvpcobj` with required information to perform prediction
+#'   correction, which includes the `predcor` logical indicating whether
+#'   prediction corrected VPC is to be performed, the `predcor.log` logical
+#'   indicating whether the DV is on a log-scale, the `varcorr` logical
+#'   indicating whether variability correction for prediction corrected
+#'   dependent variable is applied and the `pred` prediction column from the
+#'   original data. Both `obs` and `sim` data tables in the returned
+#'   `tidyvpcobj` object have additional `ypc` column with the results of
+#'   prediction correction and `ypcvc` column if variability correction is
+#'   requested.
 #' @examples
 #' \donttest{
 #' require(magrittr)
@@ -571,62 +588,92 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
 #'
 #' obs_data$PRED <- sim_data[REP == 1, PRED]
 #'
-#'   vpc <- observed(obs_data, x=TIME, y=DV) %>%
-#'        simulated(sim_data, y=DV) %>%
+#'   vpc <- observed(obs_data, x=TIME, yobs=DV) %>%
+#'        simulated(sim_data, ysim=DV) %>%
 #'        binning(bin = NTIME) %>%
-#'        predcorrect(pred=PRED) %>%
+#'        predcorrect(pred=PRED, varcorr = TRUE) %>%
 #'        vpcstats()
 #'
 #'  # For binless loess prediction corrected, use predcorrect() before
 #'  # binless() and set loess.ypc = TRUE
 #'
-#'   vpc <- observed(obs_data, x=TIME, y=DV) %>%
-#'        simulated(sim_data, y=DV) %>%
+#'   vpc <- observed(obs_data, x=TIME, yobs=DV) %>%
+#'        simulated(sim_data, ysim=DV) %>%
 #'        predcorrect(pred=PRED) %>%
-#'        binless(loess.ypc = TRUE) %>%
+#'        binless() %>%
 #'        vpcstats()
 #'        }
 #'
-#' @seealso \code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{stratify}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
+#' @seealso \code{\link{observed}} \code{\link{simulated}}
+#'   \code{\link{censoring}} \code{\link{stratify}} \code{\link{binning}}
+#'   \code{\link{binless}} \code{\link{vpcstats}}
 
 #' @export
 predcorrect <- function(o, ...) UseMethod("predcorrect")
 
 #' @rdname predcorrect
 #' @export
-predcorrect.tidyvpcobj <- function(o, pred, data=o$data, ..., log=FALSE) {
-
-  ypc <- y <- NULL
-
-  if (missing(pred)) {
-    pred <- o$pred
-  } else {
-    pred <- rlang::eval_tidy(rlang::enquo(pred), data)
-  }
-  if (is.null(pred)) {
-    stop("No pred specified")
-  }
-
-  stratbin <- o$.stratbin
-  # predcorrect after binning, check if binning/binless has already been specified
-
-  if (!is.null(o$vpc.method)) {
-    if(o$vpc.method$method == "binless") {
-      o$vpc.method$loess.ypc <- TRUE
-    } else { #binning specified, perform ypc calculcation
-      mpred <- data.table(stratbin, pred)[, mpred := median(pred), by = stratbin]$mpred
-
-      if (log) {
-        o$obs[, ypc := (mpred - pred) + y]
-        o$sim[, ypc := (mpred - pred) + y]
+predcorrect.tidyvpcobj <-
+  function(o,
+           pred,
+           data = o$data,
+           ...,
+           log = FALSE,
+           varcorr = FALSE) {
+    if (missing(pred)) {
+      pred <- o$pred
+    } else {
+      pred <- rlang::eval_tidy(rlang::enquo(pred), data)
+    }
+    if (is.null(pred)) {
+      stop("No pred specified")
+    }
+    
+    stratbin <- o$.stratbin
+    # predcorrect after binning, check if binning/binless has already been specified
+    
+    if (!is.null(o$vpc.method)) {
+      if (o$vpc.method$method == "binless") {
+        o$vpc.method$loess.ypc <- TRUE
       } else {
-        o$obs[, ypc := ifelse(pred == 0, 0, (mpred / pred) * y)]
-        o$sim[, ypc := ifelse(rep(pred, times = nrow(o$sim) / nrow(o$obs)) == 0, 0, (mpred / pred) * y)]
+        #binning specified, perform ypc calculcation
+        o <- get_predcorrect(o, stratbin, pred, log, varcorr)
       }
     }
+    
+    update(
+      o,
+      predcor = TRUE,
+      predcor.log = log,
+      varcorr = varcorr,
+      pred = pred
+    )
   }
 
-  update(o, predcor=TRUE, predcor.log=log, pred=pred)
+get_predcorrect <- function(o, stratbin, pred, log, varcorr) {
+  ypcvc <- ypc <- y <- ij <- NULL
+  . <- list
+  mpred <-
+    data.table(stratbin, pred)[, mpred := median(pred), by = stratbin]$mpred
+  
+  if (log) {
+    o$obs[, ypc := (mpred - pred) + y]
+    o$sim[, ypc := (mpred - pred) + y]
+  } else {
+    o$obs[, ypc := ifelse(pred == 0, 0, (mpred / pred) * y)]
+    o$sim[, ypc := ifelse(rep(pred, times = nrow(o$sim) / nrow(o$obs)) == 0, 0, (mpred / pred) * y)]
+  }
+  
+  if (varcorr) {
+    ypcsdij <-
+      data.table(ypc = o$sim$ypc, ij = row.names(o$obs))[, .(ypcsdij = stats::sd(ypc)), by = ij]$ypcsdij
+    mypcsdij <-
+      data.table(stratbin, ypcsdij)[, mypcsdij := median(ypcsdij), by = stratbin]$mypcsdij
+    o$obs[, ypcvc := mpred + (y - mpred) * mypcsdij / ypcsdij]
+    o$sim[, ypcvc := mpred + (y - mpred) * mypcsdij / ypcsdij]
+  }
+  
+  o
 }
 
 #' Remove prediction correction for Visual Predictive Check (VPC)
@@ -641,7 +688,7 @@ nopredcorrect <- function(o, ...) UseMethod("nopredcorrect")
 #' @rdname nopredcorrect
 #' @export
 nopredcorrect.tidyvpcobj <- function(o, ...) {
-  update(o, predcor=FALSE)
+  update(o, predcor = FALSE)
 }
 
 #' @export

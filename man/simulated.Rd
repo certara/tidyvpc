@@ -25,9 +25,10 @@ A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with colum
  The column \code{x} is used from the \code{observed()} function. Resulting dataset is of class \code{data.frame} and \code{data.table}.
 }
 \description{
-The simulated function is used for specifying simulated input data and variables for VPC. Note: Simulated data must not
-contain missing DV and may require filtering \code{MDV == 0} before generating VPC. The ordering of observed and simulated
-data must also be consistent, with replicates in simulated data stacked on top of each other.
+The simulated function is used for specifying simulated input data and
+variables for VPC. Note: Simulated data must not contain missing DV and may
+require filtering \code{MDV == 0} before generating VPC. Simulated data must
+be ordered by: Replicate, Subject (ID), IVAR (Time).
 }
 \examples{
 require(magrittr)

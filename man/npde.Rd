@@ -42,7 +42,7 @@ vpc <- observed(npde$npdeobs, x=epred, y=npde) \%>\%
     binning("eqcut", nbins=10) \%>\%
     vpcstats()
 
-plot(vpc) + 
+plot(vpc) +
 labs(x="Simulation-based Population Prediction", y="Normalized Prediction Distribution Error")
 }
 

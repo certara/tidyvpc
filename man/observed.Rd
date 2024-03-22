@@ -32,19 +32,25 @@ observed(o, ...)
 
 \item{blq}{Logical variable indicating below limit of quantification.}
 
-\item{lloq}{Number or numeric variable in data indicating the lower limit of quantification.}
+\item{lloq}{Number or numeric variable in data indicating the lower limit of
+quantification.}
 
 \item{alq}{Logical variable indicating above limit of quantification .}
 
-\item{uloq}{Number or numeric variable in data indicating the upper limit of quantification.}
+\item{uloq}{Number or numeric variable in data indicating the upper limit of
+quantification.}
 }
 \value{
-A \code{tidyvpcobj} containing both original data and observed data formatted with \code{x} and \code{y} variables as specified in function.
+A \code{tidyvpcobj} containing both original data and observed data
+  formatted with \code{x} and \code{y} variables as specified in function.
   Resulting data is of class \code{data.frame} and \code{data.table}.
 }
 \description{
-The observed function is the first function in the vpc piping chain and is used for specifying observed data and variables for VPC. Note: Observed
-data must not contain missing DV and may require filtering \code{MDV == 0} before generating VPC.
+The observed function is the first function in the vpc piping chain and is
+used for specifying observed data and variables for VPC. Note: Observed data
+must not contain missing DV and may require filtering \code{MDV == 0} before
+generating VPC. Also observed data must be ordered by: Subject (ID), IVAR
+(Time)
 }
 \examples{
 

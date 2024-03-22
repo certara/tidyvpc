@@ -7,23 +7,33 @@
 \usage{
 predcorrect(o, ...)
 
-\method{predcorrect}{tidyvpcobj}(o, pred, data = o$data, ..., log = FALSE)
+\method{predcorrect}{tidyvpcobj}(o, pred, data = o$data, ..., log = FALSE, varcorr = FALSE)
 }
 \arguments{
-\item{o}{A \code{tidyvpcobj}.}
+\item{o}{A `tidyvpcobj`.}
 
 \item{...}{Other arguments to include.}
 
 \item{pred}{Prediction variable in observed data.}
 
-\item{data}{Observed data supplied in \code{observed()} function.}
+\item{data}{Observed data supplied in `observed()` function.}
 
 \item{log}{Logical indicating whether DV was modeled in logarithmic scale.}
+
+\item{varcorr}{Logical indicating whether variability correction should be
+applied for prediction corrected dependent variable}
 }
 \value{
-Updates \code{tidyvpcobj} with required information to performing prediction correction, which includes the \code{predcor} logical indicating whether
-  prediction corrected VPC is to be performed, the \code{predcor.log} logical indicating whether the DV is on a log-scale, and the \code{pred} prediction
-  column from the original data.
+Updates `tidyvpcobj` with required information to perform prediction
+  correction, which includes the `predcor` logical indicating whether
+  prediction corrected VPC is to be performed, the `predcor.log` logical
+  indicating whether the DV is on a log-scale, the `varcorr` logical
+  indicating whether variability correction for prediction corrected
+  dependent variable is applied and the `pred` prediction column from the
+  original data. Both `obs` and `sim` data tables in the returned
+  `tidyvpcobj` object have additional `ypc` column with the results of
+  prediction correction and `ypcvc` column if variability correction is
+  requested.
 }
 \description{
 Specify prediction variable for pcVPC.
@@ -40,23 +50,25 @@ sim_data <- sim_data[MDV == 0]
 
 obs_data$PRED <- sim_data[REP == 1, PRED]
 
-  vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
-       simulated(sim_data, y=DV) \%>\%
+  vpc <- observed(obs_data, x=TIME, yobs=DV) \%>\%
+       simulated(sim_data, ysim=DV) \%>\%
        binning(bin = NTIME) \%>\%
-       predcorrect(pred=PRED) \%>\%
+       predcorrect(pred=PRED, varcorr = TRUE) \%>\%
        vpcstats()
 
  # For binless loess prediction corrected, use predcorrect() before
  # binless() and set loess.ypc = TRUE
 
-  vpc <- observed(obs_data, x=TIME, y=DV) \%>\%
-       simulated(sim_data, y=DV) \%>\%
+  vpc <- observed(obs_data, x=TIME, yobs=DV) \%>\%
+       simulated(sim_data, ysim=DV) \%>\%
        predcorrect(pred=PRED) \%>\%
-       binless(loess.ypc = TRUE) \%>\%
+       binless() \%>\%
        vpcstats()
        }
 
 }
 \seealso{
-\code{\link{observed}} \code{\link{simulated}} \code{\link{censoring}} \code{\link{stratify}} \code{\link{binning}} \code{\link{binless}} \code{\link{vpcstats}}
+\code{\link{observed}} \code{\link{simulated}}
+  \code{\link{censoring}} \code{\link{stratify}} \code{\link{binning}}
+  \code{\link{binless}} \code{\link{vpcstats}}
 }

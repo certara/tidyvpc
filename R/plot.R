@@ -122,9 +122,15 @@ plot.tidyvpcobj <- function(x,
       ylab <- NULL
     }
     if (isTRUE(vpc$predcor)) {
-      ylab <- ifelse(length(ylab) == 0,
-                     "Prediction Corrected",
-                     paste0(ylab, "\nPrediction Corrected"))
+      if (isTRUE(vpc$varcorr)) {
+        ylab <- ifelse(length(ylab) == 0,
+                       "Prediction and Variability Corrected",
+                       paste0(ylab, "\nPrediction and Variability Corrected"))        
+      } else {
+        ylab <- ifelse(length(ylab) == 0,
+                       "Prediction Corrected",
+                       paste0(ylab, "\nPrediction Corrected"))
+      }
     }
   }
 
@@ -233,7 +239,8 @@ plot_continuous <-
            point.shape,
            point.stroke,
            point.alpha) {
-    alq <-bin <- blq <- hi <-l.ypc <-lo <- md <- pname <- qname <- x <- xleft <- xright <- y <- ypc <- NULL
+    alq <- bin <- blq <- hi <- l.ypc <- lo <- md <- pname <- qname <- NULL
+    x <- xleft <- xright <- y <- ypc <- ypcvc <- NULL
     . <- list
     method <- vpc$vpc.method$method
     qlvls <- levels(vpc$stats$qname)
@@ -306,8 +313,13 @@ plot_continuous <-
       if (isTRUE(vpc$predcor) && method == "binless") {
         points.dat[, y := l.ypc]
       } else if (isTRUE(vpc$predcor)) {
-        points.dat[, y := ypc]
+        if (isTRUE(vpc$varcorr)) {
+          points.dat[, y := ypcvc]
+        } else {
+          points.dat[, y := ypc]
+        }
       }
+      
       if (show.binning) {
         reorder2 <- function(y, x) {
           y <- stats::reorder(y, x)

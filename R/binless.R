@@ -147,7 +147,12 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
   obs <- o$obs
   sim <- o$sim
 
-  if(isTRUE(o$loess.ypc)) {
+  if (isTRUE(o$loess.ypc)) {
+    if (isTRUE(o$varcorr)) {
+      warning("Variability correction is not supported by binless VPC and won't be applied")
+      o$varcorr <- FALSE
+    }
+    
     pred <- o$pred
     obs <- cbind(obs, pred)
     sim[, pred := rep(pred, len=.N), by = .(repl)]
@@ -218,13 +223,13 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     strat.split.sim <- strat.split.sim[lapply(strat.split.sim,NROW)>0]
   }
 
-  if(isTRUE(o$loess.ypc) && !is.null(o$strat)) {
-    if(isTRUE(o$predcor.log)) {
-      for(i in seq_along(strat.split)) {
+  if (isTRUE(o$loess.ypc) && !is.null(o$strat)) {
+    if (isTRUE(o$predcor.log)) {
+      for (i in seq_along(strat.split)) {
         strat.split[[i]][, l.ypc := y +  (fitted(loess(pred ~ x, span = span[[i]], na.action = na.exclude, .SD)) - pred)]
       }
     } else {
-      for(i in seq_along(strat.split)) {
+      for (i in seq_along(strat.split)) {
         strat.split[[i]][, l.ypc := y * (fitted(loess(pred ~ x, span = span[[i]], na.action = na.exclude, .SD)) / pred)]
       }
     }
