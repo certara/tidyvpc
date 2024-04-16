@@ -61,8 +61,8 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
 
     ylvls <-  sort(unique(obs$y))
 
-    # categorical binless vpcstats() ----
     if(method$method == "binless"){
+      # categorical binless vpcstats() ----
       xobs     <- obs$x
       xsim <- sim$x
       sp <- method$sp
@@ -204,14 +204,14 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
 
       if (isTRUE(predcor)) {
         if (isTRUE(varcorr)) {
-          qobs <- obs[, quant_loq(ypcvc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type),   by=stratbin]
+          qobs <- obs[, quant_loq(ypcvc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type), by=stratbin]
           qsim <- sim[, quant_loq(ypcvc, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
         } else {
-          qobs <- obs[, quant_loq(ypc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type),   by=stratbin]
+          qobs <- obs[, quant_loq(ypc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type), by=stratbin]
           qsim <- sim[, quant_loq(ypc, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
         }
       } else {
-        qobs <- obs[, quant_loq(y, probs=qpred, blq=blq,   alq=alq  , type = quantile.type),   by=stratbin]
+        qobs <- obs[, quant_loq(y, probs=qpred, blq=blq,   alq=alq,   type = quantile.type), by=stratbin]
         qsim <- sim[, quant_loq(y, probs=qpred, blq=FALSE, alq=FALSE, type = quantile.type), by=.stratbinrepl]
       }
 
