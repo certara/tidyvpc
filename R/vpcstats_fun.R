@@ -34,7 +34,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       "A binning method should be specified through binning() or binless() execution before vpcstats() run."
     )
   }
-  
+
   stopifnot(length(qpred) == 3)
 
   repl <- ypc <- ypcvc <- y <- x <- blq <- lloq <- alq <- uloq <- NULL
@@ -153,7 +153,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
         stop("Need to specify binning before calling vpcstats.")
       }
       if (any(is.na(stratbin$bin))) {
-        warning("There are bins missing. Has binning been specified for all strata?", call.=F)
+        warning("There are bins missing. Has binning been specified for all strata?", call.=FALSE)
       }
 
       .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
@@ -187,8 +187,8 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
     }
     # update vpc
     update(o, stats=stats, conf.level=conf.level, vpc.type = type, vpc.method = method)
-    # continuous vpcstats ----
   } else {
+    # continuous vpcstats ----
     if(method$method == "binless") {
       .binlessvpcstats(o, qpred=qpred, conf.level=conf.level, quantile.type=quantile.type, vpc.type = type, vpc.method = method)
     } else {
