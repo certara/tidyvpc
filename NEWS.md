@@ -1,3 +1,8 @@
+# tidyvpc 1.5.2
+* Changes to the computational workflow for npde [#59](https://github.com/certara/tidyvpc/pull/59)
+* Added varcorr argument to predcorrect method [#60](https://github.com/certara/tidyvpc/pull/60)
+* CRAN fix [#62](https://github.com/certara/tidyvpc/pull/62)
+
 # tidyvpc 1.5.1
 * Patch release that ensures unit tests do not fail when env var `_R_CHECK_DEPENDS_ONLY_=true` in R CMD check. As a result, the cluster dependency has been moved from Suggests to Imports.
 

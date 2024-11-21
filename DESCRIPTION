@@ -15,6 +15,8 @@ Authors@R: c(
       person("Bill", "Denney", email="wdenney@humanpredictions.com", 
       role="ctb", 
       comment=c(ORCID="0000-0002-5759-428X")),
+      person("Michael", "Tomashevskiy", email = "michael.tomashevskiy@certara.com",
+      role = c("ctb")),
       person("Kris", "Jamsen",
       role = c("ctb")),
       person("Certara USA, Inc.", role = c("cph","fnd"))
