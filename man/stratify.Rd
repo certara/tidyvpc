@@ -17,6 +17,8 @@ stratify(o, ...)
 \item{formula}{Formula for stratification.}
 
 \item{data}{Observed data supplied in \code{observed()} function.}
+
+\item{data.sim}{Simulated data supplied in \code{simulated()} function.}
 }
 \value{
 Returns updated \code{tidyvpcobj} with stratification formula, stratification column(s), and strat.split datasets, which

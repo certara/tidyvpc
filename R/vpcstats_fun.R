@@ -37,7 +37,7 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
 
   stopifnot(length(qpred) == 3)
 
-  repl <- ypc <- ypcvc <- y <- x <- blq <- lloq <- alq <- uloq <- NULL
+  repl <- ypc <- ypcvc <- y <- x <- blq <- lloq <- alq <- uloq <- bin <- NULL
   . <- list
   qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
 

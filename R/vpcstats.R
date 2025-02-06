@@ -272,6 +272,7 @@ censoring.tidyvpcobj <- function(o, blq, lloq, alq, uloq, data=o$data, ...) {
 #' @param o A \code{tidyvpcobj}.
 #' @param formula Formula for stratification.
 #' @param data Observed data supplied in \code{observed()} function.
+#' @param data.sim Simulated data supplied in \code{simulated()} function.
 #' @param ... Other arguments to include.
 #' @return Returns updated \code{tidyvpcobj} with stratification formula, stratification column(s), and strat.split datasets, which
 #'   is \code{obs} split by unique levels of stratification variable(s). Resulting datasets are of class object \code{data.frame}
@@ -308,9 +309,7 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, data.sim = NULL, ...) {
   }
   if (!is.null(data.sim)) {
     if (!o$replicate) {
-      .message("Obs/Sim are non replicates - cannot recycle strata from observed data in simulated data.")
-      .message("Expecting simulated data in `data` argument. Note, for observed
-            data, strata will be automatically extracted from o$data and cannot be overridden.")
+      .message("Obs/Sim are non replicates - cannot recycle strata from observed data and instead using `data.sim` argument for simulated data.")
       if (nrow(data.sim) == nrow(o$data)) {
         stop("Expecting simulated data in `data` argument")
       }
@@ -425,7 +424,7 @@ binning <- function(o, ...) UseMethod("binning")
 #' @rdname binning
 #' @export
 binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, breaks, nbins, altx, stratum=NULL, by.strata=TRUE,  ...) {
-  keep <- i <- NULL
+  keep <- i <- lower <- upper <- i.bin <- NULL
   . <- list
 
   # If xbin is numeric, then that is the bin
@@ -588,7 +587,7 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
       # Perform join
       sim[bin_intervals, on = on_vec, bin := i.bin]
       cols_vec <- c(names(o$strat), "bin", "repl")
-      o <- update(o, .stratbinrepl = sim[, ..cols_vec])
+      o <- update(o, .stratbinrepl = sim[, .SD, .SDcols = cols_vec])
   }
   
   # Assign an x value to each bin
