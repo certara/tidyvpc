@@ -48,7 +48,6 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
   stratbin <- o$.stratbin
   xbin     <- o$xbin
   strat    <- o$strat
-
   if(method$method == "binless" && type == "continuous"){
     o <- binlessaugment(o, qpred = qpred, interval =  method$optimization.interval, loess.ypc = method$loess.ypc)
     o <- binlessfit(o, conf.level = conf.level, llam.quant = method$lambda, span = method$span)
@@ -155,9 +154,14 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       if (any(is.na(stratbin$bin))) {
         warning("There are bins missing. Has binning been specified for all strata?", call.=FALSE)
       }
-
-      .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
-
+      if (o$replicate) {
+        .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
+      } else {
+        #Note, we can have NA bins because sim time points can fall outside min/max bin boundaries
+        .stratbinrepl <- o$.stratbinrepl[!is.na(bin),]
+        sim <- sim[!is.na(bin),]
+      } 
+      
       obs <- obs[, fastDummies::dummy_columns(obs, select_columns = "y")]
       pobs <- obs[, lapply(.SD, mean, na.rm=TRUE), by=stratbin, .SDcols=paste0("y_", ylvls)]
       setnames(pobs, paste0("y_", ylvls), paste0("prob", ylvls))
@@ -200,8 +204,14 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
         warning("There are bins missing. Has binning been specified for all strata?", call.=FALSE)
       }
 
-      .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
-
+      if (o$replicate) {
+        .stratbinrepl <- data.table(stratbin, sim[, .(repl)])
+      } else {
+        #Note, we can have NA bins because sim time points can fall outside min/max bin boundaries
+        .stratbinrepl <- o$.stratbinrepl[!is.na(bin),]
+        sim <- sim[!is.na(bin),]
+      } 
+      
       if (isTRUE(predcor)) {
         if (isTRUE(varcorr)) {
           qobs <- obs[, quant_loq(ypcvc, probs=qpred, blq=blq,   alq=alq,   type = quantile.type), by=stratbin]

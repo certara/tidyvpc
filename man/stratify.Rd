@@ -7,7 +7,7 @@
 \usage{
 stratify(o, ...)
 
-\method{stratify}{tidyvpcobj}(o, formula, data = o$data, ...)
+\method{stratify}{tidyvpcobj}(o, formula, data = o$data, data.sim = NULL, ...)
 }
 \arguments{
 \item{o}{A \code{tidyvpcobj}.}

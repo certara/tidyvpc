@@ -48,7 +48,7 @@ binning(o, ...)
 Updates \code{tidyvpcobj} with \code{data.frame} containing bin information including left/right boundaries and midpoint, as specified in \code{xbin} argument.
 }
 \description{
-This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", "dpih", "box", "headtails", and "maximum".
+This function executes binning methods available in classInt e.g., "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", "dpih", "box", "headtails", and "maximum".
 You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see \code{\link[classInt]{classIntervals}}.
 }
 \examples{

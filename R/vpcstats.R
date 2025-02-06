@@ -81,7 +81,8 @@ observed.data.frame <- function(o, x, yobs, pred=NULL, blq=NULL, lloq=-Inf, alq=
 #' @param o A \code{tidyvpcobj}.
 #' @param data A \code{data.frame} of simulated data.
 #' @param ysim Numeric y-variable, typically named DV.
-#' @param xsim Numeric x-variable, typically named TIME.
+#' @param xsim Numeric x-variable, typically named TIME. This argument is not required, see details below.
+#' @param repl Numeric replicate variable, typically named REPL. This argument is not required, see details below.
 #' @param ... Other arguments.
 #' @return A \code{tidyvpcobj} containing simulated dataset \code{sim} formatted with columns \code{x}, \code{y}, and \code{repl}, which indicates the replicate number.
 #'  The column \code{x} is used from the \code{observed()} function. Resulting dataset is of class \code{data.frame} and \code{data.table}.
@@ -98,27 +99,50 @@ simulated <- function(o, ...) UseMethod("simulated")
 
 #' @rdname simulated
 #' @export
-simulated.tidyvpcobj <- function(o, data, ysim, ..., xsim) {
+simulated.tidyvpcobj <- function(o, data, ysim, xsim, repl, ...) {
   ysim <- rlang::eval_tidy(rlang::enquo(ysim), data)
   obs  <- o$obs
   nrep <- length(ysim)/nrow(obs)
+  replicate <- TRUE
+  
   if (nrep != as.integer(nrep)) {
-    stop("The number of simulated rows is not a multiple of the number of observed rows.  Ensure that you filtered your observed data to remove MDV rows.")
+    .message(
+      "The number of simulated rows is not a multiple of the number of observed rows."
+    )
+    replicate <- FALSE
   }
-  repl <- rep(seq_len(nrep), each=nrow(obs))
+  
+  if (!replicate && (missing(xsim) || missing(repl))) {
+    warning("The simulated data is not a replicate of the observed data. Ensure that you filtered your observed data to remove MDV rows. If this is intentional, use the `xsim` and `repl` arguments for non-replicate support.")
+  }
+  
   if (!missing(xsim)) {
     xsim <- rlang::eval_tidy(rlang::enquo(xsim), data)
+    .message("Using user-supplied x-values from `xsim`.")
     # generate a replication vector to confirm time matching
     xrep_vec <- rep(seq_along(obs$x), nrep)
-    if (!all(xsim == obs$x[xrep_vec])) {
-      stop("Values of `xsim` do not match observed data x-values.  Ensure that you filtered your observed data to remove MDV rows.")
-    }
+    if (length(xsim) == length(xrep_vec) && !all(xsim == obs$x[xrep_vec])) {
+      warning("Values of `xsim` do not match observed data x-values.")
+      replicate <- FALSE
+    } 
   } else {
     xsim <- obs$x
+    .message(
+      "No `xsim` argument specified, repeating the x-values from observed data, for each replicate of simulated data."
+    )
   }
+  
+  if (!missing(repl)) {
+    repl <- rlang::eval_tidy(rlang::enquo(repl), data)
+    .message("Using user-supplied replicate values from `repl`.")
+  } else {
+    repl <- rep(seq_len(nrep), each=nrow(obs))
+    .message("No `repl` argument provided; replicate IDs automatically generated from the total number of simulated rows.")
+  }
+  
 
   sim <- data.table(x=xsim, y=ysim, repl)
-  update(o, sim=sim)
+  update(o, sim=sim, replicate=replicate)
 }
 
 #' Censoring observed data for Visual Predictive Check (VPC)
@@ -278,10 +302,23 @@ stratify <- function(o, ...) UseMethod("stratify")
 #' @method stratify tidyvpcobj
 #' @rdname stratify
 #' @export
-stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
+stratify.tidyvpcobj <- function(o, formula, data=o$data, data.sim = NULL, ...) {
   if (!inherits(formula, "formula")) {
     stop("Expecting a formula")
   }
+  if (!is.null(data.sim)) {
+    if (!o$replicate) {
+      .message("Obs/Sim are non replicates - cannot recycle strata from observed data in simulated data.")
+      .message("Expecting simulated data in `data` argument. Note, for observed
+            data, strata will be automatically extracted from o$data and cannot be overridden.")
+      if (nrow(data.sim) == nrow(o$data)) {
+        stop("Expecting simulated data in `data` argument")
+      }
+    } else {
+      warning("Ignoring `data.sim` argument, obs/sim are replicates.")
+    }
+  }
+  
   flist <- as.list(formula)
   if (length(flist) == 3) {
     lhs <- as.call(c(flist[[1]], flist[[2]]))
@@ -316,13 +353,19 @@ stratify.tidyvpcobj <- function(o, formula, data=o$data, ...) {
   strat.split <- split(o$obs, strat)
 
   strat.split <- strat.split[lapply(strat.split,NROW)>0]
-
-  update(o, strat=strat, strat.split = strat.split, strat.formula=formula)
+  # Likely do not need to split for simulated data, only required for binless
+  if (!o$replicate && !is.null(data.sim)) {
+    strat.sim <- as.data.table(model.frame(formula, data.sim))
+    o$sim[, names(strat.sim) := strat.sim]
+  } else {
+    strat.sim <- NULL
+  }
+  update(o, strat=strat, strat.split = strat.split, strat.sim = strat.sim,  strat.formula=formula)
 }
 
 #' Binning methods for Visual Predictive Check (VPC)
 #'
-#' This function executes binning methods available in classInt i.e. "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", "dpih", "box", "headtails", and "maximum".
+#' This function executes binning methods available in classInt e.g., "jenks", "kmeans", "sd", "pretty", "pam", "kmeans", "hclust", "bclust", "fisher", "dpih", "box", "headtails", and "maximum".
 #' You may also bin directly on x-variable or alternatively specify "centers" or "breaks". For explanation of binning methods see \code{\link[classInt]{classIntervals}}.
 #'
 #' @param o A \code{tidyvpcobj}.
@@ -522,7 +565,32 @@ binning.tidyvpcobj <- function(o, bin, data=o$data, xbin="xmedian", centers, bre
     stratbin <- data.table(bin)
   }
   o <- update(o, .stratbin=stratbin, bin.by.strata=by.strata)
-
+  
+  
+  # Non-replicate support - merge bins from observed data into sim
+  if (!o$replicate) {
+    # Get unique bin intervals  
+    bin_intervals <- bininfo(o)
+      # Add columns for lower and upper bounds to bin_intervals
+      bin_intervals[, c("lower", "upper") := tstrsplit(gsub("[\\[\\]()]", "", bin, perl = TRUE), ",", fixed = TRUE)]
+      bin_intervals[, c("lower", "upper") := .(as.numeric(lower), as.numeric(upper))]
+      sim <- o$sim
+      
+      if (is.numeric(j)) { # If bin is numeric join on xmin/xmax from bin_info()
+        on_vec <- c("x>=xmin", "x<xmax")
+      } else { # If bin is character e.g., [lower,upper), join on lower/upper value
+        on_vec <- c("x>=lower", "x<upper")
+      }
+      
+      if (!is.null(o$strat.sim)) {
+        on_vec <- c(names(o$strat), on_vec)
+      }
+      # Perform join
+      sim[bin_intervals, on = on_vec, bin := i.bin]
+      cols_vec <- c(names(o$strat), "bin", "repl")
+      o <- update(o, .stratbinrepl = sim[, ..cols_vec])
+  }
+  
   # Assign an x value to each bin
   if (is.numeric(xbin)) {
     xbin <- data.table(xbin=xbin)[, .(xbin = unique(xbin)), by=stratbin]
@@ -1338,4 +1406,8 @@ check_order <- function(obs, sim, tol=1e-5) {
   packageStartupMessage(paste0("tidyvpc is part of Certara.R!\n",
                                "Follow the link below to learn more about PMx R package development at Certara.\n",
                                "https://certara.github.io/R-Certara/"))
+}
+
+.message <- function(msg) {
+  if (isTRUE(getOption("tidyvpc.verbose", default = FALSE))) message(msg)
 }
