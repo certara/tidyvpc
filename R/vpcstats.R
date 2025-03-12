@@ -56,14 +56,18 @@ observed <- function(o, ...) UseMethod("observed")
 #' @export
 observed.data.frame <- function(o, x, yobs, pred=NULL, blq=NULL, lloq=-Inf, alq=NULL, uloq=Inf, ...) {
   data <- o
-  x    <- rlang::eval_tidy(rlang::enquo(x),    data)
+  x    <- rlang::eval_tidy(rlang::enquo(x), data)
   yobs <- rlang::eval_tidy(rlang::enquo(yobs), data)
   pred <- rlang::eval_tidy(rlang::enquo(pred), data)
   lloq <- rlang::eval_tidy(rlang::enquo(lloq), data)
   uloq <- rlang::eval_tidy(rlang::enquo(uloq), data)
   blq  <- rlang::eval_tidy(rlang::enquo(blq),  data)
   alq  <- rlang::eval_tidy(rlang::enquo(alq),  data)
-
+  # x can be NULL for npde(), only coerce if int
+  if (is.integer(x)) {
+    x <- as.numeric(x)
+  }
+  
   obs <- data.table(x, y=yobs, blq, lloq, alq, uloq)
 
   o <- structure(list(data=data), class="tidyvpcobj")
@@ -117,12 +121,16 @@ simulated.tidyvpcobj <- function(o, data, ysim, xsim, repl, ...) {
   }
   
   if (!missing(xsim)) {
-    xsim <- rlang::eval_tidy(rlang::enquo(xsim), data)
+    xsim <- as.numeric(rlang::eval_tidy(rlang::enquo(xsim), data))
     .message("Using user-supplied x-values from `xsim`.")
     # generate a replication vector to confirm time matching
     xrep_vec <- rep(seq_along(obs$x), nrep)
     if (length(xsim) == length(xrep_vec) && !all(xsim == obs$x[xrep_vec])) {
-      warning("Values of `xsim` do not match observed data x-values.")
+      if (missing(repl)) {
+        warning("Values of `xsim` do not match observed data x-values. Use `repl` argument if this is intended.")
+      } else {
+        .message("Values of `xsim` do not match observed data x-values.")
+      }
       replicate <- FALSE
     } 
   } else {

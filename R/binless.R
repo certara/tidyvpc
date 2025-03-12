@@ -218,8 +218,12 @@ binlessfit <- function(o, conf.level = .95, llam.quant = NULL, span = NULL, ...)
     strat.split <- split(obs, strat)
     strat.split <- strat.split[lapply(strat.split,NROW)>0]
     x.strat <- c("x", names(strat))
-    sim.strat <- sim[, c(names(strat)) := rep(strat, len = .N), by = .(repl)]
-    strat.split.sim <- split(sim, strat)
+    if (o$replicate) {
+      sim.strat <- sim[, c(names(strat)) := rep(strat, len = .N), by = .(repl)]
+      strat.split.sim <- split(sim, strat)
+    } else {
+      strat.split.sim <- split(sim, o$strat.sim)
+    }
     strat.split.sim <- strat.split.sim[lapply(strat.split.sim,NROW)>0]
   }
 

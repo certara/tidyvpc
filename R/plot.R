@@ -272,9 +272,19 @@ plot_continuous <-
           alpha = ribbon.alpha,
           col = NA
         ) +
-        ggplot2::geom_line(ggplot2::aes(y = md, col = qname, group = qname)) +
-        ggplot2::geom_line(ggplot2::aes(y = y, linetype = qname), linewidth =
-                             1) +
+        ggplot2::geom_line(ggplot2::aes(y = md, col = qname, group = qname))
+      
+      if (method == "binless" && !vpc$replicate) {
+        g <-
+          g + ggplot2::geom_line(
+            ggplot2::aes(y = fit, linetype = qname),
+            linewidth = 1,
+            data = vpc$rqss.obs.fits
+          )
+      } else {
+        g <- g + ggplot2::geom_line(ggplot2::aes(y = y, linetype = qname), linewidth = 1)
+      }
+       g <- g +
         ggplot2::scale_colour_manual(
           name = sprintf(
             "Simulated Percentiles\nMedian (lines) %s%% CI (areas)",
