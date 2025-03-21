@@ -228,7 +228,13 @@ vpcstats.tidyvpcobj <- function(o, vpc.type =c("continuous", "categorical"), qpr
       .stratbinquant <- qsim[, !c("repl", "y")]
       qconf <- c(0, 0.5, 1) + c(1, 0, -1)*(1 - conf.level)/2
       qqsim <- qsim[, quant_noloq(y, probs=qconf, qname=c("lo", "md", "hi"), type = quantile.type), by=.stratbinquant]
-      stats <- qobs[qqsim, on=names(.stratbinquant)]
+      
+      if (o$replicate) {
+        stats <- qobs[qqsim, on=names(.stratbinquant)]
+      } else {
+        # perform full join if not replicate, may be bins beyonds limits of data
+        stats <- merge(qobs, qqsim, by = names(.stratbinquant), all = TRUE)
+      }
       stats <- xbin[stats, on=names(stratbin)]
       setkeyv(stats, c(names(o$strat), "xbin"))
 
