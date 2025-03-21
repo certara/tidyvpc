@@ -13,14 +13,14 @@ test_that("simulated.tidyvpcobj detects row count mismatches", {
     xsim = x,
     ysim = y
   ))
-  expect_error(
+  expect_warning(
     simulated(
       vpcobj_o,
       data = data.frame(x = 0:2, y = c(0, 3, 4)),
       x = x,
       ysim = y
     ),
-    regexp = "The number of simulated rows is not a multiple of the number of observed rows.  Ensure that you filtered your observed data to remove MDV rows.",
+    regexp = "The simulated data is not a replicate of the observed data. Ensure that you filtered your observed data to remove MDV rows. If this is intentional, use the `xsim` and `repl` arguments for non-replicate support.",
     fixed = TRUE
   )
 })
@@ -40,14 +40,14 @@ test_that("simulated.tidyvpcobj detects x-variable mismatches", {
     xsim = x,
     ysim = y
   ))
-  expect_error(
+  expect_warning(
     simulated(
       vpcobj_o,
       data = data.frame(x = c(0:2, 1), y = c(0, 3, 0, 4)),
       xsim = x,
       ysim = y
     ),
-    regexp = "Values of `xsim` do not match observed data x-values.  Ensure that you filtered your observed data to remove MDV rows.",
+    regexp = "Values of `xsim` do not match observed data x-values.",
     fixed = TRUE
   )
 })
