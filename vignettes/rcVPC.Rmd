@@ -1,0 +1,464 @@
+---
+title: "rcVPC - Reference Corrected Visual Predictive Checks"
+author: "Moustafa M.A. Ibrahim"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{rcVPC - Reference Corrected Visual Predictive Checks}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r, warning = FALSE, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(datatable.print.nrows = 8)
+library(tidyverse)
+library(lazyeval)
+library(ggplot2)
+library(ggsci)
+library(ggnewscale)
+library(RColorBrewer)
+library(data.table)
+library(knitr)
+library(gridExtra)
+library(ggpubr)
+library(htmltools)
+library(kableExtra)
+library(rmarkdown)
+library(xpose4)
+library(sessioninfo)
+theme_set(theme_bw())
+```
+
+## Introduction
+
+* This document introduces the reader to rcVPC functions `refcorrect` and `refcorrectCFB`, and shows how to apply them to tidyvpcobj to derive rcVPC for continuous data.
+
+**Mandatory items for the calculations of rcVPC**
+
+* An observed dataset that includes REF, x & y variables, typically TIME & DV.
+
+* A simulated dataset that includes REF, REP, x & y variables, typically TIME & DV.
+
+* A reference dataset that includes REF, REP, the simulated y and PRED variables using the chosen reference variables, e.g. a reference dose.
+
+**Additional options that may be used prior to the calculation of VPC statistics:**
+
+* Stratify over variables in your model.
+
+* Censor data below LLOQ.
+
+**Typical workflow is as follows (the order is important to get the correct results):**
+
+1. Read the observed data using the `observed()` function
+
+2. Read the simulated data using the `simulated()` function
+
+3. Read the simulated reference data using the `refcorrect()` function
+
+4. Censor observed data below LLOQ using `censoring()` function
+
+5. Stratify data using `stratify()` function
+
+6. Define the binning options using `binning()` function
+
+7. Binless methods to derive VPC using `binless()` function is available that utilizes additive quantile regression (AQR) in place of traditional binning.
+
+8. `vpcstats()` is the final function in the piping chain and calculates the statistics needed to plot VPC.
+
+
+##  Case study
+
++----------------------+---------------------------------------+
+| **Model**            | PK: 1-comp, first order abs, prop-RUV |
+|                      |                                       |
+|                      | PD: Turn-over model, prop-RUV         |
+|                      |                                       |
+|                      | ER: CP via $E_{max}$ on $K_{in}$      |   
++----------------------+---------------------------------------+
+| **Doses**            | 100, 200, 400, 600, 800 mg s.c. q.w.  |
++----------------------+---------------------------------------+
+| **Parameters**       | PK:                                   |
+|                      |                                       |
+|                      | CL=0.025L/h, V=10L/h, $K_{a}$=0.2h-1  |
+|                      |                                       |
+|                      | $\eta_{CL}$=0.15, $\eta_{V}$-V=0.15   |  
+|                      |, $\eta_{K_{a}}$=0.3                   |
+|                      |                                       |
+|                      | PD:                                   |
+|                      |                                       |
+|                      | WT=100, $HK_{out}$=20, $E_{max}$=-0.25|
+|                      | , $EC_{50}$=40                        |
+|                      |                                       |
+|                      | $\eta_{WT}$=0.015, $\eta_{HK_{out}}$  |
+|                      | =0.1, $\eta_{EC_{50}}$=0.3            |
++----------------------+---------------------------------------+
+| **Covariates**       | Allometric scaling of CL and V        | 
+|                      |                                       |
+|                      | Baseline WT by study (85/110kg)       | 
++----------------------+---------------------------------------+
+| **Population**       | MRD-study 5 patient x 5 dose levels   | 
+|                      |                                       |
+|                      | POC-study 20 patients (Dose = 600 mg) |
+|                      |                                       |
+|                      | Baseline WT range 61-128 kg           |
++----------------------+---------------------------------------+
+| **Sampling design**  | MRD-study: 6w treatment +4w follow-up |
+|                      |                                       |
+|                      | POC-study: 16w treatment +2w follow-up|
++----------------------+---------------------------------------+
+
+In this example, two features of the POC-study, ADDL=15 and AMT=600, were selected as the variables for our reference data, and we would like to correct our model predictions of PK and PD profiles using the predictions of the simulated data from the model with the reference data as input.  
+
+## refcorrect
+
+### Read observed, simulated and simulated reference data
+
+In this section, we demonstrated how to read the observed, the simulated and the simulated reference data files. These data sets should contains all necessary variables to explore the functionality of `refcorrect` including:
+
+* DV (y variable)
+
+* TIME (x variable)
+
+* TYPE (type of observations, PK == 1, PD == 2 )
+
+* STUD (study for stratification, MRD-study == 1, Phase-2A==2)
+
+* PRED (prediction variable)
+
+* MDV (Missing DV)
+
+* REF (unique reference value for each row) 
+
+* REP (unique replicate value for simulation)
+
+`refcorrect` requires specific structure of observed and simulated data in order to successfully generate VPC:
+
+* DV cannot be missing in observed/simulated data i.e. subset MDV == 0
+
+* Observed data must be ordered by: REF, Subject-ID, TIME
+
+* Simulated and simulated reference data must be ordered by: REP, REF, Subject-ID, TIME
+
+```{r warning = FALSE, message = FALSE}
+#| label: PKData
+
+finalRun          <- 1
+finalVPCRun       <- 2
+finalrefVPCRun    <- 3
+modDevDir         <- "../inst/extdata/rcVPC/"
+# Col names
+Cnames=c("REP","REF","STUDY","ID","TIME","TYPE","DOSE","AMT",
+         "ADDL","II","MDV","DV", "PRED","WTE","CP","CSS","CDV")
+
+### Read observed data 
+odata <- read_csv(skip = 1,file = paste0(modDevDir,"xptab",finalRun,".csv"),
+                         col_names = Cnames[1:17]) %>% 
+  mutate(CP=ifelse(is.na(CP),0,CP))
+
+PK_odata<-odata %>% filter(TYPE==1)
+PD_odata<-odata %>% filter(TYPE==2) 
+
+### Read simulation data 
+sdata <- read_csv(skip = 1,file = paste0(modDevDir,"xptab",finalVPCRun,".csv"),
+                         col_names = Cnames[1:17]) %>% 
+  mutate(CP=ifelse(is.na(CP),0,CP))
+
+PK_sdata <- sdata %>% filter(TYPE==1) 
+PD_sdata <- sdata %>% filter(TYPE==2)
+### Read simulated reference data
+refdata <- read_csv(skip = 1,file = paste0(modDevDir,"xptab",finalrefVPCRun,".csv"),
+                         col_names = Cnames[1:17]) %>% 
+  mutate(CP=ifelse(is.na(CP),0,CP)) %>% 
+  mutate(CP=ifelse(is.na(CP),0,CP))
+
+PK_refdata <- refdata %>% filter(TYPE==1)
+PD_refdata <- refdata %>% filter(TYPE==2)
+```
+
+To derive a rcVPC use the `refcorrect()` function. The `refcorrect()` function takes four required argument to specify the simulated reference data `refdata`, the dependent variable `yref`, the independent variable `xref`, and the predictions of the dependent variable `ypred`.
+
+The `refcorrect()` function should be called *before* `binning()`
+
+```{r warning = FALSE, message = FALSE}
+rcVPC <- observed(PK_odata, x = TIME, yobs = DV) %>% 
+  simulated(PK_sdata, ysim = DV) %>%
+  refcorrect(refdata = PK_refdata, 
+             yref=DV, 
+             xref=TIME, 
+             ypred=PRED)
+```
+
+
+### Sequential steps
+
+Use the available functions as usual, e.g., `stratify()`, `binning()` or `vpcstats()` 
+
+```{r warning = FALSE, message = FALSE}
+rcVPC <- observed(PK_odata, x = TIME/168, yobs = DV) %>% 
+  simulated(PK_sdata, ysim = DV) %>%
+  refcorrect(refdata = PK_refdata, 
+             yref=DV, 
+             xref=TIME, 
+             ypred=PRED) %>% 
+  binning(bin = TIME) %>%
+  vpcstats(qpred = c(0.1, 0.5, 0.9))
+```
+
+### Ploting
+
+The `vpcplot()` function is used for plotting the results of the rcVPC calculations. This function returns a `ggplot` object, which can be modified by the user as needed. In the figure, we see rcVPC of PK concentrations versus time. The solid and dashed black lines represent the median, 10th and 90th percentiles of the reference prediction corrected observations; the shaded pink and gray areas represent the 90% CI of the median, 10th and 90th percentiles predicted by the model. While the built in `vpcplot()` function make it easy to quickly visualize the derived rcVPC, the `tidyvpcobj` can be plotted using `ggplot2` for complete plot customization. 
+
+```{r, fig.width = 10, fig.height = 5, out.width=700, warning = FALSE, message = FALSE}
+vpcplot(rcVPC,
+        smooth = T,
+        ylab="Reference corrected plasma concentrations (mg/L)",
+        xlab="Time (week)",
+        logy = T)
+```
+
+### Comparing VPC, pcVPC and rcVPC
+
+To clarify the visual intuitive advantage of rcVPC over regular VPC and pcVPC, we can combine different vpc related plots into one using `ggarrange()`. Note that only with rcVPC, the y-axis is normalized to the prediction of a specific value of reference covariate, e.g., `DOSE == 600`, while the y-axis in pcVPC is normalized with the median prediction in each bin, which can be the predictions of different values of the same covariates in each bin.  
+
+```{r fig.width = 10, fig.height =12, out.width=700, warning = FALSE, message = FALSE}
+VPC <- observed(PK_odata, x = TIME/168, yobs = DV) %>% 
+  simulated(PK_sdata, ysim = DV) %>%
+  binning(bin = TIME) %>%
+  vpcstats(qpred = c(0.1, 0.5, 0.9))
+
+p1<-vpcplot(VPC,
+            smooth = T,
+            logy = T,
+            ylab="Plasma concentrations (mg/L)",
+            xlab="")
+
+pcVPC <- observed(PK_odata, x = TIME/168, yobs = DV) %>% 
+  simulated(PK_sdata, ysim = DV) %>%
+  binning(bin = TIME) %>%
+  predcorrect(pred=PRED) %>% 
+  vpcstats(qpred = c(0.1, 0.5, 0.9))
+
+p2<-vpcplot(pcVPC,
+            smooth = T,
+            logy = T,
+            ylab="Prediction corrected \nplasma concentrations",
+            xlab="",
+            legend.position= "")
+
+p3<-vpcplot(rcVPC,
+            logy = T,
+            smooth = T,
+            ylab="Reference corrected \nplasma concentrations (mg/L)",
+            xlab="Time (week)",
+            legend.position= "")
+
+ggpubr::ggarrange(p1, p2, p3, nrow = 3,heights = c(1.3,1,1))
+```
+
+## refcorrectCFB
+
+To derive a rcVPC for the change from baseline use the `refcorrectCFB()` function. The `refcorrectCFB()` works only with values on normal scale (not log-transformed), the function takes five required arguments to specify: 
+
+* lb, the lower bound for the change from baseline, e.g., -1 or -100.
+
+* The unquoted variable name of the change from baseline variable `yref`.
+
+* The unquoted variable name of the independent variable `xref`.
+
+* The simulated data with the prediction variable of the change from baseline, with the same variable name as yref.
+
+* The simulated reference data with simulated change from baseline, with the same variable name as yref.
+
+* The simulated reference data with the prediction variable of the change from baseline, with the same variable name as yref.
+
+The `refcorrectCFB()` function should be called *before* `binning()`.
+
+```{r fig.width = 10, fig.height = 5, out.width=700, warning = FALSE, message = FALSE}
+PRED_finalVPCRun    <- "2a"
+finalrefVPCRun    <- 3
+PRED_finalrefVPCRun <- "3a"
+
+### Read simulated data with PRED of change from baseline
+PRED_sdata <- read_csv(skip = 1,file = paste0(modDevDir,"xptab",PRED_finalVPCRun,".csv"),
+                         col_names = Cnames) %>% 
+  mutate(CP=ifelse(is.na(CP),0,CP))
+
+PD_PRED_sdata <- PRED_sdata %>% filter(TYPE==2)
+
+### Read simulated reference data
+refdata <- read_csv(skip = 1,file = paste0(modDevDir,"xptab",finalrefVPCRun,".csv"),
+                         col_names = Cnames[1:17]) %>% 
+  mutate(CP=ifelse(is.na(CP),0,CP))
+
+PD_refdata <- refdata %>% filter(TYPE==2)
+
+### Read simulated reference data with PRED of IDV 
+PRED_refdata  <- read_csv(skip = 1,file = paste0(modDevDir,"xptab",PRED_finalrefVPCRun,".csv"),
+                         col_names = Cnames) %>% 
+  mutate(CP=ifelse(is.na(CP),0,CP))
+
+PD_PRED_refdata <- PRED_refdata  %>% filter(TYPE==2) 
+
+# create rcVPC object
+rcVPC <- observed(PD_odata, x = TIME/168, yobs = CODV) %>% 
+  simulated(PD_sdata, ysim = CDV) %>%
+  refcorrectCFB(lb           = -1,
+                yref         = CDV,
+                xref         = TIME,
+                PRED_simdata = PD_PRED_sdata,
+                refdata      = PD_refdata,
+                PRED_refdata = PD_PRED_refdata) %>% 
+  binning(bin = TIME) %>%
+  vpcstats(qpred = c(0.1, 0.5, 0.9))
+
+# plot rcVPV 
+vpcplot(rcVPC, 
+        ylab="Reference corrected \nchange from baseline weight",
+        xlab="Time (week)",
+        smooth = T)
+```
+
+### Comparing VPC, pcVPC and rcVPC
+
+```{r fig.width = 10, fig.height =12, out.width=700, warning = FALSE, message = FALSE}
+VPC <- observed(PD_odata, x = TIME/168, yobs = CODV) %>% 
+  simulated(PD_sdata, ysim = CDV) %>%
+  binning(bin = TIME) %>%
+  vpcstats(qpred = c(0.1, 0.5, 0.9))
+
+p1<-vpcplot(VPC,
+            ylab="Change from baseline weight",
+            xlab="",
+            smooth = T)
+
+pcVPC <- observed(PD_odata,x = TIME/168, yobs = CODV) %>% 
+  simulated(PD_sdata, ysim = CDV) %>%
+  binning(bin = TIME) %>%
+  predcorrect(pred=PRED) %>% 
+  vpcstats(qpred = c(0.1, 0.5, 0.9))
+
+p2<-vpcplot(pcVPC, 
+            ylab="Prediction corrected \nchange from baseline weight",
+            xlab="",
+            smooth = T, 
+            legend.position= "")
+
+p3<-vpcplot(rcVPC, 
+            ylab="Reference corrected \nchange from baseline weight",
+            xlab="Time (week)",
+            smooth = T,
+            legend.position= "")
+
+ggpubr::ggarrange(p1, p2, p3, nrow = 3,heights = c(1.3,1,1))
+```
+
+## Exposure-Response
+
+
+Manipulating time (e.g., setting time to steady state or end of treatment in the reference simulation dataset) is the unique feature, that gives rcVPC the flexibility to visually characterize exposure-response relationships, especially with with delayed effect onset.
+
+In case of sequential PK/PD modelling, where individual PK parameters are incorporated in the analysis data set for the PD model, these individual PK parameters must be also incorporated for the reference simulation data, so the simulated PK data is using the same individual PK parameters in the simulated data and the reference data.
+
+In this example, when TYPE = 2, STUDY, ADDL and TIME data items in the reference simulation data were set to 2, 15, and 2688 respectively, to normalize the y-axis variable to depict the end of treatment response at week 16 versus $C_{trough,ss}$ showcasing the use of rcVPC as a model diagnostic and an efficient tool for communicating the established underlying ER relationship. 
+
+### Reference correction: STUDY=2, ADDL=15 & TIME=2688
+```{r fig.width = 10, fig.height =4, out.width=700, warning = FALSE, message = FALSE}
+
+### Columns names
+Cnames=c("REP","REF","STUDY","ID","TIME","TYPE","DOSE","AMT",
+         "ADDL","II","MDV","DV", "PRED","WTE","CP","CSS","CDV",
+         "ETA1","ETA2","ETA3","ETA4","ETA5","ETA6","ETA7")
+
+## observed data:
+obs<- read.table(paste0(modDevDir,'obs_ETA.csv'),
+                      header=FALSE,sep=",",
+                      col.names=Cnames[1:17]) %>%
+  mutate(CP = ifelse(CP=="NaN", 0,CP),
+         CDV=ifelse(CDV==0,0,CDV*100))
+
+PD_odata<-obs %>% filter(TYPE==2 & MDV==0)
+
+## Data from steady state standard simulation:
+sdata_ss <-read.table(paste0(modDevDir,'xptab2.csv'),
+                      header=FALSE,sep=",",col.names=Cnames[1:17]) %>%
+  mutate(CP = ifelse(CP=="NaN", 0,CP),
+         CDV=ifelse(CDV==0,0,CDV*100)) 
+
+PD_sdata_ss<-sdata_ss  %>% filter(TYPE==2 & MDV==0)
+
+## Data from standard steady state PRED simulation:
+pred_sim_data_ss <-read.table(paste0(modDevDir,'xptab2a.csv'),
+                           header=FALSE,sep=",",col.names=Cnames[1:17]) %>% 
+  mutate(CP = ifelse(CP=="NaN", 0,CP),
+          CDV=ifelse(CDV==0,0,CDV*100))
+
+PD_PRED_sdata_ss<-pred_sim_data_ss  %>% filter(TYPE==2 & MDV==0)
+## Data from steady state reference simulation:
+rdata_ss <-read.table(paste0(modDevDir,'xptab3.csv'),
+                      header=FALSE,sep=",",col.names=Cnames[1:17]) %>% 
+  mutate(CP = ifelse(CP=="NaN", 0,CP),
+          CDV=ifelse(CDV==0,0,CDV*100))
+
+PD_rdata_ss<-rdata_ss  %>% filter(TYPE==2 & MDV==0)
+  
+## Data from reference steady state PRED simulation:
+pred_ref_data_ss <-read.table(paste0(modDevDir,'xptab3a.csv'),
+                      header=FALSE,sep=",",col.names=Cnames[1:17]) %>%
+  mutate(CP = ifelse(CP=="NaN", 0,CP),
+          CDV=ifelse(CDV==0,0,CDV*100))
+
+PD_PRED_rdata_ss<-pred_ref_data_ss  %>% filter(TYPE==2 & MDV==0)
+
+
+rcVPC <- observed(PD_odata, x = CP, yobs = CDV) %>% 
+  simulated(PD_sdata_ss, ysim = CDV) %>%
+  refcorrectCFB(lb=-100,
+                PRED_simdata = PD_PRED_sdata_ss,
+                refdata      = PD_rdata_ss,
+                PRED_refdata = PD_PRED_rdata_ss,
+                yref=CDV, 
+                xref=CP) %>% 
+  binning(bin = "ntile", nbins = 6) %>% 
+  vpcstats(qpred = c(0.1, 0.5, 0.9))
+
+vpcplot(rcVPC, 
+        show.points = F,
+        only.median = F,
+        legend.position = "", 
+        facet.scales = "fixed", 
+        xlab = expression(C['trough,ss']~('mg/L')), 
+        ylab = "Reference corrected \nchange from baseline weight (%)",
+        show.boundaries = FALSE,
+        smooth=T) 
+
+```
+
+## How to create a reference dataset
+
+Reference data must be based on the observed data to maintain the same dimensions, here we created two reference datasets as follow:
+
+```{r warning = FALSE, message = FALSE, eval=FALSE}
+
+
+#Create a reference data where the main features of the POC-Study are cosidered the reference values:
+## Reference correction: STUDY=2, ADDL=15 & AMT=600
+ref_data <- odata %>%
+  mutate(AMT = ifelse(MDV==1, 600,0)) %>%
+  mutate(ADDL = ifelse(MDV==1, 15,0)) %>%
+  mutate(STUDY = 2) %>%
+  arrange(REF)
+ 
+write.csv(ref_data,"refdata.csv",row.names = FALSE,quote = FALSE)
+
+#Create a reference data where TIME is manipulated for PD data:
+## Reference correction: STUDY=2, ADDL=15 & TIME=2688
+ref_data_ss<-odata %>% 
+  mutate(TIME = ifelse((TYPE==2 & TIME>0), 2688,TIME)) %>%
+  mutate(ADDL = ifelse(MDV==1, 15,0)) %>%
+  mutate(STUDY = 2) %>%
+  group_by(ID) %>%
+  arrange(ID,TIME,MDV)
+
+write.csv(ref_data_ss, file="refdata2.csv",quote=FALSE, row.names=FALSE, na=".")
+```
