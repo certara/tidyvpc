@@ -145,7 +145,7 @@ The composite score is available in `mpq.stats$qc_score` (for stratified VPCs yo
 
 Plot the VPC:
 
-```{r, fig.width = 9, fig.height = 6, out.width=640}
+```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 plot(vpc)
 ```
 
@@ -167,7 +167,7 @@ print(vpc_pc_strat)
 
 Plot the stratified pcVPC:
 
-```{r, fig.width = 9, fig.height = 6, out.width=640}
+```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 plot(vpc_pc_strat)
 ```
 
@@ -184,7 +184,7 @@ In the vignette examples you printed:
 
 MPQ works with traditional binned VPCs as well (it scores directly from `vpc$stats`). The only difference is that `vpcstats()` will compute summaries at `xbin` instead of `x`.
 
-```{r, fig.width = 9, fig.height = 6, out.width=640}
+```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 vpc_binned <- observed(obs_data, x = TIME, y = DV) %>%
   simulated(sim_data, y = DV) %>%
   binning(bin = NTIME) %>%
@@ -228,14 +228,17 @@ cmp <- rbindlist(list(
   cbind(data.table(case = "noisy_sim"), noisy_overall)
 ), fill = TRUE)
 
-cmp[, .(
-  case,
-  qc_score,
-  coverage_penalty_med,
-  coverage_penalty_tails,
-  sharpness_penalty,
-  interval_penalty
+cmp_summary <- cmp[, .(
+  Case = case,
+  `QC score` = qc_score,
+  `Median coverage` = coverage_penalty_med,
+  `Tail coverage` = coverage_penalty_tails,
+  Sharpness = sharpness_penalty,
+  Interval = interval_penalty
 )]
+
+cmp_summary[, (names(cmp_summary)[-1]) := lapply(.SD, \(x) round(x, 3)), .SDcols = names(cmp_summary)[-1]]
+knitr::kable(cmp_summary, caption = "MPQ summary: baseline vs noisy simulations (0 = best; lower qc_score is better)")
 ```
 
 In this comparison you will typically see:
@@ -246,7 +249,7 @@ In this comparison you will typically see:
 
 Compare the two plots:
 
-```{r, fig.width = 9, fig.height = 6, out.width=640}
+```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
     qc_base <- vpc_base$mpq.stats[mpq_scope == "overall", qc_score][1]
 qc_noisy <- vpc_noisy$mpq.stats[mpq_scope == "overall", qc_score][1]
 
