@@ -202,13 +202,13 @@
 <text x='361.94' y='36.18' style='font-size: 10.00px; font-family: sans;' textLength='96.73px' lengthAdjust='spacingAndGlyphs'>Simulated Percentiles</text>
 <text x='361.94' y='46.98' style='font-size: 10.00px; font-family: sans;' textLength='132.84px' lengthAdjust='spacingAndGlyphs'>Median (lines) 95% CI (areas)</text>
 <rect x='500.26' y='31.06' width='14.17' height='14.17' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='500.97' y='31.76' width='12.76' height='12.76' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF0000; fill-opacity: 0.10;' />
+<rect x='500.97' y='31.76' width='12.76' height='12.76' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #FF0000; fill-opacity: 0.10;' />
 <line x1='501.68' y1='38.14' x2='513.02' y2='38.14' style='stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;' />
 <rect x='535.51' y='31.06' width='14.17' height='14.17' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='536.22' y='31.76' width='12.76' height='12.76' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0000FF; fill-opacity: 0.10;' />
+<rect x='536.22' y='31.76' width='12.76' height='12.76' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #0000FF; fill-opacity: 0.10;' />
 <line x1='536.93' y1='38.14' x2='548.27' y2='38.14' style='stroke-width: 1.07; stroke: #0000FF; stroke-linecap: butt;' />
 <rect x='574.66' y='31.06' width='14.17' height='14.17' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='575.37' y='31.76' width='12.76' height='12.76' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FF0000; fill-opacity: 0.10;' />
+<rect x='575.37' y='31.76' width='12.76' height='12.76' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #FF0000; fill-opacity: 0.10;' />
 <line x1='576.07' y1='38.14' x2='587.41' y2='38.14' style='stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;' />
 <text x='519.92' y='40.55' style='font-size: 7.00px; font-family: sans;' textLength='10.12px' lengthAdjust='spacingAndGlyphs'>5%</text>
 <text x='555.17' y='40.55' style='font-size: 7.00px; font-family: sans;' textLength='14.01px' lengthAdjust='spacingAndGlyphs'>50%</text>
