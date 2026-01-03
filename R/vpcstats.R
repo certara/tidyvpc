@@ -792,6 +792,60 @@ print.tidyvpcobj <- function(x, ...) {
     cat(sprintf("VPC with %d replicates", nrep), "\n")
   }
   cat(sprintf("Stratified by: %s", paste0(names(x$strat), collapse=", ")), "\n")
+  
+  if (!is.null(x$mpq.stats)) {
+    qc_score <- coverage_penalty_med <- coverage_penalty_tails <- mae_penalty_all <- rho_penalty_all <-
+      sharpness_penalty <- interval_penalty <- mpq_scope <- NULL
+    mpq <- data.table::as.data.table(x$mpq.stats)
+    if ("mpq_scope" %in% names(mpq) && any(mpq$mpq_scope == "overall", na.rm = TRUE)) {
+      mpq_overall <- mpq[mpq_scope == "overall"][1]
+    } else {
+      mpq_overall <- mpq[1]
+    }
+
+    qc <- mpq_overall$qc_score
+    if (!is.null(qc) && is.finite(qc)) {
+      cat(sprintf("MPQ: qc_score = %.3f (lower is better)\n", qc))
+    } else {
+      cat("MPQ: qc_score = NA (lower is better)\n")
+    }
+
+    cat("Breakdown (0 = best):\n")
+    breakdown <- data.table::data.table(
+      metric = c(
+        "median coverage penalty",
+        "tail coverage penalty",
+        "MAE penalty",
+        "drift penalty",
+        "sharpness penalty",
+        "interval penalty"
+      ),
+      value = c(
+        mpq_overall$coverage_penalty_med,
+        mpq_overall$coverage_penalty_tails,
+        mpq_overall$mae_penalty_all,
+        mpq_overall$rho_penalty_all,
+        mpq_overall$sharpness_penalty,
+        mpq_overall$interval_penalty
+      )
+    )
+    breakdown[, value := ifelse(is.finite(value), value, NA_real_)]
+    for (i in seq_len(nrow(breakdown))) {
+      cat(sprintf("  %-24s %0.3f\n", breakdown$metric[i], breakdown$value[i]))
+    }
+    cat("\n")
+
+    # If stratified, also show a compact qc_score-by-stratum table (plus overall)
+    if (!is.null(x$strat) && length(names(x$strat)) > 0 && all(names(x$strat) %in% names(mpq))) {
+      strat_cols <- names(x$strat)
+      show <- unique(c(strat_cols, "qc_score", "mpq_scope"))
+      show <- intersect(show, names(mpq))
+      if (length(show) > 0) {
+        cat("MPQ qc_score by stratum:\n")
+        print(mpq[, ..show])
+      }
+    }
+  }
   if (!is.null(x$stats)) {
     print(x$stats)
   }
