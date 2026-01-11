@@ -136,7 +136,7 @@ If using `bin = "centers"` or `bin = "breaks`, you must also provide the centers
 You can also bin directly on x-variable. If using this type of binning, the bin argument should be the unquoted variable name that you used in the `observed()` function (e.g., `bin = NTIME` for the Nominal Time variable in the data).
 
 Binning on x-variable,  NTIME
-```{r message=FALSE, fig.width = 9, fig.height = 6, out.width=640}
+```{r message=FALSE, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     binning(bin = NTIME)
@@ -183,7 +183,7 @@ vpc <- observed(obs_data, x=TIME, y=DV) %>%
 
 The `vpcstats()` function is always the final function used in the piping chain and calculates the statistics needed to plot a VPC. If using `binning()`methods, you may specify alternative quantiles using the `qpred` argument.  The default quantiles used are 5%, 50%, 95% (e.g., `qpred = c(0.05, 0.5, 0.95)`).  
 
-```{r fig.width = 9, fig.height = 6, out.width=640}
+```{r fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     binning(bin = NTIME) %>%
@@ -197,7 +197,7 @@ plot(vpc)
 
 To stratify VPC, include the `stratify()` function before using the `binning()` or `binless()` function and use the unquoted stratification variable(s) name as a formula. Let's stratify on `GENDER` in the data, which contains 2 levels (GENDER = "M", GENDER = "F"). Include as many stratification variables as your model calls for.
 
-```{r fig.width = 9, fig.height = 6, out.width=640}
+```{r fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     stratify(~ GENDER) %>%
@@ -209,7 +209,7 @@ plot(vpc)
 
 Using multiple stratification variables `GENDER` and `STUDY`.
 
-```{r warning = FALSE, fig.width = 9, fig.height = 6, out.width=640}
+```{r warning = FALSE, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
@@ -227,7 +227,7 @@ plot(vpc)
 To censor observed data below lower limit of quantification (LLOQ), include the `censoring()` function after `simulated()` and use the `lloq` argument to specify either a variable in the data or specific value for censoring. The `blq` argument creates a logical TRUE/FALSE in the data that indicates whether the value is below the limit of quantification and is typically defined as rows with DV < LLOQ in the data.  Using the `censoring()` function will censor only observed data below lower limit of quantification when plotting, simulated data will still be plotted.
 
 Censoring using numeric value.
-```{r  fig.width = 9, fig.height = 6, out.width=640, warning = FALSE}
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     censoring(blq=(DV < 25), lloq=25) %>%
@@ -239,7 +239,7 @@ plot(vpc, censoring.type = "blq")
 
 The `tidyvpc` package also allows you to use LLOQ values within your data and different LLOQ for each level of stratification variable. We'll set an `LLOQ` value of `50` for `Study A` and `25` for `Study B` and calculate statistics at 10%, 50%, 90% quantiles.
 
-```{r  fig.width = 9, fig.height = 6, out.width=640, warning = FALSE}
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE}
 obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
 
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
@@ -254,7 +254,7 @@ plot(vpc, censoring.type = "blq", facet.scales = "fixed")
 
 The `tidyvpc` package also supports usage of `censoring()` with ALQ data, similar to above usage with BLQ data.
 
-```{r  fig.width = 9, fig.height = 6, out.width=640, warning = FALSE, eval = FALSE}
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE, eval = FALSE}
 obs_data$ULOQ <- obs_data[, ifelse(STUDY == "Study A", 125, 100)]
 
 vpc <- observed(obs_data, x = TIME, y = DV) |>
@@ -269,7 +269,7 @@ To plot the above `vpc` and include the percentage of ALQ plot, you'd run `plot(
 
 If using `censoring()` with both ALQ and BLQ data, set `censoring.type = "both"` in the `plot()` function to display both percentage of BLQ and ALQ plots as a grid in the resulting VPC plot.
 
-```{r  fig.width = 9, fig.height = 6, out.width=640, warning = FALSE}
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE}
 obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
 obs_data$ULOQ <- obs_data[, ifelse(STUDY == "Study A", 125, 100)]
 
@@ -285,6 +285,25 @@ plot(vpc, censoring.type = "both", facet.scales = "fixed")
 
 If you want to return the percentage of BLQ and/or ALQ plots individually as elements in a list, instead of arranged in a grid, use the `censoring.output` argument e.g.,  `plot_list <- plot(vpc, censoring.type = "both", censoring.output = "list")`.
 
+### Customizing Censoring Plot Colors
+
+You can customize the colors of the censoring plots using the `censoring.color` and `censoring.fill` arguments. The `censoring.color` argument accepts a named vector with `"observed"` and `"simulated"` elements for line colors, while `censoring.fill` controls the ribbon fill color.
+
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE}
+plot(vpc, censoring.type = "blq",
+     censoring.color = c(observed = "blue", simulated = "orange"),
+     censoring.fill = "orange",
+     facet.scales = "fixed")
+```
+
+For more advanced customization using ggplot2 functions, use `censoring.output = "list"` to return individual ggplot objects that can be modified directly:
+
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE, eval = FALSE}
+plot_list <- plot(vpc, censoring.type = "blq", censoring.output = "list")
+# Modify the BLQ plot (second element in the list)
+plot_list[[2]] + ggplot2::labs(colour = "Custom Legend Title")
+```
+
 ## `predcorrect()`
 
 *Note: The `predcorrect()` function is only applicable for continuous VPC.*
@@ -295,7 +314,7 @@ To derive a prediction corrected VPC (pcVPC), use the `predcorrect()` function. 
 
 
 Prediction corrected using binning methods.
-```{r  fig.width = 9, fig.height = 6, out.width=640}
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     stratify(~GENDER) %>%
@@ -309,7 +328,7 @@ plot(vpc)
 
 LOESS prediction corrected using binless method for 10%, 50%, 90% quantiles. If `optimize = TRUE`, the LOESS smoothing parameter, span, will be automatically optimized using AIC.
 
-```{r warning=FALSE, fig.width = 9, fig.height = 6, out.width=640}
+```{r warning=FALSE, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     stratify(~GENDER) %>%
@@ -323,7 +342,7 @@ plot(vpc)
 
 To specify your own smoothing value for LOESS pcVPC instead of optimizing with AIC, use the `span` argument in the `binless()` function. The `span` argument is a numeric value between [0,1], with higher values providing a smoother fit. Remember, to also include the smoothing parameters for AQR by using the `lambda` argument and set `optimize = FALSE`.
 
-```{r  fig.width = 9, fig.height = 6, out.width=640, warning = FALSE}
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     predcorrect(pred=PRED) %>%
@@ -342,7 +361,7 @@ Below are some examples of advanced use cases of the `tidyvpc` package.
 
 To use different binning methods for different stratification variables, and/or for each level of stratification variable, use multiple calls to the `binning()` function in combination with the `stratum` argument. Make sure to set `by.strata = T`
 
-```{r  fig.width = 9, fig.height = 6, out.width=640}
+```{r  fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     stratify(~ GENDER + STUDY) %>%
@@ -360,7 +379,7 @@ plot(vpc)
 
 To use different smoothing parameters for each level of stratification variable if using the `binless()` function, use a single call of the `binless()` function and include a `data.frame` with the column names of stratification variable and corresponding level. To use different `span` values for each level of stratification variable, use a vector the length of n levels of strata. Note: If using more than one stratification variable with the `binless()` function, you must set `optimize = TRUE` and optimize lambda and span using AIC.
 
-```{r warning = FALSE, fig.width = 9, fig.height = 6, out.width=640}
+```{r warning = FALSE, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 user_lambda <- data.frame(GENDER_F = c(2,4,2), GENDER_M = c(1.9,3,2.25) )
 
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
@@ -378,7 +397,7 @@ plot(vpc)
 
 If using `binning()` methods, you can visualize bins by using the `plot()` function on the `tidyvpcobj` without calling `vpcstats()`. Once you are satisfied with the binning method, simply call `vpcstats()` on the existing `tidyvpcobj` to compute VPC percentiles and prediction intervals (e.g., `vpc %>% vpcstats()`).
 
-```{r fig.width = 9, fig.height = 6, out.width=640, warning = FALSE}
+```{r fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE}
 vpc <- observed(obs_data, x=TIME, y=DV) %>%
     simulated(sim_data, y=DV) %>%
     binning(bin = "jenks", nbins = 7)
@@ -409,7 +428,7 @@ While the built-in `plot()` function make it easy to quickly visualize the deriv
 
 #### Plot VPC with `ggplot2`
 
-```{r fig.width = 9, fig.height = 6, out.width=640, warning=FALSE}
+```{r fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning=FALSE}
 library(ggplot2)
 obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
 
@@ -476,7 +495,7 @@ head(bin_information)
 
 
 Plot rectangles using `ymin` and `ymax`, the min/max y values in `vpc$stats` grouped by bin.
-```{r fig.width = 9, fig.height = 6, out.width=640}
+```{r fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 ggplot(bin_information, aes(x = xbin)) + 
   geom_line(aes(y = md, col = qname, group = qname)) +
   geom_line(aes(y = y, linetype = qname), size = 1) +
@@ -501,7 +520,7 @@ ggplot(bin_information, aes(x = xbin)) +
 
 Alternatively, we can obtain the required data for plotting used in the above `bin_information` data frame by merging `vpc$stats` and `bininfo(vpc)` on `bin` in the `ggplot2` data argument.  If stratifying, you will need to include the name of the stratification variable(s) in the `data.table` merge (e.g., `vpc$stats[bininfo(vpc), on=c("STUDY", "bin")]`). In the rectangle VPC below, we will stratify on `STUDY` and plot rectangles for each quantile.
 
-```{r fig.width = 9, fig.height = 6, out.width=640}
+```{r fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
 
 vpc <- observed(obs_data, x = TIME, y = DV) %>%
@@ -551,7 +570,7 @@ If using the `censoring()` function, the resulting `tidyvpcobj` will also contai
 
 We can include `geom_ribbon()` using the `lo` and `hi` columns in the `vpc$pctblq` table to denote the lower/upper bounds of our confidence interval. Let's also plot the median %blq of the simulated data using the `md` column in the `vpc$pctblq` table.
 
-```{r fig.width = 9, fig.height = 6, out.width=640, warning = FALSE}
+```{r fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth", warning = FALSE}
 obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
 
 vpc <- observed(obs_data, x = TIME, y = DV) %>%
