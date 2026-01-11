@@ -1,9 +1,9 @@
-#' Compute Model Predictive Quality (MPQ) statistics
+#' Compute Quantitative Predictive Check (QPC) statistics
 #'
 #' Compute quantitative predictive quality metrics that summarize agreement
-#' between observed and simulated data in a VPC. MPQ statistics numerically encode
+#' between observed and simulated data in a VPC. QPC statistics numerically encode
 #' features typically assessed visually (coverage, deviation, trend, and sharpness),
-#' and include a composite \code{qc_score} (lower is better) suitable for automated
+#' and include a composite \code{qpc_score} (lower is better) suitable for automated
 #' model comparison and optimization.
 #'
 #' @param o A \code{tidyvpcobj} produced by \code{\link{vpcstats}} (typically using
@@ -11,9 +11,9 @@
 #' @param alpha Numeric. Miscoverage level for interval scoring (default \code{0.05}
 #'   corresponds to a 95\% prediction interval).
 #' @param w Named numeric vector of weights used to combine component penalties into
-#'   \code{qc_score}. Names must include:
+#'   \code{qpc_score}. Names must include:
 #'   \code{med_cov}, \code{tail_cov}, \code{mae}, \code{drift}, \code{sharp}, \code{interval}.
-#'   Lower \code{qc_score} is better.
+#'   Lower \code{qpc_score} is better.
 #' @param sharp_ref Numeric or \code{NULL}. Reference value used to scale the sharpness
 #'   (interval width) penalty. If \code{NULL} (default), a self-normalizing bounded
 #'   transform is used so that a single VPC can be scored without external calibration.
@@ -25,8 +25,8 @@
 #'   (e.g., Darwin optimization or evaluation studies).
 #' @param ... Additional arguments (reserved for future extensions).
 #'
-#' @return Returns \code{tidyvpcobj} with an additional \code{mpq.stats}
-#' \code{data.table} containing MPQ summary metrics and \code{qc_score}.
+#' @return Returns \code{tidyvpcobj} with an additional \code{qpc.stats}
+#' \code{data.table} containing QPC summary metrics and \code{qpc_score}.
 #'
 #' @details
 #' \strong{When should I set \code{sharp_ref} / \code{interval_ref}?}
@@ -49,32 +49,32 @@
 #'   vpcstats()
 #'
 #' # Default: single-model scoring (no calibration required)
-#' vpc <- mpqstats(vpc)
+#' vpc <- qpcstats(vpc)
 #'
 #' # Population scoring (e.g., Darwin run): anchor penalties for comparability
-#' vpc <- mpqstats(
+#' vpc <- qpcstats(
 #'   vpc,
 #'   sharp_ref = 0.15,
 #'   interval_ref = 2.5
 #' )
 #'
-#' vpc$mpq.stats
+#' vpc$qpc.stats
 #' }
 #'
 #' @seealso \code{\link{vpcstats}}, \code{\link{binless}}, \code{\link{predcorrect}}
 #' @export
-mpqstats <- function(o,
-                     alpha = 0.05,
-                     w = c(med_cov = 0.35, tail_cov = 0.20, mae = 0.15, drift = 0.10,
-                           sharp = 0.10, interval = 0.10),
-                     sharp_ref = NULL,
-                     interval_ref = NULL,
-                     ...) {
-  UseMethod("mpqstats")
+qpcstats <- function(o,
+                    alpha = 0.05,
+                    w = c(med_cov = 0.35, tail_cov = 0.20, mae = 0.15, drift = 0.10,
+                          sharp = 0.10, interval = 0.10),
+                    sharp_ref = NULL,
+                    interval_ref = NULL,
+                    ...) {
+  UseMethod("qpcstats")
 }
 
 #' @export
-mpqstats.tidyvpcobj <- function(o,
+qpcstats.tidyvpcobj <- function(o,
                                 alpha = 0.05,
                                 w = c(med_cov = 0.35, tail_cov = 0.20, mae = 0.15, drift = 0.10,
                                       sharp = 0.10, interval = 0.10),
@@ -89,12 +89,12 @@ mpqstats.tidyvpcobj <- function(o,
   }
   
   if (!is.null(o$vpc.type) && identical(o$vpc.type, "categorical")) {
-    stop("`mpqstats()` is currently supported for continuous VPCs only.", call. = FALSE)
+    stop("`qpcstats()` is currently supported for continuous VPCs only.", call. = FALSE)
   }
   
-  if (is.null(o$stats)) stop("`o$stats` is missing. Run `vpcstats()` before `mpqstats()`.", call. = FALSE)
+  if (is.null(o$stats)) stop("`o$stats` is missing. Run `vpcstats()` before `qpcstats()`.", call. = FALSE)
   
-  mpq.stats <- qc_features_continuous(
+  qpc.stats <- qc_features_continuous(
     stats = o$stats,
     alpha = alpha,
     w = w,
@@ -102,7 +102,7 @@ mpqstats.tidyvpcobj <- function(o,
     interval_ref = interval_ref
   )
   
-  update(o, mpq.stats = mpq.stats)
+  update(o, qpc.stats = qpc.stats)
 }
 
 qc_features_continuous <- function(stats,
@@ -114,7 +114,7 @@ qc_features_continuous <- function(stats,
                                    .include_overall = TRUE) {
   q <- qkey <- band_w <- in_band <- y <- lo <- hi <- md <- dev_abs <- dev_mid <- interval_score <-
     width_rel_md <- resid <- rho_resid_x <- rho_abs <- mae_midwidth <- coverage <- sharpness_rel <-
-    md_abs_median <- name <- feat <- .mpq_group <- mpq_scope <- n <- NULL
+    md_abs_median <- name <- feat <- .qpc_group <- qpc_scope <- n <- NULL
   . <- list
   stopifnot(is.numeric(alpha), length(alpha) == 1, is.finite(alpha), alpha > 0, alpha < 1)
   
@@ -198,8 +198,8 @@ qc_features_continuous <- function(stats,
   # Compute penalties per stratum (or globally if no strata)
   by_strat <- strat_cols
   if (length(by_strat) == 0) {
-    per_q[, .mpq_group := 1L]
-    by_strat <- ".mpq_group"
+    per_q[, .qpc_group := 1L]
+    by_strat <- ".qpc_group"
   }
   
   penalties <- per_q[, {
@@ -234,7 +234,7 @@ qc_features_continuous <- function(stats,
       bound01(pmax(is_avg, 0) / pmax(interval_ref, 1e-8))
     }
     
-    qc_score <- w["med_cov"]  * coverage_penalty_med +
+    qpc_score <- w["med_cov"]  * coverage_penalty_med +
       w["tail_cov"] * coverage_penalty_tails +
       w["mae"]      * mae_penalty_all +
       w["drift"]    * rho_penalty_all +
@@ -242,7 +242,7 @@ qc_features_continuous <- function(stats,
       w["interval"] * interval_penalty
     
     .(
-      qc_score = qc_score,
+      qpc_score = qpc_score,
       coverage_penalty_med = coverage_penalty_med,
       coverage_penalty_tails = coverage_penalty_tails,
       mae_penalty_all = mae_penalty_all,
@@ -258,7 +258,7 @@ qc_features_continuous <- function(stats,
   to_wide <- copy(per_q)
   # keep only columns we want to pivot
   id_cols <- unique(c(strat_cols, "qkey"))
-  measure_cols <- setdiff(names(to_wide), c(strat_cols, "q", "qkey", "rho_abs", ".mpq_group"))
+  measure_cols <- setdiff(names(to_wide), c(strat_cols, "q", "qkey", "rho_abs", ".qpc_group"))
   long <- data.table::melt(to_wide,
                            id.vars = id_cols,
                            measure.vars = measure_cols,
@@ -267,9 +267,9 @@ qc_features_continuous <- function(stats,
   long[, name := paste0(feat, "_", qkey)]
   
   if (length(strat_cols) == 0) {
-    long[, .mpq_group := 1L]
-    wide <- data.table::dcast(long, .mpq_group ~ name, value.var = "val")
-    wide[, .mpq_group := NULL]
+    long[, .qpc_group := 1L]
+    wide <- data.table::dcast(long, .qpc_group ~ name, value.var = "val")
+    wide[, .qpc_group := NULL]
   } else {
     wide <- data.table::dcast(long, stats::as.formula(paste(paste(strat_cols, collapse = " + "), "~ name")),
                               value.var = "val")
@@ -277,7 +277,7 @@ qc_features_continuous <- function(stats,
 
   out <- if (length(strat_cols) == 0) {
     pen <- data.table::copy(penalties)
-    pen[, .mpq_group := NULL]
+    pen[, .qpc_group := NULL]
     out0 <- cbind(wide, pen)
     data.table::setDT(out0)
     out0
@@ -297,18 +297,18 @@ qc_features_continuous <- function(stats,
       .include_overall = FALSE
     )
     overall_stats[, (strat_cols) := "__ALL__"]
-    overall_stats[, mpq_scope := "overall"]
-    out[, mpq_scope := "stratum"]
+    overall_stats[, qpc_scope := "overall"]
+    out[, qpc_scope := "stratum"]
     out <- data.table::rbindlist(list(out, overall_stats), fill = TRUE)
   } else {
-    out[, mpq_scope := "overall"]
+    out[, qpc_scope := "overall"]
   }
 
   out[]
 }
 
 
-# Discretize qc_score to 1..10 with fixed anchors (lower = better).
+# Discretize qpc_score to 1..10 with fixed anchors (lower = better).
 # anchors = c(best_score_anchor, worst_score_anchor)
 qc_discrete_1to10 <- function(score, anchors = c(0.05, 0.5)) {
   stopifnot(length(anchors) == 2)
@@ -323,7 +323,3 @@ qc_discrete_1to10 <- function(score, anchors = c(0.05, 0.5)) {
   bin <- findInterval(score, cuts, left.open = TRUE) + 1L
   pmin(pmax(bin, 1L), k)
 }
-
-
-
-

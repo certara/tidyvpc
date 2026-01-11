@@ -793,21 +793,21 @@ print.tidyvpcobj <- function(x, ...) {
   }
   cat(sprintf("Stratified by: %s", paste0(names(x$strat), collapse=", ")), "\n")
   
-  if (!is.null(x$mpq.stats)) {
-    qc_score <- coverage_penalty_med <- coverage_penalty_tails <- mae_penalty_all <- rho_penalty_all <-
-      sharpness_penalty <- interval_penalty <- mpq_scope <- NULL
-    mpq <- data.table::as.data.table(x$mpq.stats)
-    if ("mpq_scope" %in% names(mpq) && any(mpq$mpq_scope == "overall", na.rm = TRUE)) {
-      mpq_overall <- mpq[mpq_scope == "overall"][1]
+  if (!is.null(x$qpc.stats)) {
+    qpc_score <- coverage_penalty_med <- coverage_penalty_tails <- mae_penalty_all <- rho_penalty_all <-
+      sharpness_penalty <- interval_penalty <- qpc_scope <- NULL
+    qpc <- data.table::as.data.table(x$qpc.stats)
+    if ("qpc_scope" %in% names(qpc) && any(qpc$qpc_scope == "overall", na.rm = TRUE)) {
+      qpc_overall <- qpc[qpc_scope == "overall"][1]
     } else {
-      mpq_overall <- mpq[1]
+      qpc_overall <- qpc[1]
     }
 
-    qc <- mpq_overall$qc_score
+    qc <- qpc_overall$qpc_score
     if (!is.null(qc) && is.finite(qc)) {
-      cat(sprintf("MPQ: qc_score = %.3f (lower is better)\n", qc))
+      cat(sprintf("QPC: qpc_score = %.3f (lower is better)\n", qc))
     } else {
-      cat("MPQ: qc_score = NA (lower is better)\n")
+      cat("QPC: qpc_score = NA (lower is better)\n")
     }
 
     cat("Breakdown (0 = best):\n")
@@ -821,12 +821,12 @@ print.tidyvpcobj <- function(x, ...) {
         "interval penalty"
       ),
       value = c(
-        mpq_overall$coverage_penalty_med,
-        mpq_overall$coverage_penalty_tails,
-        mpq_overall$mae_penalty_all,
-        mpq_overall$rho_penalty_all,
-        mpq_overall$sharpness_penalty,
-        mpq_overall$interval_penalty
+        qpc_overall$coverage_penalty_med,
+        qpc_overall$coverage_penalty_tails,
+        qpc_overall$mae_penalty_all,
+        qpc_overall$rho_penalty_all,
+        qpc_overall$sharpness_penalty,
+        qpc_overall$interval_penalty
       )
     )
     breakdown[, value := ifelse(is.finite(value), value, NA_real_)]
@@ -835,14 +835,14 @@ print.tidyvpcobj <- function(x, ...) {
     }
     cat("\n")
 
-    # If stratified, also show a compact qc_score-by-stratum table (plus overall)
-    if (!is.null(x$strat) && length(names(x$strat)) > 0 && all(names(x$strat) %in% names(mpq))) {
+    # If stratified, also show a compact qpc_score-by-stratum table (plus overall)
+    if (!is.null(x$strat) && length(names(x$strat)) > 0 && all(names(x$strat) %in% names(qpc))) {
       strat_cols <- names(x$strat)
-      show <- unique(c(strat_cols, "qc_score", "mpq_scope"))
-      show <- intersect(show, names(mpq))
+      show <- unique(c(strat_cols, "qpc_score", "qpc_scope"))
+      show <- intersect(show, names(qpc))
       if (length(show) > 0) {
-        cat("MPQ qc_score by stratum:\n")
-        print(mpq[, ..show])
+        cat("QPC qpc_score by stratum:\n")
+        print(qpc[, ..show])
       }
     }
   }

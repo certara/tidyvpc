@@ -1,8 +1,8 @@
 ---
-title: "Model Predictive Quality (MPQ) scoring for VPC"
+title: "Quantitative Predictive Check (QPC) scoring for VPC"
 output: rmarkdown::pdf_document
 vignette: >
-  %\VignetteIndexEntry{Model Predictive Quality (MPQ) scoring for VPC}
+  %\VignetteIndexEntry{Quantitative Predictive Check (QPC) scoring for VPC}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -29,38 +29,38 @@ A Visual Predictive Check (VPC) is typically assessed visually by checking:
 - bias and trend (does the model systematically miss in certain x regions?)
 - sharpness (are prediction intervals unnecessarily wide?)
 
-The **Model Predictive Quality (MPQ)** score in `tidyvpc` is a *numeric* summary of these features, computed from an existing `tidyvpcobj` after `vpcstats()`.
+The **Quantitative Predictive Check (QPC)** score in `tidyvpc` is a *numeric* summary of these features, computed from an existing `tidyvpcobj` after `vpcstats()`.
 
-MPQ produces a table `mpq.stats` and a composite scalar **`qc_score`** (**lower is better**) that can be used for automated model comparison and optimization.
+QPC produces a table `qpc.stats` and a composite scalar **`qpc_score`** (**lower is better**) that can be used for automated model comparison and optimization.
 
-## What MPQ measures (methodology overview)
+## What QPC measures (methodology overview)
 
-MPQ is computed from `o$stats` (the `data.table` produced by `vpcstats()`), which contains (for continuous VPCs) curve points across quantiles:
+QPC is computed from `o$stats` (the `data.table` produced by `vpcstats()`), which contains (for continuous VPCs) curve points across quantiles:
 
 - `qname`: quantile curve (e.g. `q0.05`, `q0.5`, `q0.95`)
 - `y`: observed curve value at x
 - `md`: simulated median curve at x
 - `lo`, `hi`: simulated confidence interval bounds at x for that quantile curve
 
-At each curve point, MPQ derives:
+At each curve point, QPC derives:
 
 - **Coverage**: whether \(y \in [lo, hi]\)
 - **Deviation**: \(|y - md|\) relative to PI half-width
 - **Drift**: Spearman correlation of residuals \((y-md)\) versus x (monotonic bias)
-- **Sharpness**: interval width (penalizes “variance inflation”)
+- **Sharpness**: interval width (penalizes "variance inflation")
 - **Proper interval score (Winkler)**: rewards narrow intervals but penalizes misses
 
-These are aggregated across curves and combined into `qc_score` with user-controlled weights.
+These are aggregated across curves and combined into `qpc_score` with user-controlled weights.
 
 ### Penalties (what is printed)
 
-`mpqstats()` prints a scalar `qc_score` plus a component breakdown. Each component is designed to be **0 = best** and larger values = worse.
+`qpcstats()` prints a scalar `qpc_score` plus a component breakdown. Each component is designed to be **0 = best** and larger values = worse.
 
 At a high level:
 
 - **Coverage penalties** measure calibration (are observed curves inside simulated uncertainty bands?).
 - **MAE and drift penalties** measure agreement and bias structure (how far and whether the residuals trend with x).
-- **Sharpness and interval penalties** discourage “variance inflation” (overly wide bands that can artificially increase coverage).
+- **Sharpness and interval penalties** discourage "variance inflation" (overly wide bands that can artificially increase coverage).
 
 More concretely (continuous VPC):
 
@@ -79,7 +79,7 @@ More concretely (continuous VPC):
   \[
   dev\_mid = \frac{|y-md|}{(hi-lo)/2}
   \]
-  then bounded to \([0,1]\) and averaged across curves. This highlights “large misses relative to the model’s own uncertainty”.
+  then bounded to \([0,1]\) and averaged across curves. This highlights "large misses relative to the model's own uncertainty".
 
 - **Drift penalty** (`rho_penalty_all`): absolute Spearman correlation of residuals \((y-md)\) vs x (averaged across curves), bounded to \([0,1]\).
   Values near 0 indicate no monotonic bias trend across x; larger values indicate systematic drift.
@@ -103,14 +103,14 @@ More concretely (continuous VPC):
 Finally:
 
 \[
-qc\_score = \sum_i w_i \cdot penalty_i
+qpc\_score = \sum_i w_i \cdot penalty_i
 \]
 
 where `w` is the named weight vector (`med_cov`, `tail_cov`, `mae`, `drift`, `sharp`, `interval`).
 
 ## Data
 
-We’ll use the built-in `tidyvpc::obs_data` and `tidyvpc::sim_data` and follow the standard preprocessing used throughout our vignettes.
+We'll use the built-in `tidyvpc::obs_data` and `tidyvpc::sim_data` and follow the standard preprocessing used throughout our vignettes.
 
 ```{r}
 obs_data <- as.data.table(tidyvpc::obs_data)
@@ -126,9 +126,9 @@ Add the population prediction `PRED` (from replicate 1) into the observed data f
 obs_data$PRED <- sim_data[REP == 1, PRED]
 ```
 
-## Example 1: Basic MPQ scoring
+## Example 1: Basic QPC scoring
 
-Below is a standard continuous VPC using binless VPC stats. The MPQ computation is a post-processing step after `vpcstats()`.
+Below is a standard continuous VPC using binless VPC stats. The QPC computation is a post-processing step after `vpcstats()`.
 
 ```{r, warning=FALSE}
 vpc <- observed(obs_data, x = TIME, y = DV) %>%
@@ -136,12 +136,12 @@ vpc <- observed(obs_data, x = TIME, y = DV) %>%
   binless() %>%
   vpcstats()
 
-vpc <- mpqstats(vpc)
+vpc <- qpcstats(vpc)
 
 print(vpc)
 ```
 
-The composite score is available in `mpq.stats$qc_score` (for stratified VPCs you will also see an `mpq_scope == "overall"` row).
+The composite score is available in `qpc.stats$qpc_score` (for stratified VPCs you will also see an `qpc_scope == "overall"` row).
 
 Plot the VPC:
 
@@ -149,9 +149,9 @@ Plot the VPC:
 plot(vpc)
 ```
 
-## Example 2: MPQ with prediction correction and stratification
+## Example 2: QPC with prediction correction and stratification
 
-MPQ relies on `vpc$stats`, so it naturally works with prediction correction and stratification (for continuous VPCs).
+QPC relies on `vpc$stats`, so it naturally works with prediction correction and stratification (for continuous VPCs).
 
 ```{r, warning=FALSE}
 vpc_pc_strat <- observed(obs_data, x = TIME, y = DV) %>%
@@ -161,7 +161,7 @@ vpc_pc_strat <- observed(obs_data, x = TIME, y = DV) %>%
   binless() %>%
   vpcstats()
 
-vpc_pc_strat <- mpqstats(vpc_pc_strat)
+vpc_pc_strat <- qpcstats(vpc_pc_strat)
 print(vpc_pc_strat)
 ```
 
@@ -177,12 +177,12 @@ plot(vpc_pc_strat)
 In the vignette examples you printed:
 
 - The **prediction-corrected + stratified** VPC (`vpc_pc_strat`) shows a **lower drift penalty** (residuals trend less with x), because prediction correction and stratification often remove structured bias that would otherwise appear as monotonic drift.
-- At the same time, `vpc_pc_strat` can show **higher sharpness/interval penalties** if the simulated uncertainty bands are wider within strata (or if prediction correction changes the scale/structure of residuals), because MPQ explicitly penalizes overly wide intervals even when they improve coverage.
-- The **per-stratum qc_score table** helps localize which subpopulations drive the overall score: strata with worse calibration (coverage penalties) or wider uncertainty (sharpness/interval penalties) will typically have higher `qc_score`.
+- At the same time, `vpc_pc_strat` can show **higher sharpness/interval penalties** if the simulated uncertainty bands are wider within strata (or if prediction correction changes the scale/structure of residuals), because QPC explicitly penalizes overly wide intervals even when they improve coverage.
+- The **per-stratum qpc_score table** helps localize which subpopulations drive the overall score: strata with worse calibration (coverage penalties) or wider uncertainty (sharpness/interval penalties) will typically have higher `qpc_score`.
 
-## Example 3: MPQ scoring with traditional binning()
+## Example 3: QPC scoring with traditional binning()
 
-MPQ works with traditional binned VPCs as well (it scores directly from `vpc$stats`). The only difference is that `vpcstats()` will compute summaries at `xbin` instead of `x`.
+QPC works with traditional binned VPCs as well (it scores directly from `vpc$stats`). The only difference is that `vpcstats()` will compute summaries at `xbin` instead of `x`.
 
 ```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
 vpc_binned <- observed(obs_data, x = TIME, y = DV) %>%
@@ -190,17 +190,17 @@ vpc_binned <- observed(obs_data, x = TIME, y = DV) %>%
   binning(bin = NTIME) %>%
   vpcstats()
 
-vpc_binned <- mpqstats(vpc_binned)
+vpc_binned <- qpcstats(vpc_binned)
 
 print(vpc_binned)
 ```
 
-## Example 4: Noisy simulations → wider confidence intervals → worse MPQ
+## Example 4: Noisy simulations → wider confidence intervals → worse QPC
 
-One failure mode of purely visual scoring is that *very wide* simulated confidence intervals can appear to “cover everything”.
-MPQ penalizes this via **sharpness** and **interval score** components.
+One failure mode of purely visual scoring is that *very wide* simulated confidence intervals can appear to "cover everything".
+QPC penalizes this via **sharpness** and **interval score** components.
 
-Here we artificially add noise to the simulated DV values to create wider confidence intervals, then compare `mpq.stats`.
+Here we artificially add noise to the simulated DV values to create wider confidence intervals, then compare `qpc.stats`.
 
 ```{r, warning=FALSE}
 sim_data_noisy <- copy(sim_data)
@@ -212,16 +212,16 @@ vpc_base <- observed(obs_data, x = TIME, y = DV) %>%
   simulated(sim_data, y = DV) %>%
   binless() %>%
   vpcstats() %>%
-  mpqstats()
+  qpcstats()
 
 vpc_noisy <- observed(obs_data, x = TIME, y = DV) %>%
   simulated(sim_data_noisy, y = DV) %>%
   binless() %>%
   vpcstats() %>%
-  mpqstats()
+  qpcstats()
 
-base_overall <- vpc_base$mpq.stats[mpq_scope == "overall"]
-noisy_overall <- vpc_noisy$mpq.stats[mpq_scope == "overall"]
+base_overall <- vpc_base$qpc.stats[qpc_scope == "overall"]
+noisy_overall <- vpc_noisy$qpc.stats[qpc_scope == "overall"]
 
 cmp <- rbindlist(list(
   cbind(data.table(case = "base"), base_overall),
@@ -230,7 +230,7 @@ cmp <- rbindlist(list(
 
 cmp_summary <- cmp[, .(
   Case = case,
-  `QC score` = qc_score,
+  `QPC score` = qpc_score,
   `Median coverage` = coverage_penalty_med,
   `Tail coverage` = coverage_penalty_tails,
   Sharpness = sharpness_penalty,
@@ -238,32 +238,32 @@ cmp_summary <- cmp[, .(
 )]
 
 cmp_summary[, (names(cmp_summary)[-1]) := lapply(.SD, \(x) round(x, 3)), .SDcols = names(cmp_summary)[-1]]
-knitr::kable(cmp_summary, caption = "MPQ summary: baseline vs noisy simulations (0 = best; lower qc_score is better)")
+knitr::kable(cmp_summary, caption = "QPC summary: baseline vs noisy simulations (0 = best; lower qpc_score is better)")
 ```
 
 In this comparison you will typically see:
 
 - **sharpness_penalty** increases with wider prediction intervals
 - **interval_penalty** increases because the Winkler score increases with width (even if coverage improves)
-- therefore **qc_score** tends to increase (worse)
+- therefore **qpc_score** tends to increase (worse)
 
 Compare the two plots:
 
 ```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
-    qc_base <- vpc_base$mpq.stats[mpq_scope == "overall", qc_score][1]
-qc_noisy <- vpc_noisy$mpq.stats[mpq_scope == "overall", qc_score][1]
+    qpc_base <- vpc_base$qpc.stats[qpc_scope == "overall", qpc_score][1]
+qpc_noisy <- vpc_noisy$qpc.stats[qpc_scope == "overall", qpc_score][1]
 
 p_base <- plot(vpc_base) +
-  ggplot2::ggtitle(sprintf("Base (qc_score = %.3f)", qc_base))
+  ggplot2::ggtitle(sprintf("Base (qpc_score = %.3f)", qpc_base))
 
 p_noisy <- plot(vpc_noisy) +
   ggplot2::theme(legend.position = "none") +
-  ggplot2::ggtitle(sprintf("Noisy sim (qc_score = %.3f)", qc_noisy))
+  ggplot2::ggtitle(sprintf("Noisy sim (qpc_score = %.3f)", qpc_noisy))
 
 egg::ggarrange(p_base,
                p_noisy,
                nrow = 2, ncol = 1,
-               top = "VPC CI Comparison"
+               top = "VPC PI Comparison"
 )
 
 ```
@@ -271,7 +271,7 @@ egg::ggarrange(p_base,
 
 ## Tips for using `sharp_ref` and `interval_ref`
 
-By default (`sharp_ref = NULL`, `interval_ref = NULL`), MPQ uses **self-normalizing bounded transforms** so you can score a single VPC without external calibration.
+By default (`sharp_ref = NULL`, `interval_ref = NULL`), QPC uses **self-normalizing bounded transforms** so you can score a single VPC without external calibration.
 
 If you are comparing *many* models (e.g. search/optimization) and need more stable cross-run comparability, set:
 
@@ -279,7 +279,7 @@ If you are comparing *many* models (e.g. search/optimization) and need more stab
 - `interval_ref`: a reference interval-score level (e.g. median/75th percentile across models)
 
 ```{r, eval = FALSE}
-vpc <- mpqstats(vpc, sharp_ref = 0.15, interval_ref = 2.5)
+vpc <- qpcstats(vpc, sharp_ref = 0.15, interval_ref = 2.5)
 ```
 
 
