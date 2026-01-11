@@ -17,3 +17,4 @@
 vignettes/tidyvpc_whats_new\.Rmd
 vignettes/tidyvpc_RsNLME\.Rmd
 ^\.github$
+Rplots.pdf

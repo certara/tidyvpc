@@ -792,6 +792,60 @@ print.tidyvpcobj <- function(x, ...) {
     cat(sprintf("VPC with %d replicates", nrep), "\n")
   }
   cat(sprintf("Stratified by: %s", paste0(names(x$strat), collapse=", ")), "\n")
+  
+  if (!is.null(x$qpc.stats)) {
+    qpc_score <- coverage_penalty_med <- coverage_penalty_tails <- mae_penalty_all <- rho_penalty_all <-
+      sharpness_penalty <- interval_penalty <- qpc_scope <- NULL
+    qpc <- data.table::as.data.table(x$qpc.stats)
+    if ("qpc_scope" %in% names(qpc) && any(qpc$qpc_scope == "overall", na.rm = TRUE)) {
+      qpc_overall <- qpc[qpc_scope == "overall"][1]
+    } else {
+      qpc_overall <- qpc[1]
+    }
+
+    qc <- qpc_overall$qpc_score
+    if (!is.null(qc) && is.finite(qc)) {
+      cat(sprintf("QPC: qpc_score = %.3f (lower is better)\n", qc))
+    } else {
+      cat("QPC: qpc_score = NA (lower is better)\n")
+    }
+
+    cat("Breakdown (0 = best):\n")
+    breakdown <- data.table::data.table(
+      metric = c(
+        "median coverage penalty",
+        "tail coverage penalty",
+        "MAE penalty",
+        "drift penalty",
+        "sharpness penalty",
+        "interval penalty"
+      ),
+      value = c(
+        qpc_overall$coverage_penalty_med,
+        qpc_overall$coverage_penalty_tails,
+        qpc_overall$mae_penalty_all,
+        qpc_overall$rho_penalty_all,
+        qpc_overall$sharpness_penalty,
+        qpc_overall$interval_penalty
+      )
+    )
+    breakdown[, value := ifelse(is.finite(value), value, NA_real_)]
+    for (i in seq_len(nrow(breakdown))) {
+      cat(sprintf("  %-24s %0.3f\n", breakdown$metric[i], breakdown$value[i]))
+    }
+    cat("\n")
+
+    # If stratified, also show a compact qpc_score-by-stratum table (plus overall)
+    if (!is.null(x$strat) && length(names(x$strat)) > 0 && all(names(x$strat) %in% names(qpc))) {
+      strat_cols <- names(x$strat)
+      show <- unique(c(strat_cols, "qpc_score", "qpc_scope"))
+      show <- intersect(show, names(qpc))
+      if (length(show) > 0) {
+        cat("QPC qpc_score by stratum:\n")
+        print(qpc[, ..show])
+      }
+    }
+  }
   if (!is.null(x$stats)) {
     print(x$stats)
   }
