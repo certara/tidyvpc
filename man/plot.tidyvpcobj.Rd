@@ -25,6 +25,8 @@
   custom.theme = NULL,
   censoring.type = c("none", "both", "blq", "alq"),
   censoring.output = c("grid", "list"),
+  censoring.color = c(observed = "black", simulated = "red"),
+  censoring.fill = "red",
   ...
 )
 }
@@ -74,6 +76,13 @@ are \code{"free", "fixed"}.}
 
 \item{censoring.output}{A character string specifying whether to return percentage of blq/alq plots as an
 arranged \code{"grid"} or as elements in a \code{"list"}. Only applicable if \code{censoring.type != "none"}.}
+
+\item{censoring.color}{A named character vector of colors for the censoring plot lines. Names must include
+\code{"observed"} and \code{"simulated"}. Default is \code{c(observed = "black", simulated = "red")}.
+Only applicable if \code{censoring.type != "none"}.}
+
+\item{censoring.fill}{A character string specifying the fill color for the censoring plot ribbon.
+Default is \code{"red"}. Only applicable if \code{censoring.type != "none"}.}
 
 \item{...}{Additional arguments for \code{\link[egg]{ggarrange}} e.g., \code{ncol} and \code{nrow}.
 Only used if \code{censoring.type != "none"} and \code{censoring.output == "grid"}.}
