@@ -795,7 +795,7 @@ print.tidyvpcobj <- function(x, ...) {
   
   if (!is.null(x$qpc.stats)) {
     qpc_score <- coverage_penalty_med <- coverage_penalty_tails <- mae_penalty_all <- rho_penalty_all <-
-      sharpness_penalty <- interval_penalty <- qpc_scope <- NULL
+      sharpness_penalty <- interval_penalty <- qpc_scope <- value <- ..show <- NULL
     qpc <- data.table::as.data.table(x$qpc.stats)
     if ("qpc_scope" %in% names(qpc) && any(qpc$qpc_scope == "overall", na.rm = TRUE)) {
       qpc_overall <- qpc[qpc_scope == "overall"][1]
