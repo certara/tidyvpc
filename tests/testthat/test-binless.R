@@ -149,7 +149,13 @@ test_that("cat vpc binless vpcstats are correct", {
   vpc <- binless(vpc)
   vpc <- suppressWarnings(vpcstats(vpc, vpc.type = "categorical"))
 
-  location <-system.file("extdata/Binless","cat_stats.csv",package="tidyvpc")
+  os <- get_os()
+
+  if(os == "windows"){
+    location <-system.file("extdata/Binless","cat_stats.csv",package="tidyvpc")
+  } else {
+    location <-system.file("extdata/Binless","cat_stats_l.csv",package="tidyvpc")
+  }
 
   stats <- fread(location, colClasses = c(pname = "factor"))
   setkeyv(stats, c("x"))
@@ -169,7 +175,13 @@ test_that("cat vpc binless stratification vpcstats are correct", {
   vpc <- binless(vpc)
   vpc <- suppressWarnings(vpcstats(vpc, vpc.type = "categorical"))
 
-  location <-system.file("extdata/Binless","cat_strat_stats.csv",package="tidyvpc")
+  os <- get_os()
+
+  if(os == "windows"){
+    location <-system.file("extdata/Binless","cat_strat_stats.csv",package="tidyvpc")
+  } else {
+    location <-system.file("extdata/Binless","cat_strat_stats_l.csv",package="tidyvpc")
+  }
 
   stats <- fread(location, colClasses = c(pname = "factor"))
   setkeyv(stats, c(names(vpc$strat), "x"))
