@@ -250,7 +250,7 @@ plot_continuous <-
            point.shape,
            point.stroke,
            point.alpha) {
-    alq <- bin <- blq <- hi <- l.ypc <- lo <- md <- pname <- qname <- NULL
+    alq <- bin <- blq <- fit <- hi <- l.ypc <- lo <- md <- pname <- qname <- NULL
     x <- xleft <- xright <- y <- ypc <- ypcvc <- NULL
     . <- list
     method <- vpc$vpc.method$method
