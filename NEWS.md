@@ -1,3 +1,10 @@
+# tidyvpc 1.6.0
+* New `qpcstats()` function computes a Quantitative Predictive Check (QPC) score for continuous VPCs, including a composite `qpc_score` (lower is better) plus component penalties for coverage, MAE, drift, sharpness, and the Winkler interval score. Works with `binless()` and `binning()`, with stratification, prediction correction, and censoring. New vignette `tidyvpc_qpc` documents usage [#66](https://github.com/certara/tidyvpc/pull/66).
+* Added support for non-replicate simulated data. `simulated()` gains `xsim` and `repl` arguments, `stratify()` gains a `data.sim` argument, and `binning()`/`binless()` propagate observed-data bins and strata to the simulated data when sim is not a replicate of obs [#63](https://github.com/certara/tidyvpc/pull/63).
+* `plot.tidyvpcobj()` gains `censoring.color` and `censoring.fill` arguments to customize the colors used in BLQ/ALQ percentage plots [#69](https://github.com/certara/tidyvpc/pull/69).
+* R CMD check housekeeping: added Linux reference data for binless categorical tests and resolved remaining global-variable NOTEs [#71](https://github.com/certara/tidyvpc/pull/71).
+* The `tidyvpc_RsNLME` vignette is now shipped as a precompiled PDF (it was previously only available as source).
+
 # tidyvpc 1.5.2
 * Changes to the computational workflow for npde [#59](https://github.com/certara/tidyvpc/pull/59)
 * Added varcorr argument to predcorrect method [#60](https://github.com/certara/tidyvpc/pull/60)

@@ -13,6 +13,117 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 9, fig.height = 6, out.width = 640, warning = FALSE)
 ```
 
+## tidyvpc 1.6.0
+
+### Quantitative Predictive Check (QPC)
+
+The headline addition in `1.6.0` is the new `qpcstats()` function, which computes a **Quantitative Predictive Check (QPC)** score for continuous VPCs. Where a VPC is normally assessed by eye, QPC produces a single numeric `qpc_score` (**lower is better**) that summarizes calibration, bias/drift, and sharpness, making it straightforward to compare or automatically optimize models.
+
+QPC is a post-processing step applied to an existing `tidyvpcobj` after `vpcstats()`. The composite score is reported alongside component penalties (coverage, MAE, drift, sharpness, and the Winkler interval score).
+
+```{r, warning=FALSE}
+library(tidyvpc)
+obs_data <- obs_data[MDV == 0]
+sim_data <- sim_data[MDV == 0]
+
+vpc <- observed(obs_data, x = TIME, y = DV) |>
+  simulated(sim_data, y = DV) |>
+  binless() |>
+  vpcstats() |>
+  qpcstats()
+
+print(vpc)
+```
+
+QPC also works with `binning()`, `stratify()`, `predcorrect()`, and `censoring()`. For the full methodology, weighting options, and worked examples, see the dedicated vignette: `vignette("tidyvpc_qpc")`.
+
+### Non-replicate simulated data support
+
+`tidyvpc` now supports simulated data that is **not** a 1:1 replicate of the observed data. `simulated()` gains `xsim` and `repl` arguments (to supply the simulated x-values and the replicate identifier), and `stratify()` gains a `data.sim` argument so strata can be supplied directly for the simulated data. Both `binning()` and `binless()` are supported, and the previous non-replicate hard errors are now warnings. You can toggle `tidyvpc`-specific messages with `options("tidyvpc.verbose" = TRUE)`.
+
+In the example below we construct a "rich" (non-replicate) simulated dataset by interpolating simulated `DV` onto a fine `TIME` grid per `ID`/`REP`, then fit a non-replicate VPC.
+
+```{r, warning=FALSE, message=FALSE}
+library(data.table)
+options("tidyvpc.verbose" = TRUE)
+
+obs <- tidyvpc::obs_data[MDV == 0]
+sim <- tidyvpc::sim_data[MDV == 0]
+sim$GENDER <- rep(obs$GENDER, nrow(sim) / nrow(obs))
+
+# Build a non-replicate ("rich") simulated dataset on a fine time grid
+sim_rich <- sim[, {
+  ntime_seq <- seq(from = min(TIME), to = max(TIME), by = 0.01)
+  dv_interp <- approx(x = TIME, y = DV, xout = ntime_seq)$y
+  data.table(TIME = ntime_seq, DV = dv_interp, GENDER = GENDER[1])
+}, by = .(ID, REP)]
+
+vpc_non_rep <- observed(obs, x = TIME, yobs = DV) |>
+  simulated(sim_rich, xsim = TIME, ysim = DV, repl = REP) |>
+  binning(bin = "jenks", nbins = 5) |>
+  vpcstats()
+
+plot(vpc_non_rep)
+```
+
+When the simulated data is not a replicate of the observed data, the observed-data bins and strata are propagated to the simulated data. Stratification on non-replicate simulated data uses the new `data.sim` argument:
+
+```{r, warning=FALSE, message=FALSE}
+vpc_non_rep_strat <- observed(obs, x = TIME, yobs = DV) |>
+  simulated(sim_rich, xsim = TIME, ysim = DV, repl = REP) |>
+  stratify(~ GENDER, data.sim = sim_rich) |>
+  binning(bin = "jenks", nbins = 5) |>
+  vpcstats()
+
+plot(vpc_non_rep_strat)
+```
+
+```{r, echo = FALSE}
+options("tidyvpc.verbose" = FALSE)
+```
+
+### Customize censoring (BLQ/ALQ) plot colors
+
+`plot.tidyvpcobj()` gains `censoring.color` and `censoring.fill` arguments to customize the colors used in the BLQ/ALQ percentage plots. `censoring.color` is a named vector with `observed` and `simulated` entries (controlling the line colors), while `censoring.fill` sets the ribbon fill color.
+
+```{r}
+obs_data$LLOQ <- obs_data[, ifelse(STUDY == "Study A", 50, 25)]
+obs_data$ULOQ <- obs_data[, ifelse(STUDY == "Study A", 125, 100)]
+
+vpc_cens <- observed(obs_data, x = TIME, y = DV) |>
+  simulated(sim_data, y = DV) |>
+  censoring(blq = DV < LLOQ, lloq = LLOQ, alq = DV > ULOQ, uloq = ULOQ) |>
+  stratify(~ STUDY) |>
+  binning(bin = NTIME) |>
+  vpcstats(qpred = c(0.1, 0.5, 0.9))
+
+plot(vpc_cens, censoring.type = "blq", censoring.output = "grid",
+     censoring.color = c(observed = "black", simulated = "blue"),
+     censoring.fill = "blue")
+```
+
+## tidyvpc 1.5.2
+
+### Variability correction for prediction-corrected VPC (`varcorr`)
+
+`predcorrect()` gains a `varcorr` logical argument (defaults to `FALSE`) that applies variability correction to the prediction-corrected dependent variable. When enabled, the correction adds a `ypcvc` column that is used for the VPC summaries.
+
+```{r, warning=FALSE}
+obs_data$PRED <- sim_data[REP == 1, PRED]
+
+vpc <- observed(obs_data, x = TIME, y = DV) |>
+  simulated(sim_data, y = DV) |>
+  predcorrect(pred = PRED, varcorr = TRUE) |>
+  binning(bin = NTIME) |>
+  vpcstats()
+
+plot(vpc)
+```
+
+### NPDE computational workflow update
+
+The computational workflow for Normalized Prediction Distribution Errors (NPDE) was revised in `1.5.2` for improved correctness and consistency. The public `npde()` interface is unchanged; see `?npde` for usage.
+
 ## tidyvpc 1.5.0
 
 ### Plot Percentage of BLQ and/or ALQ

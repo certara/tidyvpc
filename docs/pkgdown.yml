@@ -1,11 +1,14 @@
-pandoc: '2.18'
-pkgdown: 2.0.7
+pandoc: 3.8.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   tidyvpc_cat: tidyvpc_cat.html
   tidyvpc_cont: tidyvpc_cont.html
   tidyvpc_nlmixr2: tidyvpc_nlmixr2.html
+  tidyvpc_qpc: tidyvpc_qpc.html
   tidyvpc_RsNLME: tidyvpc_RsNLME.html
   tidyvpc_whats_new: tidyvpc_whats_new.html
-last_built: 2024-02-12T16:32Z
-
+last_built: 2026-06-02T05:15Z
+urls:
+  reference: https://github.com/certara/tidyvpc/reference
+  article: https://github.com/certara/tidyvpc/articles

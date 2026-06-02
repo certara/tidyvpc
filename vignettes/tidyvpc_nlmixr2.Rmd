@@ -32,7 +32,7 @@ First, you must load both libraries.
 
 ```{r setup}
 suppressPackageStartupMessages(library(tidyvpc, quietly = TRUE))
-library(nlmixr2, quietly = TRUE)
+suppressPackageStartupMessages(library(nlmixr2, quietly = TRUE))
 library(magrittr)
 ```
 

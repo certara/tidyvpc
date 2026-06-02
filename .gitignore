@@ -13,3 +13,6 @@ data-raw
 Meta
 doc
 Rplots.pdf
+vignettes/Two-Cmpt*/
+vignettes/GEN[0-9]*/
+vignettes/poster_figs/

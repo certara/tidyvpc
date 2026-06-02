@@ -145,7 +145,7 @@ The composite score is available in `qpc.stats$qpc_score` (for stratified VPCs y
 
 Plot the VPC:
 
-```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
+```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="90%"}
 plot(vpc)
 ```
 
@@ -167,7 +167,7 @@ print(vpc_pc_strat)
 
 Plot the stratified pcVPC:
 
-```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
+```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="90%"}
 plot(vpc_pc_strat)
 ```
 
@@ -184,7 +184,7 @@ In the vignette examples you printed:
 
 QPC works with traditional binned VPCs as well (it scores directly from `vpc$stats`). The only difference is that `vpcstats()` will compute summaries at `xbin` instead of `x`.
 
-```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
+```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="90%"}
 vpc_binned <- observed(obs_data, x = TIME, y = DV) %>%
   simulated(sim_data, y = DV) %>%
   binning(bin = NTIME) %>%
@@ -249,7 +249,7 @@ In this comparison you will typically see:
 
 Compare the two plots:
 
-```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="0.9\\linewidth"}
+```{r, fig.width = 9, fig.height = 6, fig.align='center', out.width="90%"}
     qpc_base <- vpc_base$qpc.stats[qpc_scope == "overall", qpc_score][1]
 qpc_noisy <- vpc_noisy$qpc.stats[qpc_scope == "overall", qpc_score][1]
 

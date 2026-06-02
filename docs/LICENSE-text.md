@@ -1,0 +1,4 @@
+# License
+
+    YEAR: 2018 - 2024
+    COPYRIGHT HOLDER: Samer Mouksassi

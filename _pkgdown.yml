@@ -1,6 +1,12 @@
 template:
-  params:
+  bootstrap: 5
+  light-switch: true
+  bslib:
     bootswatch: united
+    pkgdown-navbar-bg: "#e95420"
+url: https://github.com/certara/tidyvpc
+config:
+  external_links: false
 navbar:
   structure:
     left:  [home, reference, articles, news, CertaraR]
@@ -11,10 +17,14 @@ navbar:
     articles:
      text: Vignettes
      menu:
+     - text: What's New
+       href: articles/tidyvpc_whats_new.html
      - text: Continuous VPC
        href: articles/tidyvpc_cont.html
      - text: Categorical VPC
        href: articles/tidyvpc_cat.html
+     - text: Quantitative Predictive Check (QPC)
+       href: articles/tidyvpc_qpc.html
      - text: Using tidyvpc with RsNLME
        href: articles/tidyvpc_RsNLME.html
      - text: Using tidyvpc with nlmixr2

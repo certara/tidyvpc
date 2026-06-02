@@ -2,7 +2,9 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^data-raw$
-.git
+^\.git$
+^\.gitignore$
+^\.gitattributes$
 ^cran-comments\.md$
 ^\..*\.swp$
 ^.*\.R\.tmp\.R$
@@ -15,6 +17,15 @@
 ^pkgdown$
 ^_pkgdown\.yml$
 vignettes/tidyvpc_whats_new\.Rmd
-vignettes/tidyvpc_RsNLME\.Rmd
+^vignettes/Two-Cmpt
+^vignettes/GEN[0-9]+
+^vignettes/poster_figs
+^_[A-Za-z].*\.(txt|log|R)$
+^_check_as_cran.*
+^_check_no_as_cran.*
+^_final_check.*
+^_tarball_contents.*
+^tidyvpc_.*\.tar\.gz$
+^tools$
 ^\.github$
 Rplots.pdf
