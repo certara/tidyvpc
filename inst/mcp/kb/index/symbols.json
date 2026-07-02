@@ -1,0 +1,13 @@
+{
+  "plot": ["tidyvpc.anti.vpc_plot_fn", "tidyvpc.fn.plot"],
+  "observed": ["tidyvpc.fn.observed"],
+  "simulated": ["tidyvpc.fn.simulated"],
+  "binning": ["tidyvpc.fn.binning"],
+  "binless": ["tidyvpc.fn.binless"],
+  "vpcstats": ["tidyvpc.fn.vpcstats"],
+  "predcorrect": ["tidyvpc.fn.predcorrect"],
+  "stratify": ["tidyvpc.fn.stratify"],
+  "npde": ["tidyvpc.fn.npde"],
+  "censoring": ["tidyvpc.fn.censoring"],
+  "qpcstats": ["tidyvpc.fn.qpcstats"]
+}

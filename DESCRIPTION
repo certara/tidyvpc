@@ -48,7 +48,9 @@ Imports:
     egg
 Suggests:
     Certara.RsNLME,
+    ellmer,
     dplyr,
+    jsonlite,
     KernSmooth,
     knitr,
     R.rsp,
@@ -63,4 +65,4 @@ License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8
 VignetteBuilder: R.rsp
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0

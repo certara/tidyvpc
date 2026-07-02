@@ -1,0 +1,34 @@
+{
+  "package": "tidyvpc",
+  "package_version": "1.6.0",
+  "schema_version": "1.0.0",
+  "generated": "2026-07-01T20:55:38+0300",
+  "generator_version": "1.0.0",
+  "entry_count": 17,
+  "guidance_entry_count": 1,
+  "primary_entry": "tidyvpc.guidance.toc",
+  "kinds": ["anti_pattern", "function_doc", "guidance_chapter", "workflow_recipe"],
+  "files": [
+    {
+      "path": "tidyvpc.jsonl",
+      "sha256": "e092f04b6335e30f6dd9351ff258327a1d497c1696c5ac0204750af96a670b7d",
+      "entry_count": 17
+    }
+  ],
+  "indexes": {
+    "symbols": "index/symbols.json",
+    "enums": "index/enums.json",
+    "guidance": "index/guidance.json",
+    "playbooks": "index/playbooks.json",
+    "guidance_graph": "index/guidance_graph.json"
+  },
+  "hashes": {
+    "sources_sha256": "ca32c8fa571fe3002c9b825e4926adf3f40f2ca949bbb6488f16eae441b1641b",
+    "jsonl_sha256": "e092f04b6335e30f6dd9351ff258327a1d497c1696c5ac0204750af96a670b7d",
+    "symbols_sha256": "a434a96f639d17dfb8325349c4269bda64added3aa2e0bbb811725c32b33d186",
+    "enums_sha256": "2d44b4a925a0e36b817a38634b8886d49ed6463658085b30d16d2a63e5719fb6",
+    "guidance_sha256": "2f73d4e49ad095b181dfcd465b1e6e16525bd18db2ca31507635e07f91c4f9d6",
+    "playbooks_sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+    "guidance_graph_sha256": "cd5803087048fb35dd90b34b2aacb3f7779bc3a8654370c5173d37ab8749724e"
+  }
+}

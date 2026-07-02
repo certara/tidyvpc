@@ -29,3 +29,5 @@ vignettes/tidyvpc_whats_new\.Rmd
 ^tools$
 ^\.github$
 Rplots.pdf
+^\.positai$
+^\.claude$

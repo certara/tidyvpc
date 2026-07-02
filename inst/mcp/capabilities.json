@@ -1,0 +1,31 @@
+{
+  "package": "tidyvpc",
+  "primary_guidance_entry": "tidyvpc.guidance.toc",
+  "rules": [
+    {
+      "id": "yobs_ysim_not_y",
+      "text": "In tidyvpc use yobs= and ysim= (not y=) in observed() and simulated(). The observed and simulated y columns are often both named DV."
+    },
+    {
+      "id": "plot_not_vpc_plot",
+      "text": "Call plot() on the tidyvpc object returned by vpcstats(), not vpc_plot(). Use tidyvpc_plot_vpc MCP tool to save a PNG and register it in the host report Rmd."
+    },
+    {
+      "id": "stratify_covariates",
+      "text": "Stratify VPCs with stratify() before binning when covariate-specific predictive checks are required. Confirm column names from the loaded VPC run artifacts."
+    },
+    {
+      "id": "tidyvpc_repro_script",
+      "text": "Every tidyvpc MCP tool records runnable R code into the host reproducible script (certara_repro_script). Plot tools also register figures in the report Rmd (certara_report_rmd)."
+    }
+  ],
+  "session_start": [
+    "tidyvpc builds VPCs from RsNLME VPC simulation output (predcheck0 + predout). Run start_nlme_vpcmodel first, then tidyvpc_load_from_dir or tidyvpc_load_from_rds."
+  ],
+  "prerequisites": [
+    "A completed RsNLME VPC job with predcheck0 and predout/simout artifacts, or vpc.rds from collect_nlme_job."
+  ],
+  "workflows": {
+    "phases": ["load_vpc_data", "build_vpc", "stratify", "plot_vpc"]
+  }
+}
