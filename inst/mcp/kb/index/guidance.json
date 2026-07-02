@@ -1,0 +1,10 @@
+[
+  {
+    "id": "tidyvpc.guidance.toc",
+    "title": "Visual predictive checks with tidyvpc",
+    "chapter_order": 1,
+    "summary": "Entry point for building, stratifying, and plotting VPCs from RsNLME simulation output using the tidyvpc pipe (observed, simulated, binning/binless, vpcstats, plot).",
+    "steps": [],
+    "topics": []
+  }
+]

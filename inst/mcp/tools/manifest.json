@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0.0",
+  "package": "tidyvpc",
+  "builder": "tidyvpc_mcp_tools"
+}
