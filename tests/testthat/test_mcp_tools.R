@@ -32,6 +32,108 @@ test_that("build and plot from obs/sim data", {
   }
 })
 
+test_that("qpc_score computes an opt-in score on a binless VPC", {
+  skip_if_not_installed("ellmer")
+  .tidyvpc_state_reset()
+  on.exit(.tidyvpc_state_reset(), add = TRUE)
+  obs <- tidyvpc::obs_data[tidyvpc::obs_data$MDV == 0, ]
+  sim <- tidyvpc::sim_data[tidyvpc::sim_data$MDV == 0, ]
+  h <- .tidyvpc_store(list(obs = obs, sim = sim, vpc_obj = NULL))
+  .tv_build_vpc(h, x_col = "TIME", yobs_col = "DV", ysim_col = "DV",
+               binless = TRUE)
+
+  res <- .tv_qpc_score(h)
+  expect_equal(res$handle, h)
+  expect_true(is.numeric(res$qpc_score) && is.finite(res$qpc_score))
+  expect_equal(res$overall$qpc_scope, "overall")
+  expect_null(res$strata)
+  expect_equal(res$weights$med_cov, 0.35)
+  expect_null(res$sharp_ref)
+  expect_match(res$note, "never an automatic acceptance gate")
+
+  res2 <- .tv_qpc_score(h, w_med_cov = 0.5, sharp_ref = 0.15, interval_ref = 2.5)
+  expect_equal(res2$weights$med_cov, 0.5)
+  expect_equal(res2$sharp_ref, 0.15)
+})
+
+test_that("qpc_score requires a built vpc object", {
+  .tidyvpc_state_reset()
+  on.exit(.tidyvpc_state_reset(), add = TRUE)
+  h <- .tidyvpc_store(list(obs = data.frame(), sim = data.frame(), vpc_obj = NULL))
+  expect_error(.tv_qpc_score(h), "Build a VPC first")
+})
+
+test_that("tidyvpc_mcp_tools exposes qpc_score only for stats/full groups", {
+  skip_if_not_installed("ellmer")
+  all_tools <- tidyvpc_mcp_tools()
+  nms_all <- vapply(all_tools, function(t) t@name, character(1))
+  expect_true("qpc_score" %in% nms_all)
+
+  scoped <- tidyvpc_mcp_tools(groups = c("data", "build", "plot", "meta"))
+  nms_scoped <- vapply(scoped, function(t) t@name, character(1))
+  expect_false("qpc_score" %in% nms_scoped)
+})
+
+test_that("load_from_rds attaches PRED from sim replicate 0 when observed lacks it", {
+  .tidyvpc_state_reset()
+  obs <- as.data.frame(tidyvpc::obs_data[tidyvpc::obs_data$MDV == 0, ])
+  sim <- as.data.frame(tidyvpc::sim_data[tidyvpc::sim_data$MDV == 0, ])
+  expect_false("PRED" %in% names(obs))
+  expect_true("PRED" %in% names(sim))
+  # Prefer RsNLME-style replicate 0 when present; also exercise the
+  # first-replicate fallback used by tidyvpc::sim_data (REP starts at 1).
+  path0 <- tempfile(fileext = ".rds")
+  sim0 <- sim
+  sim0$REP[sim0$REP == 1L] <- 0L
+  saveRDS(list(predcheck0 = obs, predout = sim0), path0)
+  path1 <- tempfile(fileext = ".rds")
+  saveRDS(list(predcheck0 = obs, predout = sim), path1)
+  on.exit({
+    unlink(c(path0, path1))
+    .tidyvpc_state_reset()
+  }, add = TRUE)
+
+  res0 <- .tv_load_from_rds(path0)
+  expect_true(isTRUE(res0$pred_available))
+  expect_equal(res0$pred_source, "sim_replicate_0")
+  expect_equal(res0$pred_col, "PRED")
+  sess0 <- .tidyvpc_get(res0$handle)
+  expect_true("PRED" %in% names(sess0$obs))
+  expect_true(any(!is.na(sess0$obs$PRED)))
+
+  res1 <- .tv_load_from_rds(path1)
+  expect_true(isTRUE(res1$pred_available))
+  expect_equal(res1$pred_source, "sim_replicate_1")
+  expect_equal(res1$pred_col, "PRED")
+})
+
+test_that("predcorrect auto-selects PRED and returns pred_quality", {
+  .tidyvpc_state_reset()
+  on.exit(.tidyvpc_state_reset(), add = TRUE)
+  obs <- as.data.frame(tidyvpc::obs_data[tidyvpc::obs_data$MDV == 0, ])
+  sim <- as.data.frame(tidyvpc::sim_data[tidyvpc::sim_data$MDV == 0, ])
+  path <- tempfile(fileext = ".rds")
+  saveRDS(list(predcheck0 = obs, predout = sim), path)
+  on.exit(unlink(path), add = TRUE)
+  res <- .tv_load_from_rds(path)
+  built <- .tv_build_vpc(res$handle, x_col = "TIME", yobs_col = "DV",
+                         ysim_col = "DV", bin_col = "NTIME", nbins = 6L,
+                         predcorrect = TRUE)
+  expect_equal(built$pred_col, "PRED")
+  expect_true(is.list(built$pred_quality))
+  expect_true(is.numeric(built$pred_quality$fraction_near_zero))
+  expect_equal(built$pred_quality$epsilon, .tv_pred_near_zero_epsilon)
+})
+
+test_that("predcorrect without PRED errors clearly at the MCP layer", {
+  .tidyvpc_state_reset()
+  on.exit(.tidyvpc_state_reset(), add = TRUE)
+  obs <- data.frame(ID = 1L, TIME = 0, DV = 1, NTIME = 0)
+  sim <- data.frame(ID = 1L, REP = 1L, TIME = 0, DV = 1)
+  h <- .tidyvpc_store(list(obs = obs, sim = sim, vpc_obj = NULL))
+  expect_error(.tv_build_vpc(h, predcorrect = TRUE), "no PRED column")
+})
+
 test_that("load_from_rds creates a session handle", {
   .tidyvpc_state_reset()
   obs <- tidyvpc::obs_data[tidyvpc::obs_data$MDV == 0, ]
