@@ -182,3 +182,38 @@ test_that("Certara.R host records repro and report when MCP API is available", {
   report <- .certara_mcp_fn("mcp_report_read")()
   expect_match(report, "include_graphics", fixed = FALSE)
 })
+
+test_that("shuffled simulated rows yield the same vpcstats after sort", {
+  .tidyvpc_state_reset()
+  on.exit(.tidyvpc_state_reset(), add = TRUE)
+  obs <- as.data.frame(tidyvpc::obs_data[tidyvpc::obs_data$MDV == 0, ])
+  sim <- as.data.frame(tidyvpc::sim_data[tidyvpc::sim_data$MDV == 0, ])
+  set.seed(42)
+  sim_shuf <- sim[sample.int(nrow(sim)), , drop = FALSE]
+  rownames(sim_shuf) <- NULL
+
+  h1 <- .tidyvpc_store(list(obs = obs, sim = sim, vpc_obj = NULL))
+  h2 <- .tidyvpc_store(list(obs = obs, sim = sim_shuf, vpc_obj = NULL))
+  .tv_build_vpc(h1, x_col = "TIME", yobs_col = "DV", ysim_col = "DV",
+                bin_col = "NTIME", nbins = 6L)
+  .tv_build_vpc(h2, x_col = "TIME", yobs_col = "DV", ysim_col = "DV",
+                bin_col = "NTIME", nbins = 6L)
+  s1 <- as.data.frame(.tidyvpc_get(h1)$vpc_obj$stats)
+  s2 <- as.data.frame(.tidyvpc_get(h2)$vpc_obj$stats)
+  expect_equal(s1, s2, tolerance = 1e-8)
+})
+
+test_that("multi-ObsName tables warn instead of mixing endpoints", {
+  .tidyvpc_state_reset()
+  on.exit(.tidyvpc_state_reset(), add = TRUE)
+  obs <- as.data.frame(tidyvpc::obs_data[tidyvpc::obs_data$MDV == 0, ])
+  sim <- as.data.frame(tidyvpc::sim_data[tidyvpc::sim_data$MDV == 0, ])
+  obs$ObsName <- ifelse(as.integer(obs$ID) %% 2L == 0L, "CObs", "EObs")
+  sim$ObsName <- ifelse(as.integer(sim$ID) %% 2L == 0L, "CObs", "EObs")
+  expect_match(.tv_obsname_warning(obs, sim), "multiple values")
+
+  h <- .tidyvpc_store(list(obs = obs, sim = sim, vpc_obj = NULL))
+  built <- .tv_build_vpc(h, x_col = "TIME", yobs_col = "DV", ysim_col = "DV",
+                         bin_col = "NTIME", nbins = 6L)
+  expect_true(any(grepl("ObsName has multiple values", unlist(built$warnings))))
+})

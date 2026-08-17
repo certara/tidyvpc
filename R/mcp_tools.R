@@ -234,7 +234,7 @@
   )
 }
 
-.tv_load_response <- function(handle, obs, sim, pred_info) {
+.tv_load_response <- function(handle, obs, sim, pred_info, extra = NULL) {
   out <- list(
     handle = handle,
     observed = .tv_col_summary(obs),
@@ -245,7 +245,117 @@
     repro_script = .tv_repro_path()
   )
   if (!is.null(pred_info$join_note)) out$pred_note = pred_info$join_note
+  if (length(extra)) out <- c(out, extra)
   out
+}
+
+# Replicate-mode tidyvpc is position-based: sim rows must be ordered by
+# replicate then match observed ID+TIME within each replicate. Sort here so
+# engine output written in a different row order cannot silently produce
+# wrong bands. Multi-ObsName tables are warned, not mixed.
+.tv_id_candidates <- function() c("ID", "id", "Subject", "SUBJECT")
+.tv_time_candidates <- function() c("TIME", "Time", "time", "IVAR", "TAD")
+.tv_repl_candidates <- function() {
+  c("REPLICATE", "Replicate", "REP", "Rep", "repl", "replicate")
+}
+.tv_obsname_candidates <- function() c("ObsName", "OBSNAME", "obsname")
+
+.tv_sort_keys_obs <- function(df) {
+  cols <- character(0)
+  for (cand in list(.tv_obsname_candidates(), .tv_id_candidates(),
+                    .tv_time_candidates())) {
+    hit <- .tv_find_col(names(df), cand)
+    if (!is.null(hit)) cols <- c(cols, hit)
+  }
+  cols
+}
+
+.tv_sort_keys_sim <- function(df) {
+  cols <- character(0)
+  for (cand in list(.tv_repl_candidates(), .tv_obsname_candidates(),
+                    .tv_id_candidates(), .tv_time_candidates())) {
+    hit <- .tv_find_col(names(df), cand)
+    if (!is.null(hit)) cols <- c(cols, hit)
+  }
+  cols
+}
+
+.tv_sort_df <- function(df, keys) {
+  if (!length(keys) || !NROW(df)) return(df)
+  cols <- lapply(keys, function(k) df[[k]])
+  if (any(vapply(cols, is.null, logical(1)))) return(df)
+  ord <- do.call(order, cols)
+  out <- df[ord, , drop = FALSE]
+  if (!inherits(out, "data.table")) rownames(out) <- NULL
+  out
+}
+
+.tv_obsname_warning <- function(obs, sim) {
+  vals <- character(0)
+  for (df in list(obs, sim)) {
+    col <- .tv_find_col(names(df), .tv_obsname_candidates())
+    if (!is.null(col)) {
+      v <- unique(as.character(df[[col]][!is.na(df[[col]])]))
+      vals <- union(vals, v)
+    }
+  }
+  if (length(vals) <= 1L) return(NULL)
+  sprintf(paste(
+    "ObsName has multiple values (%s). tidyvpc models one endpoint per VPC;",
+    "split the tables by ObsName (see vignettes/categorical_data.Rmd) rather",
+    "than mixing endpoints."),
+    paste(vals, collapse = ", "))
+}
+
+.tv_order_check <- function(obs, sim) {
+  id_obs <- .tv_find_col(names(obs), .tv_id_candidates())
+  time_obs <- .tv_find_col(names(obs), .tv_time_candidates())
+  id_sim <- .tv_find_col(names(sim), .tv_id_candidates())
+  time_sim <- .tv_find_col(names(sim), .tv_time_candidates())
+  if (is.null(id_obs) || is.null(time_obs) || is.null(id_sim) ||
+      is.null(time_sim)) {
+    return(list(ok = NA, note = "ID/TIME columns missing; check_order skipped."))
+  }
+  obs2 <- data.frame(ID = obs[[id_obs]], TIME = obs[[time_obs]],
+                     stringsAsFactors = FALSE)
+  sim2 <- data.frame(ID = sim[[id_sim]], TIME = sim[[time_sim]],
+                     stringsAsFactors = FALSE)
+  nrep <- tryCatch(tidyvpc::check_order(obs2, sim2), error = function(e) e)
+  if (inherits(nrep, "error")) {
+    return(list(ok = FALSE, error = conditionMessage(nrep)))
+  }
+  list(ok = TRUE, n_replicates = nrep)
+}
+
+.tv_prepare_tables <- function(obs, sim) {
+  obs <- .tv_sort_df(obs, .tv_sort_keys_obs(obs))
+  sim <- .tv_sort_df(sim, .tv_sort_keys_sim(sim))
+  list(obs = obs, sim = sim,
+       obsname_warning = .tv_obsname_warning(obs, sim),
+       order_check = .tv_order_check(obs, sim),
+       obs_keys = .tv_sort_keys_obs(obs),
+       sim_keys = .tv_sort_keys_sim(sim))
+}
+
+.tv_record_sort <- function(prep) {
+  if (length(prep$obs_keys)) {
+    .tv_record(sprintf(
+      "obs <- obs[order(%s), ]",
+      paste(sprintf("obs[['%s']]", prep$obs_keys), collapse = ", ")))
+  }
+  if (length(prep$sim_keys)) {
+    .tv_record(sprintf(
+      "sim <- sim[order(%s), ]",
+      paste(sprintf("sim[['%s']]", prep$sim_keys), collapse = ", ")))
+  }
+}
+
+.tv_prep_extra <- function(prep) {
+  extra <- list(order_check = prep$order_check)
+  if (!is.null(prep$obsname_warning)) {
+    extra$warnings <- list(prep$obsname_warning)
+  }
+  extra
 }
 
 # ---- data loaders -----------------------------------------------------------
@@ -262,16 +372,20 @@
   }
   obs <- utils::read.csv(obs_path, stringsAsFactors = FALSE)
   sim_info <- .tidyvpc_read_sim(art, sim_file)
-  pred_info <- .tv_attach_pred(obs, sim_info$data)
+  prep <- .tv_prepare_tables(obs, sim_info$data)
+  obs <- prep$obs
+  sim <- prep$sim
+  pred_info <- .tv_attach_pred(obs, sim)
   obs <- pred_info$obs
   meta <- list(run_dir = run_dir, obs_path = obs_path, sim_path = sim_info$path,
                pred_source = pred_info$pred_source, pred_col = pred_info$pred_col)
   handle <- .tidyvpc_store(
-    list(obs = obs, sim = sim_info$data, vpc_obj = NULL),
+    list(obs = obs, sim = sim, vpc_obj = NULL),
     meta = meta
   )
   .tv_record(.tv_call("read.csv", list(obs_path), var = "obs"))
   .tv_record(.tv_call("read.csv", list(sim_info$path), var = "sim"))
+  .tv_record_sort(prep)
   if (isTRUE(pred_info$pred_available) &&
       startsWith(as.character(pred_info$pred_source %||% ""), "sim_replicate_")) {
     repl_val <- sub("^sim_replicate_", "", pred_info$pred_source)
@@ -285,7 +399,7 @@
       sep = "\n"
     ))
   }
-  .tv_load_response(handle, obs, sim_info$data, pred_info)
+  .tv_load_response(handle, obs, sim, pred_info, .tv_prep_extra(prep))
 }
 
 .tv_load_from_rds <- function(vpc_rds) {
@@ -298,6 +412,9 @@
   if (is.null(obs) || is.null(sim)) {
     stop("vpc.rds must contain predcheck0 and predout/simout.", call. = FALSE)
   }
+  prep <- .tv_prepare_tables(obs, sim)
+  obs <- prep$obs
+  sim <- prep$sim
   pred_info <- .tv_attach_pred(obs, sim)
   obs <- pred_info$obs
   meta <- list(run_dir = dirname(vpc_rds), vpc_rds = vpc_rds,
@@ -306,6 +423,7 @@
   .tv_record(.tv_call("readRDS", list(vpc_rds), var = "vpc_job"))
   .tv_record("obs <- vpc_job$predcheck0")
   .tv_record("sim <- if (!is.null(vpc_job$predout)) vpc_job$predout else vpc_job$simout")
+  .tv_record_sort(prep)
   if (isTRUE(pred_info$pred_available) &&
       startsWith(as.character(pred_info$pred_source %||% ""), "sim_replicate_")) {
     repl_val <- sub("^sim_replicate_", "", pred_info$pred_source)
@@ -319,7 +437,7 @@
       sep = "\n"
     ))
   }
-  .tv_load_response(handle, obs, sim, pred_info)
+  .tv_load_response(handle, obs, sim, pred_info, .tv_prep_extra(prep))
 }
 
 # ---- build ------------------------------------------------------------------
@@ -363,8 +481,12 @@
                           pred_col = NULL, stratify_formula = NULL,
                           xsim_col = NULL, repl_col = NULL) {
   sess <- .tidyvpc_get(handle)
-  obs <- sess$obs
-  sim <- sess$sim
+  prep <- .tv_prepare_tables(sess$obs, sess$sim)
+  obs <- prep$obs
+  sim <- prep$sim
+  .tidyvpc_update(handle, list(obs = obs, sim = sim, vpc_obj = sess$vpc_obj))
+  extra_warns <- character(0)
+  if (!is.null(prep$obsname_warning)) extra_warns <- prep$obsname_warning
   bin_col <- bin_col %||% x_col
   has_x <- .tv_nzchar(xsim_col)
   has_r <- .tv_nzchar(repl_col)
@@ -441,7 +563,9 @@
   }
   .tv_record(paste0(handle, " <- vpcstats(", handle, ")"))
   out <- list(handle = handle, class = class(vpc), non_replicate = non_replicate,
-              pred_col = pred_col, warnings = built$warnings,
+              pred_col = pred_col,
+              warnings = c(extra_warns, built$warnings),
+              order_check = prep$order_check,
               repro_script = .tv_repro_path())
   if (!is.null(pred_quality)) out$pred_quality <- pred_quality
   out
