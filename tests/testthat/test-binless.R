@@ -160,7 +160,13 @@ test_that("cat vpc binless vpcstats are correct", {
   stats <- fread(location, colClasses = c(pname = "factor"))
   setkeyv(stats, c("x"))
 
-  #Check for equality, dispatches to data.table::all.equal method
+  # Check for equality, dispatches to data.table::all.equal method.
+  # If this fails on Linux with "Different number of rows" (duplicate key at
+  # x=12, pname=prob1 under OpenBLAS: 175 vs 174 unique keys), collapse
+  # observed stats in vpcstats categorical binless with
+  # unique(pobs, by = c(names(strat), "x", "pname")) before joining simulated
+  # quantiles. Do not unique() on all columns; GAM fitted y at the same x can
+  # differ by ULP so those rows do not collapse.
   expect_equal(vpc$stats, stats)
 })
 
