@@ -4,10 +4,15 @@
 \alias{tidyvpc_mcp_tools}
 \title{tidyvpc MCP tools for the Certara host}
 \usage{
-tidyvpc_mcp_tools(groups = c("data", "build", "plot", "meta"))
+tidyvpc_mcp_tools(groups = c("data", "build", "plot", "stats", "meta"))
 }
 \arguments{
-\item{groups}{Tool groups to include: data, build, plot, meta.}
+\item{groups}{Tool groups to include: `"data"`, `"build"`, `"plot"`,
+`"stats"` (the opt-in `qpc_score` tool), `"meta"`. The Certara host's
+`execution`/`diagnostics` profiles expose `data`/`build`/`plot`/`meta`
+via an explicit tidyvpc entry so the VPC lifecycle is reachable;
+`"stats"` remains opt-in under the `"full"` profile (or an explicit
+group request) so `qpc_score` is never part of a default workflow.}
 }
 \value{
 List of ellmer tool definitions, or empty when ellmer is absent.

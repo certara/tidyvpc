@@ -76,3 +76,40 @@ vpc <- observed(obs, x = TIME, yobs = DV) %>%
 ```
 
 MCP: pass `xsim_col`/`repl_col` to `tidyvpc_build_vpc`, and `data_sim = TRUE` to `tidyvpc_stratify`.
+
+## tidyvpc.workflow.qpc_scoring
+type: workflow_recipe
+title: Opt-in QPC scoring after vpcstats()
+summary: qpcstats() turns a built VPC into a single qpc_score for optional, secondary model comparison - never an automatic acceptance gate.
+keywords: QPC, qpcstats, qpc_score, opt-in, secondary metric, Darwin, sequential LRT
+related: tidyvpc.fn.qpcstats, tidyvpc.fn.binless, tidyvpc.workflow.standard_vpc, Certara.RsNLME.fn.sequential_lrt_tools
+provenance.source_file: R/qpc.R
+source.kind: Rd
+
+`qpc_score` (MCP) / `qpcstats()` (R) numerically encodes what a VPC review
+visually assesses - coverage, deviation, drift, and sharpness - into a single
+composite score (lower is better). Use it as an **opt-in, secondary**
+criterion alongside a visual VPC and diagnostics review. Never treat it as an
+automatic acceptance gate, and never call it without an explicit user
+request: no Certara MCP workflow (Darwin candidate qualification, structural-
+anchor selection, sequential LRT) invokes it on its own.
+
+```r
+vpc <- observed(obs, x = TIME, yobs = DV) %>%
+  simulated(sim, ysim = DV) %>%
+  binless(x = TIME) %>%
+  vpcstats()
+
+# Single-model scoring: leave sharp_ref/interval_ref NULL.
+vpc <- qpcstats(vpc)
+vpc$qpc.stats
+
+# Population scoring (e.g. comparing several qualified candidates): anchor
+# sharp_ref/interval_ref from a representative run for cross-model comparability.
+vpc <- qpcstats(vpc, sharp_ref = 0.15, interval_ref = 2.5)
+```
+
+MCP: `tidyvpc_build_vpc` (prefer `binless = TRUE`) -> `qpc_score`. When
+comparing scores across several candidates or sessions, set `sharp_ref` /
+`interval_ref` to the same value on every call so the sharpness and interval
+penalties stay on a consistent scale.

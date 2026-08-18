@@ -123,9 +123,11 @@ title: qpcstats()
 summary: Quantitative predictive check metrics and composite qpc_score after vpcstats().
 keywords: QPC, qpcstats, qpc_score, predictive check
 symbols: qpcstats
-related: tidyvpc.fn.vpcstats, tidyvpc.fn.binless
+related: tidyvpc.fn.vpcstats, tidyvpc.fn.binless, tidyvpc.workflow.qpc_scoring
 provenance.source_file: R/qpc.R
 provenance.symbol: qpcstats
 source.kind: Rd
 
 Run on a continuous VPC after `vpcstats()` (often with `binless()`). Not for categorical VPCs.
+Over MCP this is exposed as the opt-in `qpc_score` tool - a secondary metric,
+never an automatic acceptance gate (see `tidyvpc.workflow.qpc_scoring`).
